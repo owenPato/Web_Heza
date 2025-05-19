@@ -1,5 +1,6 @@
 import User from '../models/User.js';
 import pool from '../config/db.js';
+import bcrypt from 'bcryptjs'; 
 
 export const getAllClients = async (req, res) => {
   try {
@@ -71,23 +72,27 @@ export const createClient = async (req, res) => {
     if (req.user.rol !== 'admin') {
       return res.status(403).json({ error: 'No autorizado para crear clientes' });
     }
-    
+
     const clientData = {
       ...req.body,
       rol: 'cliente'
     };
-    
+
+    // Validar si el correo ya existe
     const existingUser = await User.findByEmail(clientData.email);
     if (existingUser) {
       return res.status(400).json({ error: 'El correo electrónico ya está registrado' });
     }
-    
+
+    // ✅ Cifrar la contraseña
+    const hashedPassword = await bcrypt.hash(clientData.password, 10);
+    clientData.password = hashedPassword;
+
     const clientId = await User.create(clientData);
-    
     const client = await User.findById(clientId);
-    
+
     delete client.password;
-    
+
     res.status(201).json({ client });
   } catch (error) {
     console.error('Error al crear cliente:', error);

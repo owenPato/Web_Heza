@@ -35,64 +35,59 @@ export const getSolicitudesPendientesCount = async (req, res) => {
   }
 };
 
+
 export const aprobarSolicitud = async (req, res) => {
   const { id } = req.params;
   const connection = await pool.getConnection();
-  
+
   try {
     await connection.beginTransaction();
-    
+
     const [solicitudes] = await connection.query(
       'SELECT * FROM solicitudes_acceso WHERE id = ?',
       [id]
     );
-    
+
     if (solicitudes.length === 0) {
       return res.status(404).json({ error: 'Solicitud no encontrada' });
     }
-    
+
     const solicitud = solicitudes[0];
-    
+
     await connection.query(
       'UPDATE solicitudes_acceso SET estado = "aprobada" WHERE id = ?',
       [id]
     );
-    
+
     let username = solicitud.email.split('@')[0];
     if (!username || username.trim() === '') {
       username = 'user_' + Date.now();
     }
-    
+
+    const basePassword = solicitud.password || Math.random().toString(36).slice(-8);
+    const hashedPassword = await bcrypt.hash(basePassword, 10);
+
     const userData = {
-      username: username,
+      username,
       nombre: solicitud.nombre,
       email: solicitud.email,
       telefono: solicitud.telefono,
+      password: hashedPassword,
       rol: solicitud.tipo === 'client' ? 'cliente' : 'empleado',
-      activo: 1
+      activo: 1,
+      fecha_registro: new Date()
     };
-    
+
     if (solicitud.tipo === 'client') {
-      if (solicitud.password) {
-        userData.password = solicitud.password;
-      } else {
-        const tempPassword = Math.random().toString(36).slice(-8);
-        userData.password = tempPassword;
-      }
-      
       const clienteData = {
         empresa: solicitud.empresa,
         rfc: solicitud.rfc,
         sede_id: solicitud.sede_id
       };
-      
+
       await User.create(userData, clienteData);
-    } else {
-      const tempPassword = Math.random().toString(36).slice(-8);
-      userData.password = tempPassword;
-      
-      await User.create(userData);
-      
+
+      // Enviar correo al cliente
       await emailService.sendEmail({
         to: solicitud.email,
         subject: 'Acceso aprobado - HEZA',
@@ -103,10 +98,41 @@ export const aprobarSolicitud = async (req, res) => {
             </div>
             <h2 style="color: #263D4F; text-align: center;">Acceso Aprobado</h2>
             <p>Hola ${solicitud.nombre},</p>
-            <p>Tu solicitud de acceso a la plataforma HEZA ha sido aprobada. Puedes acceder con las siguientes credenciales:</p>
+            <p>Tu solicitud ha sido aprobada. Estas son tus credenciales de acceso:</p>
             <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
               <p><strong>Email:</strong> ${solicitud.email}</p>
-              <p><strong>Contraseña temporal:</strong> ${tempPassword}</p>
+              <p><strong>Contraseña temporal:</strong> ${basePassword}</p>
+            </div>
+            <p>Te recomendamos cambiar tu contraseña después del primer inicio de sesión.</p>
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/clientes/acceso" style="background-color: #B49C73; color: #263D4F; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Iniciar Sesión</a>
+            </div>
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; text-align: center; color: #666; font-size: 12px;">
+              <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
+              <p>&copy; ${new Date().getFullYear()} HEZA Consultoría. Todos los derechos reservados.</p>
+            </div>
+          </div>
+        `
+      });
+
+    } else {
+      await User.create(userData);
+
+      // Enviar correo al empleado
+      await emailService.sendEmail({
+        to: solicitud.email,
+        subject: 'Acceso aprobado - HEZA',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 5px;">
+            <div style="text-align: center; margin-bottom: 20px;">
+              <h2 style="color: #263D4F;">HEZA Consultoría</h2>
+            </div>
+            <h2 style="color: #263D4F; text-align: center;">Acceso Aprobado</h2>
+            <p>Hola ${solicitud.nombre},</p>
+            <p>Tu solicitud ha sido aprobada. Estas son tus credenciales de acceso:</p>
+            <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+              <p><strong>Email:</strong> ${solicitud.email}</p>
+              <p><strong>Contraseña temporal:</strong> ${basePassword}</p>
             </div>
             <p>Te recomendamos cambiar tu contraseña después del primer inicio de sesión.</p>
             <div style="text-align: center; margin: 30px 0;">
@@ -120,7 +146,7 @@ export const aprobarSolicitud = async (req, res) => {
         `
       });
     }
-    
+
     await connection.commit();
     res.json({ success: true, message: 'Solicitud aprobada correctamente' });
   } catch (error) {
@@ -131,6 +157,7 @@ export const aprobarSolicitud = async (req, res) => {
     connection.release();
   }
 };
+
 
 export const rechazarSolicitud = async (req, res) => {
   const { id } = req.params;

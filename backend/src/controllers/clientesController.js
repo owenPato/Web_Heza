@@ -3,6 +3,7 @@ import { validationResult } from 'express-validator';
 import pool from '../config/db.js';
 import User from '../models/User.js';
 
+
 const registrarCliente = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -15,7 +16,7 @@ const registrarCliente = async (req, res) => {
     if (!nombre) {
       return res.status(400).json({ error: 'El nombre es obligatorio' });
     }
-    
+
     const rfcRegex = /^[A-Z&Ñ]{3,4}\d{6}[A-V1-9][A-Z1-9][0-9A]$/;
     if (!rfcRegex.test(rfc.toUpperCase())) {
       return res.status(400).json({ error: 'Formato de RFC inválido' });
@@ -41,10 +42,13 @@ const registrarCliente = async (req, res) => {
         return res.status(400).json({ error: 'El RFC ya está registrado' });
       }
 
+      // ✅ Cifrar la contraseña antes de guardar
+      const hashedPassword = await bcrypt.hash(password, 10);
+
       const userData = {
         nombre,
         email,
-        password,
+        password: hashedPassword, // aquí ya va cifrada
         telefono,
         rol: 'cliente',
         activo: 1,
@@ -56,9 +60,9 @@ const registrarCliente = async (req, res) => {
         empresa,
         rfc
       };
-
+      console.log('Hashed password:', userData.password);
       await User.create(userData, clienteData);
-      
+
       res.status(201).json({ mensaje: 'Cliente registrado exitosamente' });
     } finally {
       connection.release();
@@ -68,6 +72,7 @@ const registrarCliente = async (req, res) => {
     res.status(500).json({ error: 'Error en el servidor' });
   }
 };
+
 
 
 const obtenerClientes = async (req, res) => {
