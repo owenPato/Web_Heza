@@ -3,11 +3,6 @@ import bcrypt from 'bcrypt';
 
 class User {
   static async create(userData, clienteData = null) {
-    const bcrypt = require('bcrypt');
-    if (userData.password) {
-      const salt = await bcrypt.genSalt(10);
-      userData.password = await bcrypt.hash(userData.password, salt);
-    }
     const connection = await pool.getConnection();
     try {
       if (userData.email) {
