@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 import authRoutes from './authRoutes.js';
+import { aprobarSolicitud } from '../controllers/solicitudAccesoController.js';
 import solicitudAccesoRoutes from './solicitudAccesoRoutes.js';
 import * as authController from '../controllers/authController.js';
 import * as clientController from '../controllers/clientController.js';
@@ -11,7 +12,8 @@ import * as documentController from '../controllers/documentController.js';
 import * as eventController from '../controllers/eventController.js';
 import * as apiController from '../controllers/apiController.js';
 import * as dashboardController from '../controllers/dashboardController.js';
-import { verifyToken, isAdmin, isClient, isAdminOrClient } from '../middleware/auth.js';
+import { verifyToken, verifyAdmin, isAdmin, isClient, isAdminOrClient } from '../middleware/auth.js';
+
 
 const router = express.Router();
 
@@ -45,6 +47,7 @@ router.post('/auth/change-password', verifyToken, authController.changePassword)
 
 // Rutas de administrador para solicitudes de acceso
 router.use('/admin', solicitudAccesoRoutes);
+router.post('/solicitudes-acceso/:id/aprobar', verifyToken, verifyAdmin, aprobarSolicitud);
 
 router.get('/clients', verifyToken, isAdmin, clientController.getAllClients);
 router.get('/clients/:id', verifyToken, isAdminOrClient, clientController.getClientById);

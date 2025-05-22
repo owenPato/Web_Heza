@@ -11,7 +11,8 @@ import {
   requestClientAccess,
   requestUserAccess
 } from '../controllers/authController.js';
-import { verifyToken } from '../middleware/auth.js'; 
+import { verifyToken } from '../middleware/auth.js';
+
 
 const router = express.Router();
 

@@ -1,22 +1,18 @@
+import ModalFormularioCliente from './ModalFormularioCliente';
 import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Link, useNavigate, useOutletContext } from 'react-router-dom';
 import axios from 'axios';
 import Loading from '../../components/Loading/Loading.jsx';
 import { AdminClientes, DetailItem } from '../../components/PanelAdmin/AdminPanelLayout.jsx';
-import {
-  BarChart,
-  Users,
-  UserPlus,
-  Clock,
-  ArrowRight
-} from 'react-feather';
+import { BarChart, Users, UserPlus, Clock, ArrowRight } from 'react-feather';
 
 const Dashboard = ({ isAdmin = false }) => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
   const outletContext = useOutletContext();
-  const {setRefreshing } = outletContext || {};
+  const { setRefreshing } = outletContext || {};
+
+  const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalDocuments: 0,
     activeServices: 0,
@@ -28,6 +24,60 @@ const Dashboard = ({ isAdmin = false }) => {
   });
   const [recentClients, setRecentClients] = useState([]);
   const [pendingRequests, setPendingRequests] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+
+  const handleApproveClick = (request) => {
+  setSelectedRequest({
+    solicitud_id: request.id,
+    empresa: request.empresa || '',
+    rfc: request.rfc || '',
+    direccion: '',
+    ciudad: '',
+    estado: '',
+    codigo_postal: '',
+    giro: '',
+    numero_empleados: '',
+    ventas_anuales: ''
+  });
+  setShowModal(true);
+};
+
+  const handleModalSubmit = async (formData) => {
+  try {
+    const token = localStorage.getItem('adminToken');
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+    // Guardar datos del cliente
+    await axios.post('/api/clientes/empresa', formData);
+
+    // Cambiar estado de la solicitud a aprobada
+    await axios.post(`/api/admin/solicitudes-acceso/${formData.solicitud_id}/aprobar`);
+
+    
+
+    setShowModal(false);
+    setSelectedRequest(null);
+
+    // Recargar dashboard
+    loadAdminDashboardData();
+  } catch (error) {
+    console.error('Error al guardar cliente y aprobar solicitud:', error);
+  }
+};
+
+  const handleRejectRequest = async (requestId) => {
+    if (!setRefreshing) return;
+    try {
+      setRefreshing(true);
+      await axios.post(`/api/admin/solicitudes-acceso/${requestId}/rechazar`);
+      loadAdminDashboardData();
+    } catch (error) {
+      console.error('Error al rechazar solicitud:', error);
+    } finally {
+      if (setRefreshing) setRefreshing(false);
+    }
+  };
 
   const loadAdminDashboardData = useCallback(async () => {
     if (!isAdmin || !setRefreshing) return;
@@ -40,22 +90,17 @@ const Dashboard = ({ isAdmin = false }) => {
         return;
       }
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
       const response = await axios.get(`/api/dashboard/stats?cacheBuster=${timestamp}`);
       if (response.data && response.data.stats) {
         setStats(prevStats => ({ ...prevStats, ...response.data.stats }));
         setRecentClients(response.data.recentClients || []);
       }
-
       const requestsResponse = await axios.get(`/api/dashboard/pending-requests?cacheBuster=${timestamp}`);
       if (requestsResponse.data && requestsResponse.data.pendingRequests) {
         setPendingRequests(requestsResponse.data.pendingRequests);
       }
     } catch (error) {
       console.error('Error al obtener datos del dashboard admin:', error);
-      setStats(prevStats => ({ ...prevStats, totalUsers: 0, activeClients: 0, pendingTasks: 0, pendingAccessRequests: 0 }));
-      setRecentClients([]);
-      setPendingRequests([]);
     } finally {
       if (setRefreshing) setRefreshing(false);
     }
@@ -70,35 +115,13 @@ const Dashboard = ({ isAdmin = false }) => {
         return;
       }
       axios.defaults.headers.common['Authorization'] = `Bearer ${clientToken}`;
-
-      try {
-        const response = await axios.get('/api/dashboard/client-stats');
-        if (response.data && response.data.stats) {
-          setStats({
-            totalDocuments: response.data.stats.totalDocuments || 0,
-            activeServices: response.data.stats.activeServices || 0,
-            upcomingEvents: response.data.stats.upcomingEvents || 0
-          });
-        }
-      } catch (statsError) {
-        console.error('Error al obtener estadísticas de cliente:', statsError);
+      const response = await axios.get('/api/dashboard/client-stats');
+      if (response.data && response.data.stats) {
         setStats({
-          totalDocuments: 0,
-          activeServices: 0,
-          upcomingEvents: 0
+          totalDocuments: response.data.stats.totalDocuments || 0,
+          activeServices: response.data.stats.activeServices || 0,
+          upcomingEvents: response.data.stats.upcomingEvents || 0
         });
-      }
-
-      try {
-        const userResponse = await axios.get('/api/auth/profile');
-        if (!userResponse.data || !userResponse.data.user) {
-          throw new Error('No user data found');
-        }
-      } catch (userError) {
-        console.error('Error al obtener perfil de cliente:', userError);
-        localStorage.removeItem('clientToken');
-        navigate('/login');
-        return;
       }
     } catch (error) {
       console.error('Error al cargar el dashboard del cliente:', error);
@@ -126,34 +149,6 @@ const Dashboard = ({ isAdmin = false }) => {
   const handleViewClient = (clientId) => {
     navigate(`/admin/clientes/${clientId}`);
   };
-
-  const handleApproveRequest = async (requestId) => {
-    if (!setRefreshing) return;
-    try {
-      setRefreshing(true);
-      await axios.post(`/api/admin/solicitudes-acceso/${requestId}/aprobar`);
-      loadAdminDashboardData();
-    } catch (error) {
-      console.error('Error al aprobar solicitud:', error);
-    } finally {
-      if (setRefreshing) setRefreshing(false);
-    }
-  };
-
-  const handleRejectRequest = async (requestId) => {
-    if (!setRefreshing) return;
-    try {
-      setRefreshing(true);
-      await axios.post(`/api/admin/solicitudes-acceso/${requestId}/rechazar`);
-      loadAdminDashboardData();
-    } catch (error) {
-      console.error('Error al rechazar solicitud:', error);
-    } finally {
-      if (setRefreshing) setRefreshing(false);
-    }
-  };
-
-  
   const renderAdminPanelContent = () => (
     <div className="container-fluid px-2 mb-5 mt-4 ">
       {/* Stat Cards */}
@@ -262,12 +257,11 @@ const Dashboard = ({ isAdmin = false }) => {
                       >
                         Rechazar
                       </button>
-                      <button 
-                        onClick={() => handleApproveRequest(request.id)} 
-                        className="btn btn-primary btn-sm px-3 py-2 rounded-3xl flex-shrink-0"
-                      >
-                        Aprobar
-                      </button>
+                      <button
+                          onClick={() => handleApproveClick(request)}
+                          className="btn btn-primary btn-sm px-3 py-2 rounded-3xl flex-shrink-0">
+                          Aprobar
+                  </button>
                     </div>
                   </div>
                 ))}
@@ -277,11 +271,13 @@ const Dashboard = ({ isAdmin = false }) => {
         </div>
       </div>
     </div>
-  );
-  
+  );  
 
   if (isAdmin) {
-    return renderAdminPanelContent();
+    return (<>
+{renderAdminPanelContent()}
+<ModalFormularioCliente show={showModal} onClose={() => setShowModal(false)} onSubmit={handleModalSubmit} initialData={selectedRequest} />
+</>);
   }
 
   if (!isAdmin) {
@@ -293,11 +289,10 @@ const Dashboard = ({ isAdmin = false }) => {
     );
   }
 
-  if (!outletContext) {
-    return <Loading fullScreen message="Cargando panel de administración..." />;
-  }
-
-  return renderAdminPanelContent();
+  return (<>
+{renderAdminPanelContent()}
+<ModalFormularioCliente show={showModal} onClose={() => setShowModal(false)} onSubmit={handleModalSubmit} initialData={selectedRequest} />
+</>);
 };
 
 Dashboard.propTypes = {

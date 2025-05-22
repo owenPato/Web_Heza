@@ -82,7 +82,7 @@ export const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Buscar el admin en la tabla users
+    // Buscar usuario admin
     const [rows] = await pool.query(
       "SELECT * FROM users WHERE email = ? AND rol = 'admin'",
       [email]
@@ -94,26 +94,23 @@ export const adminLogin = async (req, res) => {
 
     const admin = rows[0];
 
-    // Verificar si el admin está activo
     if (admin.activo !== 1) {
       return res.status(403).json({ message: "Cuenta desactivada. Contacta al administrador." });
     }
 
-    // Comparar contraseña correctamente
-    const passwordMatch = await bcrypt.compare(password, admin.password);
-
-    if (!passwordMatch) {
+    // 🔐 Validar contraseña de forma estándar
+    const isPasswordValid = await bcrypt.compare(password, admin.password);
+    if (!isPasswordValid) {
       return res.status(401).json({ message: "Contraseña incorrecta" });
     }
 
-    // Crear token JWT
     const token = jwt.sign(
       { id: admin.id, email: admin.email, rol: admin.rol },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 
-    // Actualizar última conexión
+    // Registrar última conexión
     await pool.query("UPDATE users SET ultima_conexion = NOW() WHERE id = ?", [admin.id]);
 
     res.json({
@@ -133,7 +130,6 @@ export const adminLogin = async (req, res) => {
     res.status(500).json({ error: "Error al iniciar sesión como administrador" });
   }
 };
-
 
 export const getProfile = async (req, res) => {
   try {

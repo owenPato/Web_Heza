@@ -12,6 +12,7 @@ import newsRoutes from './src/routes/newsRoutes.js';
 import eventRoutes from './src/routes/eventRoutes.js';
 
 
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -54,6 +55,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
   }
 }));
 
+
+app.use('/api', clientesRoutes);
 app.use('/api', apiRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/news', newsRoutes);

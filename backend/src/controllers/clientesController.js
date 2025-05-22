@@ -87,5 +87,55 @@ const obtenerClientes = async (req, res) => {
   }
 };
 
+const registrarDatosEmpresa = async (req, res) => {
+  const {
+    empresa,
+    rfc,
+    direccion,
+    ciudad,
+    estado,
+    codigo_postal,
+    giro,
+    numero_empleados,
+    ventas_anuales
+  } = req.body;
 
-export { registrarCliente, obtenerClientes };
+  try {
+    const connection = await pool.getConnection();
+
+    const [existeRFC] = await connection.query(
+      'SELECT id FROM clientes WHERE rfc = ?',
+      [rfc]
+    );
+
+    if (existeRFC.length > 0) {
+      return res.status(400).json({ error: 'El RFC ya está registrado' });
+    }
+
+    await connection.query(
+      `INSERT INTO clientes 
+      (empresa, rfc, direccion, ciudad, estado, codigo_postal, giro, numero_empleados, ventas_anuales)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        empresa,
+        rfc,
+        direccion,
+        ciudad,
+        estado,
+        codigo_postal,
+        giro,
+        numero_empleados,
+        ventas_anuales
+      ]
+    );
+
+    connection.release();
+
+    res.status(201).json({ message: 'Datos de empresa registrados correctamente' });
+  } catch (error) {
+    console.error('Error insertando empresa:', error);
+    res.status(500).json({ error: 'Error al insertar empresa' });
+  }
+};
+
+export { registrarCliente, obtenerClientes, registrarDatosEmpresa };
