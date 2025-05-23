@@ -44,6 +44,17 @@ CREATE TABLE sucursales (
   activo TINYINT(1) DEFAULT 1,
   fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+INSERT INTO sucursales (nombre, direccion, telefono, email)
+SELECT * FROM (SELECT 'Vallarta', 'Calle Río Paraná #222 Fraccionamiento Fluvial', '3222254236', 'vallarta@heza.com.mx') AS tmp
+WHERE NOT EXISTS (
+    SELECT 1 FROM sucursales WHERE nombre = 'Vallarta'
+) LIMIT 1;
+
+INSERT INTO sucursales (nombre, direccion, telefono, email)
+SELECT * FROM (SELECT 'Guadalajara', 'La noche #2586, Col. Jardines del Bosque', '3338121336', 'guadalajara@heza.com.mx') AS tmp
+WHERE NOT EXISTS (
+    SELECT 1 FROM sucursales WHERE nombre = 'Guadalajara'
+) LIMIT 1;
 
 -- Tabla de usuarios
 CREATE TABLE users (

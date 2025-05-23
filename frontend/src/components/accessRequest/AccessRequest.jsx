@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './AccessRequest.css';
@@ -7,6 +8,7 @@ import { useLocation } from 'react-router-dom';
 const AccessRequest = () => {
   const location = useLocation();
   const [requestType, setRequestType] = useState('');
+  const [sucursales, setSucursales] = useState([]);
   const [formData, setFormData] = useState({
     nombre: '',
     empresa: '',
@@ -15,7 +17,7 @@ const AccessRequest = () => {
     rfc: '',
     password: '',
     confirmPassword: '',
-    sucursal: ''
+    sede_id: ''
   });
   const [errors, setErrors] = useState({});
   const [success, setSuccess] = useState('');
@@ -26,6 +28,16 @@ const AccessRequest = () => {
       setRequestType(location.state.tipo);
     }
     document.title = 'HEZA - Solicitud de Acceso';
+
+    const obtenerSucursales = async () => {
+      try {
+        const { data } = await axios.get('/api/sucursales');
+        setSucursales(data);
+      } catch (error) {
+        console.error('Error al cargar sucursales:', error);
+      }
+    };
+    obtenerSucursales();
   }, [location.state]);
 
   const handleChange = (e) => {
@@ -81,6 +93,10 @@ const AccessRequest = () => {
       newErrors.telefono = 'El teléfono es obligatorio';
     }
 
+    if (!formData.sede_id) {
+      newErrors.sede_id = 'Debes seleccionar una sede';
+    }
+
     if (requestType === 'user') {
       if (!formData.nombre.trim()) {
         newErrors.nombre = 'El nombre es obligatorio';
@@ -122,12 +138,17 @@ const AccessRequest = () => {
         email: formData.email.trim(),
         telefono: formData.telefono.trim(),
         empresa: formData.empresa.trim(),
-        tipo: requestType
+        tipo: requestType,
+        sede_id: parseInt(formData.sede_id)
       };
 
       if (requestType === 'user') {
-        if (formData.nombre.trim()) dataToSend.nombre = formData.nombre.trim();
-        if (formData.password) dataToSend.password = formData.password;
+        dataToSend.nombre = formData.nombre.trim();
+        dataToSend.password = formData.password;
+      }
+
+      if (requestType === 'client') {
+        dataToSend.rfc = formData.rfc.trim();
       }
 
       const response = await axios.post(endpoint, dataToSend, {
@@ -143,7 +164,7 @@ const AccessRequest = () => {
         rfc: '',
         password: '',
         confirmPassword: '',
-        sucursal: ''
+        sede_id: ''
       });
 
       setTimeout(() => {
@@ -163,27 +184,19 @@ const AccessRequest = () => {
       setLoading(false);
     }
   };
- 
+
   return (
     <div className="access-request-container">
       <div className="access-request-form">
         <h2 className="text-center">Solicitar Acceso</h2>
-        
+
         {!requestType ? (
           <div className="access-type-selection">
             <p className="text-center mb-4">Selecciona el tipo de acceso que deseas solicitar:</p>
-            
-            <button 
-              className="btn btn-primary w-100 mb-3"
-              onClick={() => setRequestType('client')}
-            >
+            <button className="btn btn-primary w-100 mb-3" onClick={() => setRequestType('client')}>
               Acceso como Cliente
             </button>
-            
-            <button 
-              className="btn btn-secondary w-100"
-              onClick={() => setRequestType('user')}
-            >
+            <button className="btn btn-secondary w-100" onClick={() => setRequestType('user')}>
               Acceso como Usuario
             </button>
           </div>
@@ -191,21 +204,23 @@ const AccessRequest = () => {
           <>
             {errors.general && <div className="alert alert-danger">{errors.general}</div>}
             {success && <div className="alert alert-success">{success}</div>}
-            
+
             <form onSubmit={handleSubmit}>
-              <div className="form-group mb-3">
-                <label htmlFor="nombre">Nombre Completo</label>
-                <input
-                  type="text"
-                  id="nombre"
-                  name="nombre"
-                  className={`form-control ${errors.nombre ? 'is-invalid' : ''}`}
-                  value={formData.nombre}
-                  onChange={handleChange}
-                />
-                {errors.nombre && <div className="invalid-feedback">{errors.nombre}</div>}
-              </div>
-              
+              {requestType === 'user' && (
+                <div className="form-group mb-3">
+                  <label htmlFor="nombre">Nombre Completo</label>
+                  <input
+                    type="text"
+                    id="nombre"
+                    name="nombre"
+                    className={`form-control ${errors.nombre ? 'is-invalid' : ''}`}
+                    value={formData.nombre}
+                    onChange={handleChange}
+                  />
+                  {errors.nombre && <div className="invalid-feedback">{errors.nombre}</div>}
+                </div>
+              )}
+
               <div className="form-group mb-3">
                 <label htmlFor="empresa">Nombre de la Empresa</label>
                 <input
@@ -218,39 +233,41 @@ const AccessRequest = () => {
                 />
                 {errors.empresa && <div className="invalid-feedback">{errors.empresa}</div>}
               </div>
-              
+
+              <div className="form-group mb-3">
+                <label htmlFor="sede_id">Sede</label>
+                <select
+                  id="sede_id"
+                  name="sede_id"
+                  className={`form-control ${errors.sede_id ? 'is-invalid' : ''}`}
+                  value={formData.sede_id}
+                  onChange={handleChange}
+                >
+                  <option value="">Seleccione una sede</option>
+                  {sucursales.map((s) => (
+                    <option key={s.id} value={s.id}>{s.nombre}</option>
+                  ))}
+                </select>
+                {errors.sede_id && <div className="invalid-feedback">{errors.sede_id}</div>}
+              </div>
+
               {requestType === 'client' && (
+                <div className="form-group mb-3">
+                  <label htmlFor="rfc">RFC</label>
+                  <input
+                    type="text"
+                    id="rfc"
+                    name="rfc"
+                    className={`form-control ${errors.rfc ? 'is-invalid' : ''}`}
+                    value={formData.rfc}
+                    onChange={handleChange}
+                  />
+                  {errors.rfc && <div className="invalid-feedback">{errors.rfc}</div>}
+                </div>
+              )}
+
+              {requestType === 'user' && (
                 <>
-                  <div className="form-group mb-3">
-                    <label htmlFor="rfc">RFC</label>
-                    <input
-                      type="text"
-                      id="rfc"
-                      name="rfc"
-                      className={`form-control ${errors.rfc ? 'is-invalid' : ''}`}
-                      value={formData.rfc}
-                      onChange={handleChange}
-                      placeholder="Ej. XAXX010101000"
-                    />
-                    {errors.rfc && <div className="invalid-feedback">{errors.rfc}</div>}
-                  </div>
-                  
-                  <div className="form-group mb-3">
-                    <label htmlFor="sucursal">Sucursal</label>
-                    <select
-                      id="sucursal"
-                      name="sucursal"
-                      className={`form-control ${errors.sucursal ? 'is-invalid' : ''}`}
-                      value={formData.sucursal}
-                      onChange={handleChange}
-                    >
-                      <option value="">Seleccione una sucursal</option>
-                      <option value="vallarta">HEZA Vallarta</option>
-                      <option value="guadalajara">HEZA Guadalajara</option>
-                    </select>
-                    {errors.sucursal && <div className="invalid-feedback">{errors.sucursal}</div>}
-                  </div>
-                  
                   <div className="form-group mb-3">
                     <label htmlFor="password">Contraseña</label>
                     <input
@@ -260,11 +277,9 @@ const AccessRequest = () => {
                       className={`form-control ${errors.password ? 'is-invalid' : ''}`}
                       value={formData.password}
                       onChange={handleChange}
-                      placeholder="Mínimo 8 caracteres"
                     />
                     {errors.password && <div className="invalid-feedback">{errors.password}</div>}
                   </div>
-                  
                   <div className="form-group mb-3">
                     <label htmlFor="confirmPassword">Confirmar Contraseña</label>
                     <input
@@ -275,11 +290,13 @@ const AccessRequest = () => {
                       value={formData.confirmPassword}
                       onChange={handleChange}
                     />
-                    {errors.confirmPassword && <div className="invalid-feedback">{errors.confirmPassword}</div>}
+                    {errors.confirmPassword && (
+                      <div className="invalid-feedback">{errors.confirmPassword}</div>
+                    )}
                   </div>
                 </>
               )}
-              
+
               <div className="form-group mb-3">
                 <label htmlFor="telefono">Teléfono</label>
                 <input
@@ -289,11 +306,10 @@ const AccessRequest = () => {
                   className={`form-control ${errors.telefono ? 'is-invalid' : ''}`}
                   value={formData.telefono}
                   onChange={handleChange}
-                  placeholder="Ej. 3331234567"
                 />
                 {errors.telefono && <div className="invalid-feedback">{errors.telefono}</div>}
               </div>
-              
+
               <div className="form-group mb-3">
                 <label htmlFor="email">Correo Electrónico</label>
                 <input
@@ -303,19 +319,14 @@ const AccessRequest = () => {
                   className={`form-control ${errors.email ? 'is-invalid' : ''}`}
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="ejemplo@correo.com"
                 />
                 {errors.email && <div className="invalid-feedback">{errors.email}</div>}
               </div>
-              
-              <button 
-                type="submit" 
-                className="btn btn-primary w-100 mb-3"
-                disabled={loading}
-              >
+
+              <button type="submit" className="btn btn-primary w-100 mb-3" disabled={loading}>
                 {loading ? 'Enviando...' : 'Enviar Solicitud'}
               </button>
-              
+
               <div className="text-center">
                 <button
                   type="button"
@@ -326,7 +337,7 @@ const AccessRequest = () => {
                     setSuccess('');
                   }}
                 >
-                  Volver a selección de tipo de acceso
+                  Volver
                 </button>
               </div>
             </form>

@@ -1,8 +1,10 @@
 import express from 'express';
-import { enviarDiagnostico } from '../controllers/apiController.js';
+import { enviarDiagnostico, getSucursalesActivas } from '../controllers/apiController.js';
+
+
 
 const router = express.Router();
-
+router.get('/sucursales', getSucursalesActivas);
 router.post(
   '/enviar-diagnostico',
   (req, res, next) => {

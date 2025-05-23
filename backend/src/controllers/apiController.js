@@ -1,4 +1,5 @@
 import emailService from '../utils/emailService.js';
+import pool from '../config/db.js';
 
 export const enviarDiagnostico = async (req, res) => {
   try {
@@ -36,5 +37,18 @@ export const enviarDiagnostico = async (req, res) => {
   } catch (error) {
     console.error('Error al enviar diagnóstico:', error);
     res.status(500).json({ error: 'Error al enviar el diagnóstico' });
+  }
+};
+
+export const getSucursalesActivas = async (req, res) => {
+  const connection = await pool.getConnection();
+  try {
+    const [rows] = await connection.query('SELECT id, nombre FROM sucursales WHERE activo = 1');
+    res.json(rows);
+  } catch (error) {
+    console.error('Error al obtener sucursales:', error);
+    res.status(500).json({ error: 'Error al obtener sucursales' });
+  } finally {
+    connection.release();
   }
 };
