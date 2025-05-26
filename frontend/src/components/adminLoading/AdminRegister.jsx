@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './AdminLoading.css';
@@ -11,14 +11,29 @@ const AdminRegister = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [telefono, setTelefono] = useState('');
   const [rol] = useState('admin');
-  const [sucursal, setSucursal] = useState('gdl');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  const [sucursales, setSucursales] = useState([]);
+  const [sede_id, setSedeId] = useState('');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchSucursales = async () => {
+      try {
+        const res = await axios.get('/api/sucursales');
+        setSucursales(res.data);
+        setSedeId(res.data[0]?.id); // establecer la primera por defecto
+      } catch (err) {
+        console.error('Error al cargar sucursales', err);
+      }
+    };
+
+    fetchSucursales();
+  }, []);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,7 +69,7 @@ const AdminRegister = () => {
         password,
         telefono,
         rol,
-        sucursal, // ← campo correcto
+        sede_id, // ✅ agregado aquí
       });
 
       setSuccess(true);
@@ -187,14 +202,20 @@ const AdminRegister = () => {
           <div className="admin-form-group">
             <label>Sucursal</label>
             <select
-              className="form-control"
-              value={sucursal}
-              onChange={(e) => setSucursal(e.target.value)} // ← corregido aquí
-              required
-            >
-              <option value="gdl">Guadalajara</option>
-              <option value="vallarta">Vallarta</option>
-            </select>
+                className="form-control"
+                value={sede_id}
+                onChange={(e) => setSedeId(e.target.value)}
+                required
+              >
+                <option value="" disabled>
+                  Selecciona una sucursal
+                </option>
+                {sucursales.map((sucursal) => (
+                  <option key={sucursal.id} value={sucursal.id}>
+                    {sucursal.nombre}
+                  </option>
+                ))}
+             </select>
           </div>
 
           <button

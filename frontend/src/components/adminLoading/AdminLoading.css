@@ -424,3 +424,39 @@
   border-color: #B49C73;
   box-shadow: 0 0 0 3px rgba(180, 156, 115, 0.2);
 }
+.admin-form-group select {
+  width: 100%;
+  padding: 7px 13px;
+  border: 2px solid rgba(180, 156, 115, 0.3);
+  border-radius: 10px;
+  color:  #B49C73;
+;/*más claro y visible */
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  background-color: rgba(255, 255, 255, 0.07); /* oscuro translúcido */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M6 8L0 0h12L6 8z' fill='%23B49C73'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 12px 8px;
+  flex:1;
+  overflow: hidden;
+}
+
+.admin-form-group select:focus {
+  outline: none;
+  border-color: #B49C73;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 0 3px rgba(180, 156, 115, 0.2);
+  color: #B49C73;
+}
+
+.admin-form-group select option {
+  background-color: #263D4F;
+  color: #B49C73; /* asegura que las opciones desplegadas sean blancas */
+  font-size: 1rem;
+  white-space: normal;
+}
