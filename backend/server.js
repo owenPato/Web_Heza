@@ -10,6 +10,7 @@ import clientesRoutes from './src/routes/clientesRoutes.js';
 import fs from 'fs';
 import newsRoutes from './src/routes/newsRoutes.js';
 import eventRoutes from './src/routes/eventRoutes.js';
+import sucursalesRoutes from './src/routes/sucursalesRoutes.js';
 
 
 
@@ -62,6 +63,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/news', newsRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/clientes', clientesRoutes);
+app.use('/api/sucursales', sucursalesRoutes);
+
+
 
 app.get('/api/debug', (req, res) => {
   res.json({ message: 'API is working correctly' });

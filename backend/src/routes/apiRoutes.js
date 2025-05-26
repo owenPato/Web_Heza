@@ -1,10 +1,12 @@
 import express from 'express';
-import { enviarDiagnostico, getSucursalesActivas } from '../controllers/apiController.js';
+import { enviarDiagnostico } from '../controllers/apiController.js';
+import { obtenerSucursalesActivas } from '../controllers/sucursalController.js';
+
 
 
 
 const router = express.Router();
-router.get('/sucursales', getSucursalesActivas);
+router.get('/sucursales', obtenerSucursalesActivas);
 router.post(
   '/enviar-diagnostico',
   (req, res, next) => {
