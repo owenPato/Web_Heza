@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Loading.css';
+import SucursalModal from '../Loading/sucursalModal';
+
 
 const Loading = ({ fullScreen = false, message = 'Cargando...', showLogin = false }) => {
+  const [showSucursalModal, setShowSucursalModal] = useState(false);
+  const [sedeId, setSedeId] = useState('');
   const [loginType, setLoginType] = useState('');
   const [showAccessRequest, setShowAccessRequest] = useState(false);
   const [formData, setFormData] = useState({
@@ -19,13 +23,20 @@ const Loading = ({ fullScreen = false, message = 'Cargando...', showLogin = fals
   
   const navigate = useNavigate();
   
+  
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
   };
-  
+
+  const handleSucursalSelect = (selectedId) => {
+    setSedeId(selectedId);
+    console.log('✅ Sucursal seleccionada:', selectedId);
+    // Aquí puedes redirigir o mostrar el siguiente paso (cliente/usuario)
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
@@ -49,31 +60,61 @@ const Loading = ({ fullScreen = false, message = 'Cargando...', showLogin = fals
   };
   
   const handleAccessRequest = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-    setLoading(true);
-    
-    try {
-      const endpoint = loginType === 'client' 
-        ? '/api/auth/request-client-access' 
-        : '/api/auth/request-user-access';
-      
-      const response = await axios.post(endpoint, formData);
-      setSuccess(response.data.message);
-      setFormData({
-        nombre: '',
-        empresa: '',
-        telefono: '',
-        email: '',
-        password: '',
-      });
-    } catch (err) {
-      setError(err.response?.data?.error || 'Error al enviar la solicitud');
-    } finally {
-      setLoading(false);
+  e.preventDefault();
+  setError('');
+  setSuccess('');
+  setLoading(true);
+
+  try {
+    const endpoint = loginType === 'client'
+      ? '/api/auth/request-client-access'
+      : '/api/auth/request-user-access';
+
+    let dataToSend;
+
+    if (loginType === 'user') {
+      // Validar email corporativo antes de enviar
+      if (!formData.email.trim().endsWith('@heza.com.mx')) {
+        setError('El correo debe ser corporativo (@heza.com.mx)');
+        setLoading(false);
+        return;
+      }
+
+      dataToSend = {
+        nombre: formData.nombre.trim(),
+        telefono: formData.telefono.trim(),
+        empresa: 'Heza',
+        email: formData.email.trim(),
+        sede_id: parseInt(sedeId),
+      };
+    } else {
+      // Cliente normal
+      dataToSend = {
+        ...formData,
+        tipo: loginType,
+        sede_id: parseInt(sedeId),
+      };
     }
-  };
+
+    console.log('✅ Payload enviado al backend:', dataToSend);
+
+    const response = await axios.post(endpoint, dataToSend);
+
+    setSuccess(response.data.message);
+    setFormData({
+      nombre: '',
+      empresa: '',
+      telefono: '',
+      email: '',
+      password: '',
+    });
+  } catch (err) {
+    setError(err.response?.data?.error || 'Error al enviar la solicitud');
+  } finally {
+    setLoading(false);
+  }
+};
+
   
   if (!showLogin) {
     return (
@@ -88,6 +129,16 @@ const Loading = ({ fullScreen = false, message = 'Cargando...', showLogin = fals
   
   return (
     <div className="loading-component">
+      <SucursalModal
+        show={showSucursalModal}   // ← ¡esto es lo que faltaba!
+        onClose={() => setShowSucursalModal(false)}
+        onSelect={(selectedId) => {
+          setSedeId(selectedId);
+          localStorage.setItem('sede_id', selectedId);
+          console.log('Sucursal guardada:', selectedId);
+        }}
+      />
+
       <div className={`loading-container ${fullScreen ? 'full-screen' : ''}`}>
         <div className="login-options-container">
           {!loginType && !showAccessRequest && (
@@ -140,7 +191,7 @@ const Loading = ({ fullScreen = false, message = 'Cargando...', showLogin = fals
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    placeholder="ejemplo@correo.com"
+                    placeholder= {loginType === 'user' ? 'nombre@heza.com.mx' : 'ejemplo@correo.com'}
                   />
                 </div>
                 
@@ -185,18 +236,23 @@ const Loading = ({ fullScreen = false, message = 'Cargando...', showLogin = fals
               
               {!loginType ? (
                 <>
-                  <p className="text-center mb-4">Selecciona el tipo de acceso que deseas solicitar:</p>
-                  
-                  <button 
+                  <button
                     className="btn btn-primary w-100 mb-3"
-                    onClick={() => setLoginType('client')}
+                    onClick={() => {
+                      setShowSucursalModal(true); // primero abre el modal
+                      setLoginType('client');     // opcional: solo activar después de seleccionar
+                    }}
                   >
                     Acceso como Cliente
-                  </button>
+                </button>
+
                   
                   <button 
                     className="btn btn-secondary w-100 mb-3"
-                    onClick={() => setLoginType('user')}
+                    onClick={() => {
+                      setShowSucursalModal(true); // primero abre el modal
+                      setLoginType('user'); 
+                    }}
                   >
                     Acceso como Usuario
                   </button>
@@ -236,19 +292,21 @@ const Loading = ({ fullScreen = false, message = 'Cargando...', showLogin = fals
                       </div>
                     )}
                     
-                    <div className="form-group mb-3">
+                   <div className={`form-group mb-3 ${loginType === 'user' ? 'locked' : ''}`}>
                       <label htmlFor="empresa">Empresa</label>
                       <input
                         type="text"
                         id="empresa"
                         name="empresa"
                         className="form-control"
-                        value={formData.empresa}
+                        value={loginType === 'user' ? 'heza' : formData.empresa}
                         onChange={handleChange}
+                        disabled={loginType === 'user'}
                         required
                         placeholder="Nombre de tu empresa"
-                      />
+                     />
                     </div>
+
                     
                     <div className="form-group mb-3">
                       <label htmlFor="telefono">Teléfono</label>

@@ -5,6 +5,7 @@ import crypto from 'crypto';
 import emailService from '../utils/emailService.js';
 import pool from '../config/db.js';
 
+
 export const register = async (req, res) => {
   try {
     const userData = {
@@ -302,9 +303,11 @@ export const resetPassword = async (req, res) => {
 
 export const requestClientAccess = async (req, res) => {
   try {
-    const { telefono, empresa, email, tipo = 'client' } = req.body;
+    const { telefono, empresa, email, tipo = 'client',sede_id } = req.body;
+    console.log('✅ Sede recibida:', sede_id);
+    console.log('✅ req.body completo:', JSON.stringify(req.body, null, 2));
 
-    if (!telefono || !empresa || !email) {
+    if (!telefono || !empresa || !email|| !sede_id) {
       return res.status(400).json({ error: 'Empresa, teléfono y correo son obligatorios' });
     }
 
@@ -322,12 +325,13 @@ export const requestClientAccess = async (req, res) => {
       }
 
       // Guardar la solicitud
-      const nombreSeguro = req.body.nombre?.trim() || 'PENDIENTE';
+    
 
       await connection.query(
-        'INSERT INTO solicitudes_acceso (tipo, empresa, telefono, email, nombre) VALUES (?, ?, ?, ?, ?)',
-        [tipo, empresa, telefono, email, nombreSeguro]
+      'INSERT INTO solicitudes_acceso (tipo, empresa, telefono, email, nombre, sede_id) VALUES (?, ?, ?, ?, ?, ?)',
+      [tipo, empresa, telefono, email, empresa, sede_id]
       );
+
 
       // Notificar por email (opcional)
       await emailService.sendEmail({
@@ -358,11 +362,15 @@ export const requestClientAccess = async (req, res) => {
 
 export const requestUserAccess = async (req, res) => {
   try {
-    const { nombre, telefono, empresa, email } = req.body;
+    const { nombre, telefono, empresa, email, sede_id } = req.body;
     
-    if (!nombre || !telefono || !empresa || !email) {
+    if (!nombre || !telefono || !empresa || !email || !sede_id) {
       return res.status(400).json({ error: 'Todos los campos son requeridos' });
     }
+    if (!email.endsWith('@heza.com.mx')) {
+      return res.status(400).json({ error: 'El correo debe ser corporativo (@heza.com.mx)' });
+    }
+
     
     const connection = await (await import('../config/db.js')).default.getConnection();
     
@@ -386,18 +394,20 @@ export const requestUserAccess = async (req, res) => {
       if (existingUsers.length > 0) {
         return res.status(400).json({ error: 'Este correo electrónico ya está registrado en el sistema' });
       }
-      
+      console.log('Datos a insertar:', { nombre, empresa, telefono, email, sede_id });
+
       // Guardar la solicitud en la base de datos
       await connection.query(
-        'INSERT INTO solicitudes_acceso (tipo, nombre, empresa, telefono, email) VALUES (?, ?, ?, ?, ?)',
-        ['user', nombre, empresa, telefono, email]
+        'INSERT INTO solicitudes_acceso (tipo, nombre, empresa, telefono, email, sede_id ) VALUES (?, ?, ?, ?, ?, ?)',
+        ['user', nombre, empresa, telefono, email, sede_id]
       );
+
       
       // Enviar notificación por email al administrador
       const emailService = (await import('../utils/emailService.js')).default;
       
       await emailService.sendEmail({
-        to: 'gilberto_gonzalez@heza.com.mx',
+        to: 'owen_hurtado@heza.com.mx',
         subject: 'Nueva Solicitud de Acceso de Usuario',
         html: `
           <h1>Nueva Solicitud de Acceso de Usuario</h1>
