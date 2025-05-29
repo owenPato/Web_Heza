@@ -1,14 +1,75 @@
 .loading-component .loading-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
-  padding: 2rem;
+  width: 100%;
   min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 120px; /* espacio para header fijo */
+  padding-bottom: 60px; /* espacio para evitar cortes abajo */
   background: linear-gradient(135deg, #1a2a3a 0%, #263D4F 100%);
   color: white;
+  overflow-y: auto;
 }
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.loading-component .login-options-container {
+  width: 100%;
+  max-width: 450px;
+  padding: 2.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 0 auto;
+  position: relative;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.loading-component .login-options-container:hover {
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  transform: translateY(-5px);
+}
+
+.loading-component .login-options-container h2,
+.loading-component .login-options-container h3 {
+  color: #B49C73;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  padding-bottom: 15px;
+  text-align: center;
+}
+
+.loading-component .login-options-container h2:after,
+.loading-component .login-options-container h3:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #B49C73, #d0b78e);
+  border-radius: 3px;
+}
+
+
 
 .loading-component .full-screen {
   position: fixed;
