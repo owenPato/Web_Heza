@@ -342,25 +342,34 @@ export const requestClientAccess = async (req, res) => {
       } else {
           adminEmail = 'owen_hurtado@heza.com.mx';  // fallback por si no se reconoce
       }
-      await emailService.sendEmail({
-          to: adminEmail,
-          subject: 'Nueva Solicitud de Acceso de Usuario',
-          html: `
-            <h1>Nueva Solicitud de Acceso de Usuario</h1>
-            <p>Un usuario ha solicitado acceso a la plataforma:</p>
-            <ul>
-              <li><strong>Nombre:</strong> ${nombre}</li>
-              <li><strong>Teléfono:</strong> ${telefono}</li>
-              <li><strong>Empresa:</strong> ${empresa}</li>
-              <li><strong>Email:</strong> ${email}</li>
-            </ul>
-            <p>Por favor, revisa esta solicitud en el panel de administración.</p>
-          `
-      });
+
+      try {
+          await emailService.sendEmail({
+              to: adminEmail,
+              subject: 'Nueva Solicitud de Acceso de Usuario',
+              html: `
+                <h1>Nueva Solicitud de Acceso de Usuario</h1>
+                <p>Un usuario ha solicitado acceso a la plataforma:</p>
+                <ul>
+                  <li><strong>Nombre:</strong> ${nombre}</li>
+                  <li><strong>Teléfono:</strong> ${telefono}</li>
+                  <li><strong>Empresa:</strong> ${empresa}</li>
+                  <li><strong>Email:</strong> ${email}</li>
+                </ul>
+                <p>Por favor, revisa esta solicitud en el panel de administración.</p>
+              `
+          });
+          console.log('✅ Correo enviado correctamente a', adminEmail);
+      } catch (emailError) {
+          console.error('❗ Error enviando correo:', emailError.message);
+          // No lanzamos el error, solo lo registramos para evitar romper
+      }
+
       res.json({
         success: true,
         message: 'Solicitud enviada correctamente. Nos pondremos en contacto contigo pronto.'
       });
+
 
     } finally {
       connection.release();
