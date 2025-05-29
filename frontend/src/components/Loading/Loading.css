@@ -207,6 +207,18 @@
 .loading-component .form-control::placeholder {
   color: rgba(255, 255, 255, 0.4);
 }
+.loading-component .form-control[disabled] {
+  background: rgba(255, 255, 255, 0.07);  /* igual que los activos */
+  color: #e0e0e0;                        /* mismo texto claro */
+  opacity: 1;                            /* quita efecto grisáceo */
+  border: 2px solid rgba(180, 156, 115, 0.3);  /* mismo borde */
+  cursor: not-allowed;                   /* para indicar no editable */
+}
+
+.loading-component .form-control[disabled]::placeholder {
+  color: rgba(255, 255, 255, 0.4);        /* placeholder suave */
+}
+
 
 .loading-component .btn {
   padding: 14px 16px;
