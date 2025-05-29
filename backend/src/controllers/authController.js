@@ -334,17 +334,29 @@ export const requestClientAccess = async (req, res) => {
 
 
       // Notificar por email (opcional)
+      let adminEmail;
+      if (sede_id === 1) {
+          adminEmail = 'daniela_galindo@heza.com.mx';
+      } else if (sede_id === 2) {
+          adminEmail = 'gilberto_gonzalez@heza.com.mx';
+      } else {
+          adminEmail = 'owen_hurtado@heza.com.mx';  // fallback por si no se reconoce
+      }
       await emailService.sendEmail({
-        to: 'owen_hurtado@heza.com.mx',
-        subject: 'Nueva Solicitud de Cliente',
-        html: `
-          <h2>Solicitud de acceso de cliente</h2>
-          <p><strong>Empresa:</strong> ${empresa}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Teléfono:</strong> ${telefono}</p>
-        `
+          to: adminEmail,
+          subject: 'Nueva Solicitud de Acceso de Usuario',
+          html: `
+            <h1>Nueva Solicitud de Acceso de Usuario</h1>
+            <p>Un usuario ha solicitado acceso a la plataforma:</p>
+            <ul>
+              <li><strong>Nombre:</strong> ${nombre}</li>
+              <li><strong>Teléfono:</strong> ${telefono}</li>
+              <li><strong>Empresa:</strong> ${empresa}</li>
+              <li><strong>Email:</strong> ${email}</li>
+            </ul>
+            <p>Por favor, revisa esta solicitud en el panel de administración.</p>
+          `
       });
-
       res.json({
         success: true,
         message: 'Solicitud enviada correctamente. Nos pondremos en contacto contigo pronto.'
@@ -405,23 +417,29 @@ export const requestUserAccess = async (req, res) => {
       
       // Enviar notificación por email al administrador
       const emailService = (await import('../utils/emailService.js')).default;
-      
+      let adminEmail;
+      if (sede_id === 1) {
+          adminEmail = 'daniela_galindo@heza.com.mx';
+      } else if (sede_id === 2) {
+          adminEmail = 'gilberto_gonzalez@heza.com.mx';
+      } else {
+          adminEmail = 'owen_hurtado@heza.com.mx';  // fallback por si no se reconoce
+      }
       await emailService.sendEmail({
-        to: 'owen_hurtado@heza.com.mx',
-        subject: 'Nueva Solicitud de Acceso de Usuario',
-        html: `
-          <h1>Nueva Solicitud de Acceso de Usuario</h1>
-          <p>Un usuario ha solicitado acceso a la plataforma:</p>
-          <ul>
-            <li><strong>Nombre:</strong> ${nombre}</li>
-            <li><strong>Teléfono:</strong> ${telefono}</li>
-            <li><strong>Empresa:</strong> ${empresa}</li>
-            <li><strong>Email:</strong> ${email}</li>
-          </ul>
-          <p>Por favor, revisa esta solicitud en el panel de administración.</p>
-        `
-      });
-      
+          to: adminEmail,
+          subject: 'Nueva Solicitud de Acceso de Usuario',
+          html: `
+            <h1>Nueva Solicitud de Acceso de Usuario</h1>
+            <p>Un usuario ha solicitado acceso a la plataforma:</p>
+            <ul>
+              <li><strong>Nombre:</strong> ${nombre}</li>
+              <li><strong>Teléfono:</strong> ${telefono}</li>
+              <li><strong>Empresa:</strong> ${empresa}</li>
+              <li><strong>Email:</strong> ${email}</li>
+            </ul>
+            <p>Por favor, revisa esta solicitud en el panel de administración.</p>
+          `
+      });      
       res.json({ 
         success: true, 
         message: 'Solicitud enviada correctamente. Nos pondremos en contacto contigo pronto.' 
