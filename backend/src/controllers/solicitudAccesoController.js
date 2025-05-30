@@ -6,10 +6,13 @@ import bcrypt from 'bcrypt';
 export const getSolicitudes = async (req, res) => {
   const connection = await pool.getConnection();
   try {
+    const sedeId = req.user.sede_id;  // ← toma del token
+
     const [rows] = await connection.query(
-      'SELECT * FROM solicitudes_acceso ORDER BY fecha_solicitud DESC'
+      'SELECT * FROM solicitudes_acceso WHERE sede_id = ? ORDER BY fecha_solicitud DESC',
+      [sedeId]
     );
-    
+
     res.json(rows);
   } catch (error) {
     console.error('Error al obtener solicitudes de acceso:', error);
@@ -19,13 +22,17 @@ export const getSolicitudes = async (req, res) => {
   }
 };
 
+
 export const getSolicitudesPendientesCount = async (req, res) => {
   const connection = await pool.getConnection();
   try {
-    const [rows] = await connection.query(
-      'SELECT COUNT(*) as count FROM solicitudes_acceso WHERE estado = "pendiente"'
-    );
+    const sedeId = req.user.sede_id;  // ⬅ sacamos del token
     
+    const [rows] = await connection.query(
+      'SELECT COUNT(*) as count FROM solicitudes_acceso WHERE estado = "pendiente" AND sede_id = ?',
+      [sedeId]
+    );
+
     res.json({ count: rows[0].count });
   } catch (error) {
     console.error('Error al obtener conteo de solicitudes pendientes:', error);

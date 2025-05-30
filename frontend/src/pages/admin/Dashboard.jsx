@@ -6,6 +6,7 @@ import axios from 'axios';
 import Loading from '../../components/Loading/Loading.jsx';
 import { AdminClientes, DetailItem } from '../../components/PanelAdmin/AdminPanelLayout.jsx';
 import { BarChart, Users, UserPlus, Clock, ArrowRight } from 'react-feather';
+import './admin.css';
 
 const Dashboard = ({ isAdmin = false }) => {
   const navigate = useNavigate();
@@ -177,7 +178,7 @@ const Dashboard = ({ isAdmin = false }) => {
       {/* Main Content */}
       <div className="row g-4">
         {/* Actividad Reciente */}
-        <div className="col-lg-8">
+        <div className="col-lg-6">
           <section className="bg-white rounded-4 p-5 shadow-sm h-100 d-flex flex-column transition-all hover-shadow-lg">
             <div className="d-flex justify-content-between align-items-center mb-5">
               <div className="d-flex align-items-center">
@@ -203,7 +204,7 @@ const Dashboard = ({ isAdmin = false }) => {
         </div>
   
         {/* Solicitudes Pendientes */}
-        <div className="col-lg-4">
+        <div className=" col-lg-6 ">
           {pendingRequests.length > 0 && (
             <section className="bg-white rounded-4 p-5 shadow-lg h-100 d-flex flex-column transition-all hover-shadow-lg">
               <div className="d-flex justify-content-between align-items-center mb-5">
@@ -226,7 +227,7 @@ const Dashboard = ({ isAdmin = false }) => {
 
               <div className="vstack gap-4">
                 {pendingRequests.map((request) => (
-                  <div key={request.id} className="bg-light p-4 rounded-3xl border border-light shadow-sm hover-shadow-md transition-all">
+                  <div key={request.id} className="card-solicitud bg-light p-4 rounded-3xl border border-light shadow-sm hover-shadow-md transition-all">
                     <div className="d-flex justify-content-between align-items-center mb-3">
                       <div>
                         <h5 className="mb-1 text-dark">{request.nombre}</h5>

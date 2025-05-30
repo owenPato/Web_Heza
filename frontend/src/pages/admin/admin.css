@@ -103,3 +103,58 @@ select.form-control.text-dark {
 .modal-actions button[type="button"]:hover {
   background-color: #8e8e8e;
 }
+/* Contenedor general de las tarjetas */
+.vstack {
+  align-items: center;
+  width: 100%;
+}
+
+/* Tarjeta individual */
+.card-solicitud {
+  max-width: 380px;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 auto;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-solicitud:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Texto ajustado que no rompe */
+.card-solicitud small,
+.card-solicitud h5 {
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Botones alineados */
+.card-solicitud .btn {
+  min-width: 90px;
+  font-size: 0.85rem;
+}
+
+.card-solicitud .btn + .btn {
+  margin-left: 0.5rem;
+}
+
+.fixed-pendientes {
+  position: fixed;
+  top: 100px; /* debajo del header */
+  right: 20px;
+  width: 350px;
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+  z-index: 50;
+}
+
+@media (max-width: 992px) {
+  .fixed-pendientes {
+    position: static;
+    width: 100%;
+    max-height: none;
+    overflow: visible;
+  }
+}
