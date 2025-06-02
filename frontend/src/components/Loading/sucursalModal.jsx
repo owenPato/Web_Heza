@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Modal, Button, Form } from 'react-bootstrap';
+import './Loading.css';
 
 const SucursalModal = ({ show, onClose, onSelect }) => {
   const [sucursales, setSucursales] = useState([]);
@@ -28,7 +29,7 @@ const SucursalModal = ({ show, onClose, onSelect }) => {
   };
 
   return (
-    <Modal show={show} onHide={onClose} centered>
+    <Modal show={show} onHide={onClose} centered className='modal-sucursal'> 
       <Modal.Header closeButton>
         <Modal.Title>Selecciona tu sucursal</Modal.Title>
       </Modal.Header>
