@@ -100,41 +100,25 @@ export const getClientDashboardStats = async (req, res) => {
 };
 
 export const getPendingRequests = async (req, res) => {
+  const connection = await pool.getConnection();
   try {
-    if (req.user.rol !== 'admin') {
-      return res.status(403).json({ error: 'No autorizado para acceder a esta información' });
+    const { rol, sede_id } = req.user;
+
+    if (rol !== 'admin') {
+      return res.status(403).json({ error: 'Acceso denegado' });
     }
-    
-    const connection = await pool.getConnection();
-    try {
-      const [tableExists] = await connection.query(
-        "SELECT COUNT(*) as count FROM information_schema.tables WHERE table_schema = 'heza' AND table_name = 'solicitudes_acceso'"
-      );
-      
-      if (tableExists[0].count === 0) {
-        return res.json({ count: 0, pendingRequests: [] });
-      }
-      
-      const [countRows] = await connection.query(
-        'SELECT COUNT(*) as count FROM solicitudes_acceso WHERE estado = "pendiente"'
-      );
-      
-      const [pendingRequests] = await connection.query(
-        'SELECT * FROM solicitudes_acceso WHERE estado = "pendiente" ORDER BY fecha_solicitud DESC'
-      );
-      
-      res.json({ 
-        count: countRows[0].count,
-        pendingRequests: pendingRequests 
-      });
-    } catch (error) {
-      console.error('Error al obtener solicitudes pendientes:', error);
-      res.json({ count: 0, pendingRequests: [] });
-    } finally {
-      connection.release();
-    }
+
+    // 🚀 Ajustamos el query para filtrar por sede_id
+    const [pendingRequests] = await connection.query(
+      'SELECT * FROM solicitudes_acceso WHERE estado = "pendiente" AND sede_id = ? ORDER BY fecha_solicitud DESC',
+      [sede_id]
+    );
+
+    res.json({ pendingRequests });
   } catch (error) {
     console.error('Error al obtener solicitudes pendientes:', error);
     res.status(500).json({ error: 'Error al obtener solicitudes pendientes' });
+  } finally {
+    connection.release();
   }
 };

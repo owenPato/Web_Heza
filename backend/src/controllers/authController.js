@@ -106,10 +106,11 @@ export const adminLogin = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: admin.id, email: admin.email, rol: admin.rol },
+      { id: admin.id, email: admin.email, rol: admin.rol, sede_id: admin.sede_id },  // ← agrega sede_id
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
+
 
     // Registrar última conexión
     await pool.query("UPDATE users SET ultima_conexion = NOW() WHERE id = ?", [admin.id]);
