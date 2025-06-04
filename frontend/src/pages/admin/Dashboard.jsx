@@ -7,6 +7,8 @@ import Loading from '../../components/Loading/Loading.jsx';
 import { AdminClientes, DetailItem } from '../../components/PanelAdmin/AdminPanelLayout.jsx';
 import { BarChart, Users, UserPlus, Clock, ArrowRight } from 'react-feather';
 import './admin.css';
+import ModalFormularioUsuario from './ModalFormularioUsuarios.jsx';
+
 
 const Dashboard = ({ isAdmin = false }) => {
   const navigate = useNavigate();
@@ -29,20 +31,31 @@ const Dashboard = ({ isAdmin = false }) => {
   const [selectedRequest, setSelectedRequest] = useState(null);
 
   const handleApproveClick = (request) => {
-  setSelectedRequest({
-    solicitud_id: request.id,
-    empresa: request.empresa || '',
-    rfc: request.rfc || '',
-    direccion: '',
-    ciudad: '',
-    estado: '',
-    codigo_postal: '',
-    giro: '',
-    numero_empleados: '',
-    ventas_anuales: ''
-  });
-  setShowModal(true);
+  if (request.tipo === 'client') {
+    setSelectedRequest({
+      solicitud_id: request.id,
+      empresa: request.empresa || '',
+      rfc: request.rfc || '',
+      direccion: '',
+      ciudad: '',
+      estado: '',
+      codigo_postal: '',
+      giro: '',
+      numero_empleados: '',
+      ventas_anuales: ''
+    });
+    setShowModal('client');
+  } else {
+    setSelectedRequest({
+      solicitud_id: request.id,
+      puesto: '',
+      departamento: '',
+      fecha_contratacion: ''
+    });
+    setShowModal('user');
+  }
 };
+
 
   const handleModalSubmit = async (formData) => {
   try {
@@ -55,8 +68,6 @@ const Dashboard = ({ isAdmin = false }) => {
     // Cambiar estado de la solicitud a aprobada
     await axios.post(`/api/admin/solicitudes-acceso/${formData.solicitud_id}/aprobar`);
 
-    
-
     setShowModal(false);
     setSelectedRequest(null);
 
@@ -64,6 +75,22 @@ const Dashboard = ({ isAdmin = false }) => {
     loadAdminDashboardData();
   } catch (error) {
     console.error('Error al guardar cliente y aprobar solicitud:', error);
+  }
+};
+
+const handleModalSubmitUsuario = async (formData) => {
+  try {
+    const token = localStorage.getItem('adminToken');
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+    // Enviar datos de puesto, depto, etc., junto con el id
+    await axios.post(`/api/solicitudes-acceso/${formData.solicitud_id}/aprobar`, formData);
+
+    setShowModal(false);
+    setSelectedRequest(null);
+    loadAdminDashboardData();
+  } catch (error) {
+    console.error('Error al guardar usuario y aprobar solicitud:', error);
   }
 };
 
@@ -276,11 +303,25 @@ const Dashboard = ({ isAdmin = false }) => {
 
   if (isAdmin) {
     return (<>
-{renderAdminPanelContent()}
-<ModalFormularioCliente show={showModal} onClose={() => setShowModal(false)} onSubmit={handleModalSubmit} initialData={selectedRequest} />
-</>);
+      {renderAdminPanelContent()}
+      {showModal === 'client' && (
+        <ModalFormularioCliente
+          show={true}
+          onClose={() => setShowModal(false)}
+          onSubmit={handleModalSubmit}
+          initialData={selectedRequest}
+        />
+      )}
+      {showModal === 'user' && (
+        <ModalFormularioUsuario
+          show={true}
+          onClose={() => setShowModal(false)}
+          onSubmit={handleModalSubmitUsuario}
+          initialData={selectedRequest}
+        />
+      )}
+    </>);
   }
-
   if (!isAdmin) {
     return (
       <div className="container-fluid">
@@ -289,13 +330,27 @@ const Dashboard = ({ isAdmin = false }) => {
       </div>
     );
   }
-
-  return (<>
-{renderAdminPanelContent()}
-<ModalFormularioCliente show={showModal} onClose={() => setShowModal(false)} onSubmit={handleModalSubmit} initialData={selectedRequest} />
-</>);
-};
-
+    return (<>
+    {renderAdminPanelContent()}
+    {showModal === 'client' && (
+      <ModalFormularioCliente
+        show={true}
+        onClose={() => setShowModal(false)}
+        onSubmit={handleModalSubmit}
+        initialData={selectedRequest}
+      />
+    )}
+    {showModal === 'user' && (
+      <ModalFormularioUsuario
+        show={true}
+        onClose={() => setShowModal(false)}
+        onSubmit={handleModalSubmitUsuario}
+        initialData={selectedRequest}
+      />
+    )}
+  </>);
+}; // ← AQUÍ CIERRAS BIEN EL COMPONENTE
+// 👇 ESTA PARTE FUERA DEL COMPONENTE
 Dashboard.propTypes = {
   isAdmin: PropTypes.bool
 };

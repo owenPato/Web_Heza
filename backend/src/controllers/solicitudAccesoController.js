@@ -85,6 +85,8 @@ export const aprobarSolicitud = async (req, res) => {
       fecha_registro: new Date()
     };
 
+     let usuarioId;
+
     if (solicitud.tipo === 'client') {
       const clienteData = {
         empresa: solicitud.empresa,
@@ -123,10 +125,26 @@ export const aprobarSolicitud = async (req, res) => {
       });
 
     } else {
-      await User.create(userData);
+       // Insertar usuario
+    const [resultUsuario] = await connection.query(
+      'INSERT INTO users (username, nombre, email, telefono, password, rol, activo, fecha_registro) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      [username, solicitud.nombre, solicitud.email, solicitud.telefono, hashedPassword, 'empleado', 1, new Date()]
+    );
 
-      // Enviar correo al empleado
-      await emailService.sendEmail({
+    const usuarioId = resultUsuario.insertId;
+
+    const { puesto, departamento, fecha_contratacion } = req.body;
+
+    // Insertar datos del empleado
+    await connection.query(
+  'INSERT INTO empleados (user_id, puesto, departamento, fecha_contratacion, solicitud_id) VALUES (?, ?, ?, ?, ?)',
+  [usuarioId, puesto, departamento, fecha_contratacion, id]
+);
+
+
+
+     // Enviar correo al empleado
+        await emailService.sendEmail({
         to: solicitud.email,
         subject: 'Acceso aprobado - HEZA',
         html: `
@@ -153,7 +171,6 @@ export const aprobarSolicitud = async (req, res) => {
         `
       });
     }
-
     await connection.commit();
     res.json({ success: true, message: 'Solicitud aprobada correctamente' });
   } catch (error) {

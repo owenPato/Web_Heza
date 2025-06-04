@@ -246,6 +246,9 @@ ALTER TABLE galeria_noticias
   REFERENCES noticias(id)
   ON DELETE CASCADE;
 
+ALTER TABLE empleados
+ADD COLUMN solicitud_id INT,
+ADD CONSTRAINT fk_solicitud FOREIGN KEY (solicitud_id) REFERENCES solicitudes_acceso(id);
 
 -- ========================================================================
 -- CREACIÓN DE ÍNDICES PARA OPTIMIZACIÓN
