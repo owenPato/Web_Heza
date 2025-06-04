@@ -23,12 +23,12 @@ DROP TABLE IF EXISTS eventos;
 DROP TABLE IF EXISTS servicios;
 DROP TABLE IF EXISTS clientes;
 DROP TABLE IF EXISTS categorias_documentos;
-ALTER TABLE galeria_noticias DROP FOREIGN KEY galeria_noticias_ibfk_1;
 DROP TABLE IF EXISTS galeria_noticias;
 DROP TABLE IF EXISTS noticias;
 DROP TABLE IF EXISTS solicitudes_acceso;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS sucursales;
+DROP TABLE IF EXISTS departamento;
 
 -- ========================================================================
 -- CREACIÓN DE TABLAS PRINCIPALES
@@ -126,6 +126,11 @@ CREATE TABLE empleados (
   departamento VARCHAR(100),
   fecha_contratacion DATE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE departamento (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- ========================================================================
@@ -249,6 +254,22 @@ ALTER TABLE galeria_noticias
 ALTER TABLE empleados
 ADD COLUMN solicitud_id INT,
 ADD CONSTRAINT fk_solicitud FOREIGN KEY (solicitud_id) REFERENCES solicitudes_acceso(id);
+
+ALTER TABLE galeria_noticias DROP FOREIGN KEY galeria_noticias_ibfk_1;
+
+ALTER TABLE empleados
+  ADD COLUMN departamento_id INT;
+
+-- Copiar valores existentes si quieres, o lo dejamos NULL por ahora
+-- Luego puedes hacer UPDATE con JOIN si los textos coinciden
+
+-- Finalmente:
+ALTER TABLE empleados
+  DROP COLUMN departamento;
+
+ALTER TABLE empleados
+  ADD CONSTRAINT fk_empleado_departamento
+  FOREIGN KEY (departamento_id) REFERENCES departamento(id);
 
 -- ========================================================================
 -- CREACIÓN DE ÍNDICES PARA OPTIMIZACIÓN
