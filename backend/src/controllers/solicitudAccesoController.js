@@ -133,13 +133,14 @@ export const aprobarSolicitud = async (req, res) => {
 
     const usuarioId = resultUsuario.insertId;
 
-    const { puesto, departamento, fecha_contratacion } = req.body;
+    const { puesto, departamento_id, fecha_contratacion } = req.body;
 
     // Insertar datos del empleado
-    await connection.query(
-  'INSERT INTO empleados (user_id, puesto, departamento, fecha_contratacion, solicitud_id) VALUES (?, ?, ?, ?, ?)',
-  [usuarioId, puesto, departamento, fecha_contratacion, id]
-);
+  await connection.query(
+  'INSERT INTO empleados (user_id, puesto, departamento_id, fecha_contratacion, solicitud_id) VALUES (?, ?, ?, ?, ?)',
+  [usuarioId, puesto, departamento_id, fecha_contratacion, id]
+  );
+
 
 
 

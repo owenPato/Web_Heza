@@ -13,7 +13,7 @@ import * as eventController from '../controllers/eventController.js';
 import * as apiController from '../controllers/apiController.js';
 import * as dashboardController from '../controllers/dashboardController.js';
 import { verifyToken, verifyAdmin, isAdmin, isClient, isAdminOrClient } from '../middleware/auth.js';
-
+import { getDepartamento } from '../controllers/departamentoController.js';
 
 const router = express.Router();
 
@@ -48,6 +48,7 @@ router.post('/auth/change-password', verifyToken, authController.changePassword)
 // Rutas de administrador para solicitudes de acceso
 router.use('/admin', solicitudAccesoRoutes);
 router.post('/solicitudes-acceso/:id/aprobar', verifyToken, verifyAdmin, aprobarSolicitud);
+router.get('/departamento', getDepartamento);
 
 router.get('/clients', verifyToken, isAdmin, clientController.getAllClients);
 router.get('/clients/:id', verifyToken, isAdminOrClient, clientController.getClientById);

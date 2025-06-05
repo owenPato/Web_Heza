@@ -7,9 +7,22 @@ const ModalFormularioUsuario = ({ show, onClose, onSubmit, initialData }) => {
   const [formData, setFormData] = useState({
     solicitud_id: initialData?.solicitud_id || '',
     puesto: initialData?.puesto || '',
-    departamento: initialData?.departamento || '',
+    departamento_id: initialData?.departamento_id || '',
     fecha_contratacion: initialData?.fecha_contratacion || ''
   });
+  const [listaDepartamentos, setListaDepartamentos] = useState([]);
+
+useEffect(() => {
+  const fetchDepartamentos = async () => {
+    try {
+      const response = await axios.get('/api/departamento');
+      setListaDepartamentos(response.data);
+    } catch (error) {
+      console.error('Error al cargar los Departamentos', error);
+    }
+  };
+  fetchDepartamentos();
+}, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -38,15 +51,21 @@ const ModalFormularioUsuario = ({ show, onClose, onSubmit, initialData }) => {
             />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Departamento</Form.Label>
-            <Form.Control
-              type="text"
-              name="departamento"
-              value={formData.departamento}
+          <Form.Label>Departamento</Form.Label>
+            <Form.Select
+              name="departamento_id"
+              value={formData.departamento_id}
               onChange={handleChange}
-              placeholder="Ingrese el departamento"
-            />
+            >
+              <option value="">Selecciona un departamento</option>
+              {listaDepartamentos.map((departamento) => (
+                <option key={departamento.id} value={departamento.id}>
+                  {departamento.nombre}
+                </option>
+              ))}
+            </Form.Select>
           </Form.Group>
+
           <Form.Group className="mb-3">
             <Form.Label>Fecha de Contratación</Form.Label>
             <Form.Control
