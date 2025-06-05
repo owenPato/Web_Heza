@@ -133,6 +133,17 @@ CREATE TABLE departamento (
   nombre VARCHAR(100) NOT NULL UNIQUE
 );
 
+INSERT INTO departamento (nombre) VALUES
+('Asesores'),
+('Devoluciones'),
+('Contabilidad'),
+('Nóminas'),
+('Administración'),
+('Comunicación'),
+('Desarrollo'),
+('Reclutamiento'),
+('Tecnologías Fiscales');
+
 -- ========================================================================
 -- CREACIÓN DE TABLAS DE RELACIÓN Y DEPENDIENTES
 -- ========================================================================
