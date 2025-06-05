@@ -144,6 +144,24 @@ INSERT INTO departamento (nombre) VALUES
 ('Reclutamiento'),
 ('Tecnologías Fiscales');
 
+CREATE TABLE puestos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL
+);
+
+INSERT INTO puestos (nombre) VALUES
+('Asesor'),
+('Contador'),
+('Nominista'),
+('Devolucionista'),
+('Cordinador'),
+('Lider'),
+('Desarrollador'),
+('Reclutador'),
+('Rh'),
+('Contador jr');
+
+
 -- ========================================================================
 -- CREACIÓN DE TABLAS DE RELACIÓN Y DEPENDIENTES
 -- ========================================================================
@@ -270,6 +288,11 @@ ALTER TABLE galeria_noticias DROP FOREIGN KEY galeria_noticias_ibfk_1;
 
 ALTER TABLE empleados
   ADD COLUMN departamento_id INT;
+
+ALTER TABLE empleados
+  DROP COLUMN puesto,
+  ADD COLUMN puesto_id INT,
+  ADD CONSTRAINT fk_puesto FOREIGN KEY (puesto_id) REFERENCES puestos(id);  
 
 -- Copiar valores existentes si quieres, o lo dejamos NULL por ahora
 -- Luego puedes hacer UPDATE con JOIN si los textos coinciden
