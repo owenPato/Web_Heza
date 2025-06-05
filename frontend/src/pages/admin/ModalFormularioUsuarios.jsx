@@ -6,11 +6,24 @@ import Swal from 'sweetalert2';
 const ModalFormularioUsuario = ({ show, onClose, onSubmit, initialData }) => {
   const [formData, setFormData] = useState({
     solicitud_id: initialData?.solicitud_id || '',
-    puesto: initialData?.puesto || '',
+    puesto_id: initialData?.puesto_id || '',
     departamento_id: initialData?.departamento_id || '',
     fecha_contratacion: initialData?.fecha_contratacion || ''
   });
   const [listaDepartamentos, setListaDepartamentos] = useState([]);
+  const [listaPuestos, setListaPuestos] = useState([]);
+
+  useEffect(() => {
+    const fetchPuestos = async () => {
+      try {
+        const response = await axios.get('/api/puestos');
+        setListaPuestos(response.data);
+      } catch (error) {
+        console.error('Error al cargar los puestos', error);
+      }
+    };
+    fetchPuestos();
+  }, []);
 
 useEffect(() => {
   const fetchDepartamentos = async () => {
@@ -42,13 +55,18 @@ useEffect(() => {
         <Form>
           <Form.Group className="mb-3">
             <Form.Label>Puesto</Form.Label>
-            <Form.Control
-              type="text"
-              name="puesto"
-              value={formData.puesto}
+            <Form.Select
+              name="puesto_id"
+              value={formData.puesto_id}
               onChange={handleChange}
-              placeholder="Ingrese el puesto"
-            />
+            >
+              <option value="">Selecciona un puesto</option>
+              {listaPuestos.map((puesto) => (
+                <option key={puesto.id} value={puesto.id}>
+                  {puesto.nombre}
+                </option>
+              ))}
+            </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3">
           <Form.Label>Departamento</Form.Label>

@@ -29,6 +29,7 @@ DROP TABLE IF EXISTS solicitudes_acceso;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS sucursales;
 DROP TABLE IF EXISTS departamento;
+DROP TABLE IF EXISTS puestos;
 
 -- ========================================================================
 -- CREACIÓN DE TABLAS PRINCIPALES
@@ -159,6 +160,8 @@ INSERT INTO puestos (nombre) VALUES
 ('Desarrollador'),
 ('Reclutador'),
 ('Rh'),
+('Consultor en TF'),
+('Comunity Maneger'),
 ('Contador jr');
 
 
