@@ -1,173 +1,147 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
-import './admin.css';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Table, Button, Modal, Form, InputGroup, FormControl } from 'react-bootstrap';
+import * as XLSX from 'xlsx';
+import ModalEditarCliente from './ModalEditarCliente';
+import Swal from 'sweetalert2';
 
+const ClientesAdmin = () => {
+  const [clientes, setClientes] = useState([]);
+  const [filtro, setFiltro] = useState('');
+  const [modalShow, setModalShow] = useState(false);
+  const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
 
-const RC = ({ fullScreen }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [telefono, setNumero] = useState('');
-  const [empresa, setEmpresa] = useState('');
-  const [rfc, setRfc] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  useEffect(() => {
+    obtenerClientes();
+  }, []);
 
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
-
+  const obtenerClientes = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/clientes/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre: name, email, password, telefono, empresa, rfc })
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        alert('Usuario registrado con éxito');
-        navigate('/Clientes/dashboard'); // Redirigir después del registro
-      } else {
-        setError(data.error || 'Error al registrar usuario');
-      }
+      const res = await axios.get('/api/clientes');
+      setClientes(res.data);
     } catch (err) {
-      setError('Error de conexión al servidor');
-      console.error('Register error:', err);
-    } finally {
-      setIsLoading(false);
+      console.error('Error al obtener clientes:', err);
     }
   };
 
-  return (
-    <div className={`register-container ${fullScreen ? 'full-screen' : ''}`}>
-      <div className="text-center register-form form-card bg-white rounded-20 shadow-lg row justify-content-center col-lg-15 bg-white rounded-4 shadow-lg p-5 row g-8">
-        <h5 className="display-6 text-dark mb-4">
-            <span className="text-gradient-primary">Registro</span>
-            <span className="text-gradient-secondary"> de Cliente </span>
-        </h5>
-        {error && <div className="alert alert-danger">{error}</div>}
-        <div  className="admin-login-form mb-3 col-md-6 form-floating row ">
-        <form  onSubmit={handleRegister}>
-        <div className="row">
-          {/* Columna izquierda */}
-           <div className="col-md-6 admin-form-group">
-              <div className="mb-3">
-                    <label htmlFor="name">Nombre</label>
-                    <input
-                    type="text"
-                    id="name"
-                    className="form-control text-dark"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                    />
-               </div>
-               <div className="mb-3 ">
-                    <label htmlFor="email">Email</label>
-                    <input
-                    type="email"
-                    id="email"
-                    className="form-control text-dark"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    />
-                </div>
-                <div className="mb-3">
-                     <label htmlFor="password">Contraseña</label>
-                     <div className="position-relative">
-                        <input
-                        type={showPassword ? "text" : "password"}
-                        id="password"
-                        className="form-control text-dark"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                        />
-                        <button
-                        type="button"
-                        className="btn position-absolute end-0 top-50 translate-middle-y me-2 p-0 bg-transparent border-0"
-                        onClick={togglePasswordVisibility}
-                        aria-label="Mostrar contraseña"
-                        >
-                            <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} className="text-warning" />
-                        </button>
-                    </div>
-                </div>
-            </div>
-        {/* Columna derecha */}
-            <div className="col-md-6 admin-form-group">
-                <div className="mb-3">
-                     <label htmlFor="telefono">Teléfono</label>
-                     <input
-                     type="text"
-                     id="telefono"
-                     className="form-control text-dark"
-                     value={telefono}
-                     onChange={(e) => setNumero(e.target.value)}
-                     required
-                     />
-                </div>
-                <div className="mb-3">
-                     <label htmlFor="empresa">Nombre de la Empresa</label>
-                     <input
-                     type="text"
-                     id="empresa"
-                     className="form-control text-dark"
-                     value={empresa}
-                     onChange={(e) => setEmpresa(e.target.value)}
-                     required
-                     />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="rfc">RFC</label>
-                    <input
-                    type="text"
-                    id="rfc"
-                    className="form-control text-dark"
-                    value={rfc}
-                    onChange={(e) => setRfc(e.target.value)}
-                    required
-                    />
-                </div>
-            </div>
-          </div>
+  const handleBuscar = (e) => setFiltro(e.target.value.toLowerCase());
 
-          {/* Botón */}
-           <div className="text-center mt-4">
-              <button
-              type="submit"
-              className="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow-hover"
-              disabled={isLoading}
-              >
-              <i className="fas fa-arrow-right ms-2"></i>
-              {isLoading ? 'Registrando...' : 'Registrar'}
-              </button>
-            </div>        
-        </form>
-        </div>
+  const handleEditar = (cliente) => {
+    setClienteSeleccionado(cliente);
+    setModalShow(true);
+  };
+
+  const handleEliminar = async (id) => {
+  const result = await Swal.fire({
+    title: '¿Eliminar cliente?',
+    text: 'Esta acción no se puede deshacer.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar',
+    confirmButtonColor: '#263D4F',
+    cancelButtonColor: '#A5A5A5'   
+  });
+
+  if (result.isConfirmed) {
+    try {
+      await axios.delete(`/api/clientes/${id}`);
+      await obtenerClientes();
+      Swal.fire({
+        title: 'Eliminado',
+        text: 'Cliente eliminado correctamente.',
+        icon: 'success',
+        confirmButtonColor: '#263D4F' // o tu color dorado, etc.
+      });
+    } catch (error) {
+      console.error('Error al eliminar cliente:', error);
+      Swal.fire({
+        title: 'Error',
+        text: 'No se pudo eliminar el cliente.',
+        icon: 'error'
+      });
+    }
+  }
+};
+
+
+  const exportarExcel = () => {
+    const datosExportar = clientes.map(({ id, empresa, rfc }) => ({ ID: id, Empresa: empresa, RFC: rfc }));
+    const hoja = XLSX.utils.json_to_sheet(datosExportar);
+    const libro = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(libro, hoja, 'Clientes');
+    XLSX.writeFile(libro, 'clientes.xlsx');
+  };
+
+  const clientesFiltrados = clientes
+  .filter(c => c.empresa && c.rfc) // <-- solo si tiene empresa y RFC
+  .filter(c =>
+    c.empresa.toLowerCase().includes(filtro) ||
+    c.rfc.toLowerCase().includes(filtro)
+  );
+
+
+  return (
+    <div className="container mt-4">
+      <h2>Clientes Registrados</h2>
+      <div className="d-flex justify-content-between mb-3">
+        <InputGroup className="w-50">
+          <FormControl
+            placeholder="Buscar por empresa o RFC"
+            onChange={handleBuscar}
+          />
+        </InputGroup>
+        <Button variant="success" onClick={exportarExcel}>
+          Exportar Excel
+        </Button>
       </div>
+      <Table striped hover responsive>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Empresa</th>
+            <th>RFC</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {clientesFiltrados.map(cliente => (
+            <tr key={cliente.id}>
+              <td>{cliente.id}</td>
+              <td>{cliente.empresa}</td>
+              <td>{cliente.rfc}</td>
+              <td>
+                <Button
+                  variant="primary"
+                  size="sm"
+                  className="me-2"
+                  onClick={() => handleEditar(cliente)}
+                >
+                  Editar
+                </Button>
+                <Button
+                  variant="danger"
+                  size="sm"
+                  onClick={() => handleEliminar(cliente.id)}
+                >
+                  Eliminar
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+
+      {modalShow && clienteSeleccionado && (
+        <ModalEditarCliente
+          cliente={clienteSeleccionado}
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+          onUpdated={obtenerClientes}
+        />
+      )}
     </div>
   );
 };
 
-RC.propTypes = {
-  fullScreen: PropTypes.bool,
-};
-
-export default RC;
-
-
-
+export default ClientesAdmin;

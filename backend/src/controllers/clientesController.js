@@ -10,7 +10,7 @@ const registrarCliente = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { nombre, email, password, telefono, empresa, rfc } = req.body;
+  const { nombre, email, password, telefono, empresa, rfc, sede_id } = req.body;
 
   try {
     if (!nombre) {
@@ -51,6 +51,7 @@ const registrarCliente = async (req, res) => {
         password: hashedPassword, // aquí ya va cifrada
         telefono,
         rol: 'cliente',
+        sede_id,
         activo: 1,
         fecha_registro: new Date(),
         username: email
@@ -72,8 +73,6 @@ const registrarCliente = async (req, res) => {
     res.status(500).json({ error: 'Error en el servidor' });
   }
 };
-
-
 
 const obtenerClientes = async (req, res) => {
   try {
@@ -138,4 +137,43 @@ const registrarDatosEmpresa = async (req, res) => {
   }
 };
 
-export { registrarCliente, obtenerClientes, registrarDatosEmpresa };
+const editarCliente = async (req, res) => {
+  const { id } = req.params;
+  const {
+    direccion,
+    ciudad,
+    estado,
+    codigo_postal,
+    giro,
+    numero_empleados,
+    ventas_anuales
+  } = req.body;
+
+  try {
+    const connection = await pool.getConnection();
+    await connection.query(
+      `UPDATE clientes SET direccion = ?, ciudad = ?, estado = ?, codigo_postal = ?, giro = ?, numero_empleados = ?, ventas_anuales = ? WHERE id = ?`,
+      [direccion, ciudad, estado, codigo_postal, giro, numero_empleados, ventas_anuales, id]
+    );
+    connection.release();
+    res.json({ message: 'Cliente actualizado correctamente' });
+  } catch (error) {
+    console.error('Error al actualizar cliente:', error);
+    res.status(500).json({ error: 'Error al actualizar cliente' });
+  }
+};
+
+const eliminarCliente = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const connection = await pool.getConnection();
+    await connection.query('DELETE FROM clientes WHERE id = ?', [id]);
+    connection.release();
+    res.json({ message: 'Cliente eliminado correctamente' });
+  } catch (error) {
+    console.error('Error al eliminar cliente:', error);
+    res.status(500).json({ error: 'Error al eliminar cliente' });
+  }
+};
+
+export { registrarCliente, obtenerClientes, registrarDatosEmpresa,editarCliente, eliminarCliente};
