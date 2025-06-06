@@ -61,6 +61,7 @@ export const aprobarSolicitud = async (req, res) => {
 
     const solicitud = solicitudes[0];
 
+
     await connection.query(
       'UPDATE solicitudes_acceso SET estado = "aprobada" WHERE id = ?',
       [id]
@@ -82,6 +83,7 @@ export const aprobarSolicitud = async (req, res) => {
       password: hashedPassword,
       rol: solicitud.tipo === 'client' ? 'cliente' : 'empleado',
       activo: 1,
+      sede_id: solicitud.sede_id,
       fecha_registro: new Date()
     };
 
@@ -127,9 +129,10 @@ export const aprobarSolicitud = async (req, res) => {
     } else {
        // Insertar usuario
     const [resultUsuario] = await connection.query(
-      'INSERT INTO users (username, nombre, email, telefono, password, rol, activo, fecha_registro) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      [username, solicitud.nombre, solicitud.email, solicitud.telefono, hashedPassword, 'empleado', 1, new Date()]
-    );
+  'INSERT INTO users (username, nombre, email, telefono, sede_id, password, rol, activo, fecha_registro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+  [username, solicitud.nombre, solicitud.email, solicitud.telefono, solicitud.sede_id, hashedPassword, 'empleado', 1, new Date()]
+);
+
 
     const usuarioId = resultUsuario.insertId;
 
