@@ -158,3 +158,105 @@ select.form-control.text-dark {
     overflow: visible;
   }
 }
+
+/* 🎯 Botón blanco con borde azul oscuro, hover dorado */
+.boton-exportar {
+  background-color: #ffffff;
+  color: #263D4F;             /* dark-color */
+  border: 2px solid #263D4F;  /* dark-color */
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+}
+
+.boton-exportar:hover {
+  background-color: #92D050;   /* light-color */
+  color: #ffffff;
+  border-color: #92D050;
+}
+
+/* 🎯 Encabezado de la tabla con fondo azul oscuro */
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid #B49C73; /* borde vino-dorado */
+  border-radius: 6px;
+  overflow: hidden;
+  width: 100%; /* 💡 asegura que no se corte */
+  table-layout: fixed; /* 🔧 ayuda a controlar corte en celdas largas */
+}
+
+.table thead th {
+  background-color: #263D4F;
+  color: #ffffff;
+  border-bottom: 2px solid #B49C73;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.table tbody td {
+  vertical-align: middle;
+  padding: 10px 8px;
+  font-size: 0.92rem;
+  border-top: 1px solid #B49C73;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+.table.table-striped tbody tr:nth-of-type(even) {
+  background-color: #ecdcc0 !important;
+}
+
+/* Opcional: hover suave */
+.table tbody tr:hover {
+  background-color: #e5d2b3 !important;
+}
+
+/* Bordes verticales */
+.table td,
+.table th {
+  border-right: 1px solid #B49C73;
+}
+
+.table td:last-child,
+.table th:last-child {
+  border-right: none;
+}
+
+.boton-heza {
+  background-color: #263D4F; /* dark-color */
+  color: #fff;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: none;
+  transition: background 0.3s ease;
+}
+
+.boton-heza:hover {
+  background-color: #B49C73;  /* dorado */
+  color: #263D4F;
+}
+
+.boton-heza-outline {
+  background-color: #ffffff;
+  color: #B49C73;
+  font-weight: 600;
+  padding: 6px 14px;
+  border: 2px solid #B49C73;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.boton-heza-outline:hover {
+  background-color: #B49C73;
+  color: #263D4F;
+  border-color: #B49C73;
+}
+
+td .btn {
+  vertical-align: middle;
+  display: inline-block;
+}
+

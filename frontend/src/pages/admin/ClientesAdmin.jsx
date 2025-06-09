@@ -4,6 +4,8 @@ import { Table, Button, Modal, Form, InputGroup, FormControl } from 'react-boots
 import * as XLSX from 'xlsx';
 import ModalEditarCliente from './ModalEditarCliente';
 import Swal from 'sweetalert2';
+import "./admin.css";
+
 
 const ClientesAdmin = () => {
   const [clientes, setClientes] = useState([]);
@@ -96,7 +98,10 @@ const ClientesAdmin = () => {
 
   return (
     <div className="container mt-4">
-      <h2>Clientes Registrados</h2>
+      <h2 className="display-5 text-dark mb-4">
+        <span className="text-gradient-primary">Clientes </span> 
+        <span className="text-gradient-secondary"> Registrados</span>
+      </h2>
       <div className="d-flex justify-content-between mb-3">
         <InputGroup className="w-50">
           <FormControl
@@ -104,11 +109,11 @@ const ClientesAdmin = () => {
             onChange={handleBuscar}
           />
         </InputGroup>
-        <Button variant="success" onClick={exportarExcel}>
+        <Button variant="success" className='boton-exportar' onClick={exportarExcel}>
           Exportar Excel
         </Button>
       </div>
-      <Table striped bordered hover responsive className="mt-3">
+      <Table striped bordered hover responsive className="table mt-3 w-100">
       <thead className="table-dark">
         <tr>
           <th>ID</th>
@@ -128,7 +133,7 @@ const ClientesAdmin = () => {
             <td>{cliente.user_id || '—'}</td>
             <td>{cliente.email || '—'}</td>
             <td>
-            <Button className="boton-heza me-2" onClick={() => handleEditar(cliente)}>
+            <Button className="boton-heza me-2 mb-2" onClick={() => handleEditar(cliente)}>
               Editar
             </Button>
             <Button className="boton-heza-outline" onClick={() => handleEliminar(cliente.cliente_id)}>
