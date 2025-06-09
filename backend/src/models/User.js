@@ -2,6 +2,7 @@ import pool from '../config/db.js';
 import bcrypt from 'bcrypt';
 
 class User {
+  
   static async create(userData, clienteData = null) {
     const connection = await pool.getConnection();
     try {
@@ -14,7 +15,6 @@ class User {
       );
       if (userData.rol === 'cliente' && clienteData) {
         const clienteDataToInsert = {
-          id: result.insertId,
           empresa: clienteData.empresa || null,
           rfc: clienteData.rfc || null,
           direccion: clienteData.direccion || null,
@@ -23,7 +23,8 @@ class User {
           codigo_postal: clienteData.codigo_postal || null,
           giro: clienteData.giro || null,
           numero_empleados: clienteData.numero_empleados || null,
-          ventas_anuales: clienteData.ventas_anuales || null
+          ventas_anuales: clienteData.ventas_anuales || null,
+          user_id: result.insertId
         };
         await connection.query('INSERT INTO clientes SET ?', clienteDataToInsert);
       }

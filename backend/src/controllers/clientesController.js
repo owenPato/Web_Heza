@@ -9,19 +9,24 @@ const registrarCliente = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-
-  const { nombre, email, password, telefono, empresa, rfc, sede_id } = req.body;
+  
+  const { nombre, email, password, telefono, empresa, rfc, sede_id, user_id} = req.body;
 
   try {
+    const [empresaExistente] = await connection.query(
+      'SELECT id FROM clientes WHERE empresa = ?',
+      [empresa]
+    );
+    if (empresaExistente.length > 0) {
+      return res.status(400).json({ error: 'La empresa ya está registrada' });
+    }
     if (!nombre) {
       return res.status(400).json({ error: 'El nombre es obligatorio' });
     }
-
     const rfcRegex = /^[A-Z&Ñ]{3,4}\d{6}[A-V1-9][A-Z1-9][0-9A]$/;
     if (!rfcRegex.test(rfc.toUpperCase())) {
       return res.status(400).json({ error: 'Formato de RFC inválido' });
     }
-
     const connection = await pool.getConnection();
     try {
       const [existingUsers] = await connection.query(
@@ -54,7 +59,8 @@ const registrarCliente = async (req, res) => {
         sede_id,
         activo: 1,
         fecha_registro: new Date(),
-        username: email
+        username: email,
+        user_id
       };
 
       const clienteData = {

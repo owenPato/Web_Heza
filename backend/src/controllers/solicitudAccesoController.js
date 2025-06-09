@@ -22,7 +22,6 @@ export const getSolicitudes = async (req, res) => {
   }
 };
 
-
 export const getSolicitudesPendientesCount = async (req, res) => {
   const connection = await pool.getConnection();
   try {
@@ -42,7 +41,6 @@ export const getSolicitudesPendientesCount = async (req, res) => {
   }
 };
 
-
 export const aprobarSolicitud = async (req, res) => {
   const { id } = req.params;
   const connection = await pool.getConnection();
@@ -60,8 +58,10 @@ export const aprobarSolicitud = async (req, res) => {
     }
 
     const solicitud = solicitudes[0];
-
-
+    
+     if (solicitud.user_id_creado) {
+      return res.status(400).json({ error: 'La solicitud ya fue aprobada anteriormente.' });
+    }
     await connection.query(
       'UPDATE solicitudes_acceso SET estado = "aprobada" WHERE id = ?',
       [id]
@@ -87,7 +87,7 @@ export const aprobarSolicitud = async (req, res) => {
       fecha_registro: new Date()
     };
 
-     let usuarioId;
+    let usuarioId;
 
     if (solicitud.tipo === 'client') {
       const clienteData = {
@@ -96,9 +96,8 @@ export const aprobarSolicitud = async (req, res) => {
         sede_id: solicitud.sede_id
       };
 
-      await User.create(userData, clienteData);
+      usuarioId = await User.create(userData, clienteData);
 
-      // Enviar correo al cliente
       await emailService.sendEmail({
         to: solicitud.email,
         subject: 'Acceso aprobado - HEZA',
@@ -116,36 +115,32 @@ export const aprobarSolicitud = async (req, res) => {
             </div>
             <p>Te recomendamos cambiar tu contraseña después del primer inicio de sesión.</p>
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/clientes/acceso" style="background-color: #B49C73; color: #263D4F; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Iniciar Sesión</a>
+              <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/clientes/acceso" style="background-color: #B49C73; color: #263D4F; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">Iniciar Sesión</a>
             </div>
             <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; text-align: center; color: #666; font-size: 12px;">
               <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
-              <p>&copy; ${new Date().getFullYear()} HEZA Consultoría. Todos los derechos reservados.</p>
+              <p>&copy; ${new Date().getFullYear()} HEZA Consultoría.</p>
             </div>
           </div>
         `
       });
 
     } else {
-       // Insertar usuario
-    const [resultUsuario] = await connection.query(
-  'INSERT INTO users (username, nombre, email, telefono, sede_id, password, rol, activo, fecha_registro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-  [username, solicitud.nombre, solicitud.email, solicitud.telefono, solicitud.sede_id, hashedPassword, 'empleado', 1, new Date()]
-);
+      const [resultUsuario] = await connection.query(
+        'INSERT INTO users (username, nombre, email, telefono, sede_id, password, rol, activo, fecha_registro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [username, solicitud.nombre, solicitud.email, solicitud.telefono, solicitud.sede_id, hashedPassword, 'empleado', 1, new Date()]
+      );
 
+      usuarioId = resultUsuario.insertId;
 
-    const usuarioId = resultUsuario.insertId;
+      const { puesto_id, departamento_id, fecha_contratacion } = req.body;
 
-    const { puesto_id, departamento_id, fecha_contratacion } = req.body;
+      await connection.query(
+        'INSERT INTO empleados (user_id, puesto_id, departamento_id, fecha_contratacion, solicitud_id) VALUES (?, ?, ?, ?, ?)',
+        [usuarioId, puesto_id, departamento_id, fecha_contratacion, id]
+      );
 
-    // Insertar datos del empleado
-  await connection.query(
-  'INSERT INTO empleados (user_id, puesto_id, departamento_id, fecha_contratacion, solicitud_id) VALUES (?, ?, ?, ?, ?)',
-  [usuarioId, puesto_id, departamento_id, fecha_contratacion, id]
-  );
-
-     // Enviar correo al empleado
-        await emailService.sendEmail({
+      await emailService.sendEmail({
         to: solicitud.email,
         subject: 'Acceso aprobado - HEZA',
         html: `
@@ -162,16 +157,23 @@ export const aprobarSolicitud = async (req, res) => {
             </div>
             <p>Te recomendamos cambiar tu contraseña después del primer inicio de sesión.</p>
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/admin/acceso" style="background-color: #B49C73; color: #263D4F; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">Iniciar Sesión</a>
+              <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}/admin/acceso" style="background-color: #B49C73; color: #263D4F; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">Iniciar Sesión</a>
             </div>
             <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; text-align: center; color: #666; font-size: 12px;">
               <p>Este es un correo automático, por favor no respondas a este mensaje.</p>
-              <p>&copy; ${new Date().getFullYear()} HEZA Consultoría. Todos los derechos reservados.</p>
+              <p>&copy; ${new Date().getFullYear()} HEZA Consultoría.</p>
             </div>
           </div>
         `
       });
     }
+
+    // ⬅ Aquí se enlaza el user_id a la solicitud
+    await connection.query(
+      'UPDATE solicitudes_acceso SET user_id_creado = ? WHERE id = ?',
+      [usuarioId, id]
+    );
+
     await connection.commit();
     res.json({ success: true, message: 'Solicitud aprobada correctamente' });
   } catch (error) {
@@ -182,7 +184,6 @@ export const aprobarSolicitud = async (req, res) => {
     connection.release();
   }
 };
-
 
 export const rechazarSolicitud = async (req, res) => {
   const { id } = req.params;

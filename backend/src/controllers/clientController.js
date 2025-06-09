@@ -22,9 +22,10 @@ export const getAllClients = async (req, res) => {
         delete client.password;
         
         const [clientRows] = await connection.query(
-          'SELECT * FROM clientes WHERE id = ?',
+          'SELECT * FROM clientes WHERE user_id = ?',
           [client.id]
         );
+
         
         if (clientRows[0]) {
           Object.assign(client, clientRows[0]);

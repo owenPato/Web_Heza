@@ -308,6 +308,17 @@ ALTER TABLE empleados
   ADD CONSTRAINT fk_empleado_departamento
   FOREIGN KEY (departamento_id) REFERENCES departamento(id);
 
+-- CAMBIO ESTRUCTURAL
+ALTER TABLE clientes
+  ADD COLUMN user_id INT,
+  ADD CONSTRAINT fk_clientes_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE solicitudes_acceso
+ADD COLUMN user_id_creado INT NULL,
+ADD CONSTRAINT fk_solicitud_usuario
+  FOREIGN KEY (user_id_creado) REFERENCES users(id)
+  ON DELETE SET NULL;
+
 -- ========================================================================
 -- CREACIÓN DE ÍNDICES PARA OPTIMIZACIÓN
 -- ========================================================================
