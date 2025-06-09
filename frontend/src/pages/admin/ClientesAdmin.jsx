@@ -24,6 +24,15 @@ const ClientesAdmin = () => {
     }
   };
 
+  const datosExportar = clientes.map(({ cliente_id, empresa, rfc, user_id, email }) => ({
+  ID: cliente_id,
+  Empresa: empresa,
+  RFC: rfc,
+  UserID: user_id,
+  Email: email
+  }));
+
+
   const handleBuscar = (e) => setFiltro(e.target.value.toLowerCase());
 
   const handleEditar = (cliente) => {
@@ -63,17 +72,21 @@ const ClientesAdmin = () => {
     }
   }
 };
+ const exportarExcel = () => {
+  const datosExportar = clientes.map(({ cliente_id, empresa, rfc, user_id, email }) => ({
+    ID: cliente_id,
+    Empresa: empresa,
+    RFC: rfc,
+    UserID: user_id,
+    Email: email
+  }));
+  const hoja = XLSX.utils.json_to_sheet(datosExportar);
+  const libro = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(libro, hoja, 'Clientes');
+  XLSX.writeFile(libro, 'clientes.xlsx');
+};
 
-
-  const exportarExcel = () => {
-    const datosExportar = clientes.map(({ id, empresa, rfc }) => ({ ID: id, Empresa: empresa, RFC: rfc }));
-    const hoja = XLSX.utils.json_to_sheet(datosExportar);
-    const libro = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(libro, hoja, 'Clientes');
-    XLSX.writeFile(libro, 'clientes.xlsx');
-  };
-
-  const clientesFiltrados = clientes
+ const clientesFiltrados = clientes
   .filter(c => c.empresa && c.rfc) // <-- solo si tiene empresa y RFC
   .filter(c =>
     c.empresa.toLowerCase().includes(filtro) ||
@@ -95,43 +108,37 @@ const ClientesAdmin = () => {
           Exportar Excel
         </Button>
       </div>
-      <Table striped hover responsive>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Empresa</th>
-            <th>RFC</th>
-            <th>Acciones</th>
+      <Table striped bordered hover responsive className="mt-3">
+      <thead className="table-dark">
+        <tr>
+          <th>ID</th>
+          <th>Empresa</th>
+          <th>RFC</th>
+          <th>User ID</th>
+          <th>Email</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {clientesFiltrados.map(cliente => (
+          <tr key={cliente.cliente_id}>
+            <td>{cliente.cliente_id}</td>
+            <td>{cliente.empresa}</td>
+            <td>{cliente.rfc}</td>
+            <td>{cliente.user_id || '—'}</td>
+            <td>{cliente.email || '—'}</td>
+            <td>
+            <Button className="boton-heza me-2" onClick={() => handleEditar(cliente)}>
+              Editar
+            </Button>
+            <Button className="boton-heza-outline" onClick={() => handleEliminar(cliente.cliente_id)}>
+              Eliminar
+            </Button>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          {clientesFiltrados.map(cliente => (
-            <tr key={cliente.id}>
-              <td>{cliente.id}</td>
-              <td>{cliente.empresa}</td>
-              <td>{cliente.rfc}</td>
-              <td>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  className="me-2"
-                  onClick={() => handleEditar(cliente)}
-                >
-                  Editar
-                </Button>
-                <Button
-                  variant="danger"
-                  size="sm"
-                  onClick={() => handleEliminar(cliente.id)}
-                >
-                  Eliminar
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-
+        ))}
+      </tbody>
+    </Table>
       {modalShow && clienteSeleccionado && (
         <ModalEditarCliente
           cliente={clienteSeleccionado}

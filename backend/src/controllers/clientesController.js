@@ -81,12 +81,45 @@ const registrarCliente = async (req, res) => {
 };
 
 const obtenerClientes = async (req, res) => {
+  const connection = await pool.getConnection();
+
   try {
-    const connection = await pool.getConnection();
-    const [clientes] = await connection.query('SELECT * FROM clientes');
+    // 🔄 Detectar duplicados donde uno tiene user_id y el otro tiene rfc
+    const [duplicados] = await connection.query(`
+      SELECT c1.id AS lleno_id, c2.id AS vacio_id, c2.user_id
+      FROM clientes c1
+      JOIN clientes c2 ON c1.empresa = c2.empresa AND c1.id <> c2.id
+      WHERE c1.user_id IS NULL
+        AND c2.user_id IS NOT NULL
+        AND c1.rfc IS NOT NULL
+        AND c2.rfc IS NULL
+    `);
+
+    // 🔄 Corregir cada duplicado
+    for (const { lleno_id, vacio_id, user_id } of duplicados) {
+      await connection.query(`UPDATE clientes SET user_id = ? WHERE id = ?`, [user_id, lleno_id]);
+      await connection.query(`DELETE FROM clientes WHERE id = ?`, [vacio_id]);
+    }
+
+    // ✅ Obtener clientes con JOIN
+    const [clientes] = await connection.query(`
+      SELECT 
+        c.id AS cliente_id,
+        c.empresa,
+        c.rfc,
+        c.user_id,
+        u.email,
+        u.username,
+        u.telefono
+      FROM clientes c
+      LEFT JOIN users u ON u.id = c.user_id
+    `);
+
     connection.release();
     res.json(clientes);
+
   } catch (error) {
+    connection.release();
     console.error('Error al obtener clientes:', error);
     res.status(500).json({ error: 'Error al obtener clientes' });
   }
