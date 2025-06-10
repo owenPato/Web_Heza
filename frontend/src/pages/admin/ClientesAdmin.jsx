@@ -12,28 +12,29 @@ const ClientesAdmin = () => {
   const [filtro, setFiltro] = useState('');
   const [modalShow, setModalShow] = useState(false);
   const [clienteSeleccionado, setClienteSeleccionado] = useState(null);
+  const [sedes, setSedes] = useState([]);
+  const [sedeSeleccionada, setSedeSeleccionada] = useState('');
 
   useEffect(() => {
+    axios.get('/api/sucursales')
+    .then(res => setSedes(res.data))
+    .catch(err => console.error('Error al cargar sedes', err));
     obtenerClientes();
   }, []);
 
   const obtenerClientes = async () => {
-    try {
-      const res = await axios.get('/api/clientes');
-      setClientes(res.data);
-    } catch (err) {
-      console.error('Error al obtener clientes:', err);
-    }
-  };
-
-  const datosExportar = clientes.map(({ cliente_id, empresa, rfc, user_id, email }) => ({
-  ID: cliente_id,
-  Empresa: empresa,
-  RFC: rfc,
-  UserID: user_id,
-  Email: email
-  }));
-
+  try {
+    const res = await axios.get('/api/clientes', {
+      params: sedeSeleccionada ? { sede_id: sedeSeleccionada } : {}
+    });
+    setClientes(res.data);
+  } catch (err) {
+    console.error('Error al obtener clientes:', err);
+  }
+};
+useEffect(() => {
+  obtenerClientes();
+}, [sedeSeleccionada]);
 
   const handleBuscar = (e) => setFiltro(e.target.value.toLowerCase());
 
@@ -76,10 +77,8 @@ const ClientesAdmin = () => {
 };
  const exportarExcel = () => {
   const datosExportar = clientes.map(({ cliente_id, empresa, rfc, user_id, email }) => ({
-    ID: cliente_id,
     Empresa: empresa,
-    RFC: rfc,
-    UserID: user_id,
+    RFC: rfc,  
     Email: email
   }));
   const hoja = XLSX.utils.json_to_sheet(datosExportar);
@@ -101,25 +100,34 @@ const ClientesAdmin = () => {
       <h2 className="display-5 text-dark mb-4">
         <span className="text-gradient-primary">Clientes </span> 
         <span className="text-gradient-secondary"> Registrados</span>
-      </h2>
-      <div className="d-flex justify-content-between mb-3">
-        <InputGroup className="w-50">
+      </h2>    
+      <div className="filtros-clientes ">
           <FormControl
-            placeholder="Buscar por empresa o RFC"
+            placeholder="Buscar por empresa"
+            className="filtro-heza input-heza "
             onChange={handleBuscar}
           />
-        </InputGroup>
-        <Button variant="success" className='boton-exportar' onClick={exportarExcel}>
-          Exportar Excel
-        </Button>
-      </div>
-      <Table striped bordered hover responsive className="table mt-3 w-100">
+          <select
+            className="filtro-heza select-heza"
+            value={sedeSeleccionada}
+            onChange={(e) => setSedeSeleccionada(e.target.value)}
+          >
+            <option value="">Todas las sedes</option>
+            {sedes.map(sede => (
+              <option key={sede.id} value={sede.id}>
+                {sede.nombre}
+              </option>
+            ))}
+          </select>
+          <button className="filtro-heza boton-exportar" onClick={exportarExcel}>
+            Exportar Excel
+          </button>
+       </div>
+    <Table striped bordered hover responsive className="table table-con-sombra mt-3 ">
       <thead className="table-dark">
         <tr>
-          <th>ID</th>
           <th>Empresa</th>
           <th>RFC</th>
-          <th>User ID</th>
           <th>Email</th>
           <th>Acciones</th>
         </tr>
@@ -127,10 +135,8 @@ const ClientesAdmin = () => {
       <tbody>
         {clientesFiltrados.map(cliente => (
           <tr key={cliente.cliente_id}>
-            <td>{cliente.cliente_id}</td>
             <td>{cliente.empresa}</td>
             <td>{cliente.rfc}</td>
-            <td>{cliente.user_id || '—'}</td>
             <td>{cliente.email || '—'}</td>
             <td>
             <Button className="boton-heza me-2 mb-2" onClick={() => handleEditar(cliente)}>

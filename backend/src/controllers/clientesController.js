@@ -81,10 +81,12 @@ const registrarCliente = async (req, res) => {
 };
 
 const obtenerClientes = async (req, res) => {
+  const { sede_id } = req.query;
   const connection = await pool.getConnection();
 
   try {
-    // 🔄 Detectar duplicados donde uno tiene user_id y el otro tiene rfc
+    // 🔄 Detectar duplicados: un cliente con rfc pero sin user_id
+    // y otro con user_id pero sin rfc (por la misma empresa)
     const [duplicados] = await connection.query(`
       SELECT c1.id AS lleno_id, c2.id AS vacio_id, c2.user_id
       FROM clientes c1
@@ -95,29 +97,40 @@ const obtenerClientes = async (req, res) => {
         AND c2.rfc IS NULL
     `);
 
-    // 🔄 Corregir cada duplicado
+    // 🔁 Resolver duplicados (asignar user_id y eliminar vacío)
     for (const { lleno_id, vacio_id, user_id } of duplicados) {
-      await connection.query(`UPDATE clientes SET user_id = ? WHERE id = ?`, [user_id, lleno_id]);
-      await connection.query(`DELETE FROM clientes WHERE id = ?`, [vacio_id]);
+      await connection.query(
+        `UPDATE clientes SET user_id = ? WHERE id = ?`,
+        [user_id, lleno_id]
+      );
+      await connection.query(
+        `DELETE FROM clientes WHERE id = ?`,
+        [vacio_id]
+      );
     }
 
-    // ✅ Obtener clientes con JOIN
-    const [clientes] = await connection.query(`
-      SELECT 
-        c.id AS cliente_id,
+    // 📦 Query base
+    let query = `
+      SELECT
         c.empresa,
         c.rfc,
-        c.user_id,
-        u.email,
-        u.username,
-        u.telefono
+        u.email
       FROM clientes c
       LEFT JOIN users u ON u.id = c.user_id
-    `);
+    `;
+
+    const params = [];
+
+    // 🧩 Aplicar filtro por sede si se envía desde frontend
+    if (sede_id) {
+      query += ` WHERE u.sede_id = ?`;
+      params.push(sede_id);
+    }
+
+    const [clientes] = await connection.query(query, params);
 
     connection.release();
     res.json(clientes);
-
   } catch (error) {
     connection.release();
     console.error('Error al obtener clientes:', error);
