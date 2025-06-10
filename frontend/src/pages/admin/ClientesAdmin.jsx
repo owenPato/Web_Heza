@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Button, Modal, Form, InputGroup, FormControl } from 'react-bootstrap';
+import { Table, Button, FormControl } from 'react-bootstrap';
 import * as XLSX from 'xlsx';
 import ModalEditarCliente from './ModalEditarCliente';
 import Swal from 'sweetalert2';
 import "./admin.css";
+import SelectHeza from './SelectHeza'; 
 
 
 const ClientesAdmin = () => {
@@ -107,18 +108,14 @@ useEffect(() => {
             className="filtro-heza input-heza "
             onChange={handleBuscar}
           />
-          <select
-            className="filtro-heza select-heza"
-            value={sedeSeleccionada}
-            onChange={(e) => setSedeSeleccionada(e.target.value)}
-          >
-            <option value="">Todas las sedes</option>
-            {sedes.map(sede => (
-              <option key={sede.id} value={sede.id}>
-                {sede.nombre}
-              </option>
-            ))}
-          </select>
+         <SelectHeza
+            options={[{ label: 'Todas las sedes', value: '' }, ...sedes.map(s => ({
+              label: s.nombre,
+              value: s.id
+            }))]}
+            value={sedes.length ? { label: sedes.find(s => s.id == sedeSeleccionada)?.nombre || 'Todas las sedes', value: sedeSeleccionada } : ''}
+            onChange={(selected) => setSedeSeleccionada(selected.value)}
+          />
           <button className="filtro-heza boton-exportar" onClick={exportarExcel}>
             Exportar Excel
           </button>
