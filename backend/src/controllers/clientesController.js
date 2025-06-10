@@ -111,10 +111,19 @@ const obtenerClientes = async (req, res) => {
 
     // 📦 Query base
     let query = `
-      SELECT
-        c.empresa,
-        c.rfc,
-        u.email
+     SELECT
+      c.id AS cliente_id,
+      c.empresa,
+      c.rfc,
+      c.direccion,
+      c.ciudad,
+      c.estado,
+      c.codigo_postal,
+      c.giro,
+      c.numero_empleados,
+      c.ventas_anuales,
+      c.user_id,
+      u.email
       FROM clientes c
       LEFT JOIN users u ON u.id = c.user_id
     `;
@@ -198,34 +207,64 @@ const editarCliente = async (req, res) => {
     codigo_postal,
     giro,
     numero_empleados,
-    ventas_anuales
+    ventas_anuales,
+    email // 👈 nuevo campo
   } = req.body;
 
+  const connection = await pool.getConnection();
+
   try {
-    const connection = await pool.getConnection();
+    // 1️⃣ Actualizar tabla clientes
     await connection.query(
-      `UPDATE clientes SET direccion = ?, ciudad = ?, estado = ?, codigo_postal = ?, giro = ?, numero_empleados = ?, ventas_anuales = ? WHERE id = ?`,
+      `UPDATE clientes 
+       SET direccion = ?, ciudad = ?, estado = ?, codigo_postal = ?, giro = ?, numero_empleados = ?, ventas_anuales = ? 
+       WHERE id = ?`,
       [direccion, ciudad, estado, codigo_postal, giro, numero_empleados, ventas_anuales, id]
     );
+
+    // 2️⃣ Obtener user_id del cliente
+    const [[cliente]] = await connection.query(`SELECT user_id FROM clientes WHERE id = ?`, [id]);
+
+    // 3️⃣ Actualizar el email en tabla users (si existe user_id)
+    if (cliente && cliente.user_id && email) {
+      await connection.query(`UPDATE users SET email = ? WHERE id = ?`, [email, cliente.user_id]);
+    }
+
     connection.release();
     res.json({ message: 'Cliente actualizado correctamente' });
   } catch (error) {
+    connection.release();
     console.error('Error al actualizar cliente:', error);
     res.status(500).json({ error: 'Error al actualizar cliente' });
   }
 };
 
+
 const eliminarCliente = async (req, res) => {
   const { id } = req.params;
+
+  const connection = await pool.getConnection();
+
   try {
-    const connection = await pool.getConnection();
-    await connection.query('DELETE FROM clientes WHERE id = ?', [id]);
+    // 1️⃣ Obtener el user_id del cliente
+    const [[cliente]] = await connection.query(`SELECT user_id FROM clientes WHERE id = ?`, [id]);
+
+    // 2️⃣ Eliminar cliente
+    await connection.query(`DELETE FROM clientes WHERE id = ?`, [id]);
+
+    // 3️⃣ Si existe user_id, eliminar también al usuario
+    if (cliente && cliente.user_id) {
+      await connection.query(`DELETE FROM users WHERE id = ?`, [cliente.user_id]);
+    }
+
     connection.release();
-    res.json({ message: 'Cliente eliminado correctamente' });
+    res.json({ message: 'Cliente y usuario eliminados correctamente' });
   } catch (error) {
-    console.error('Error al eliminar cliente:', error);
-    res.status(500).json({ error: 'Error al eliminar cliente' });
+    connection.release();
+    console.error('Error al eliminar cliente y usuario:', error);
+    res.status(500).json({ error: 'Error al eliminar cliente y usuario' });
   }
 };
+
 
 export { registrarCliente, obtenerClientes, registrarDatosEmpresa,editarCliente, eliminarCliente};

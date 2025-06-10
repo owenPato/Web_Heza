@@ -136,9 +136,18 @@ useEffect(() => {
             <td>{cliente.rfc}</td>
             <td>{cliente.email || '—'}</td>
             <td>
-            <Button className="boton-heza me-2 mb-2" onClick={() => handleEditar(cliente)}>
+            <Button
+                className="boton-heza me-2 mb-2"
+                onClick={() =>
+                  handleEditar({
+                    ...cliente,
+                    id: cliente.cliente_id // 👈 importante para que el modal funcione
+                  })
+                }
+              >
               Editar
             </Button>
+
             <Button className="boton-heza-outline" onClick={() => handleEliminar(cliente.cliente_id)}>
               Eliminar
             </Button>

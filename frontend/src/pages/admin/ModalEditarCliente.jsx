@@ -14,7 +14,8 @@ const ModalEditarCliente = ({ show, onHide, cliente, onUpdated }) => {
     codigo_postal: '',
     giro: '',
     numero_empleados: '',
-    ventas_anuales: ''
+    ventas_anuales: '',
+    email:''
   });
 
   useEffect(() => {
@@ -128,8 +129,20 @@ const ModalEditarCliente = ({ show, onHide, cliente, onUpdated }) => {
               </Form.Group>
             </Col>
           </Row>
+         <Row className="mt-3">
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={handleChange}
+              />
+            </Form.Group>
+          </Col>
+         </Row>
         </Modal.Body>
-
         <Modal.Footer>
           <Button variant="secondary" onClick={onHide}>
             Cancelar
