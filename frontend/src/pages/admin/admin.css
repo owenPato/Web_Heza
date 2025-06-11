@@ -407,3 +407,122 @@ td .btn {
   display: inline-block;
 }
 
+/* --- Modal Heza Personalizado --- */
+/* --- Modal Heza Personalizado --- */
+.modal-content {
+  background-color: #263D4F;
+  border-radius: 8px;
+  color: #ffffff;
+  border: none;
+}
+
+/* Título del modal */
+.modal-header,
+.modal-title {
+  color: #ffffff;
+  border-bottom: 1px solid #B49C73;
+}
+
+/* Footer */
+.modal-footer {
+  border-top: 1px solid #B49C73;
+}
+
+/* Labels */
+.formulario-usuario-label {
+  color: #B49C73;
+  font-weight: 600;
+}
+
+/* --- Inputs & Selects --- */
+.modal-body input,
+.modal-body select,
+.modal-body .form-control,
+.modal-body .form-select {
+  background-color: transparent;
+  border: 1px solid #B49C73;
+  color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.modal-body select option {
+  background-color: #263D4F;
+  color: #ffffff;
+}
+
+/* Hover y focus para inputs */
+.modal-body input:focus,
+.modal-body select:focus,
+.modal-body .form-control:focus,
+.modal-body .form-select:focus {
+  background-color: #ffffff;
+  color: #263D4F;
+  border-color: #B49C73;
+  box-shadow: none;
+}
+
+/* Botones */
+.modal-footer .btn-primary {
+  background-color: #263D4F;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+  transition: all 0.3s ease-in-out;
+}
+
+.modal-footer .btn-primary:hover {
+  background-color: #B49C73;
+  color: #263D4F;
+  border-color: #263D4F;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.8); /* Agregado */
+}
+
+.modal-footer .btn-secondary {
+  background-color: #B49C73;
+  border: 1px solid #ffffff;
+  color: #263D4F;
+  border: none;
+  transition: all 0.3s ease-in-out;
+}
+
+.modal-footer .btn-secondary:hover {
+  background-color: #ffffff;
+  color: #B49C73;
+  border: 1px solid #ffffff;
+  box-shadow: 0 0 12px #B49C73; /* Agregado */
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  color: #B49C73;
+  filter: invert(60%) sepia(80%) saturate(400%) hue-rotate(10deg) brightness(95%) contrast(90%);
+}
+
+/* Cambia el color del icono de success */
+.swal2-icon.swal2-success {
+  border-color: #263D4F !important;
+}
+
+.swal2-icon.swal2-success .swal2-success-ring {
+  border: 4px solid #263D4F !important;
+}
+
+.swal2-icon.swal2-success [class^='swal2-success-line'] {
+  background-color: #263D4F !important;
+}
+
+/* Estilo del botón SweetAlert2 */
+.swal2-confirm {
+  background-color: #263D4F !important;
+  border: 1px solid #ffffff !important;
+  color: #ffffff !important;
+}
+
+/* Hover dorado */
+.swal2-confirm:hover {
+  background-color: #B49C73 !important;
+  color: #263D4F !important;
+  border: 1px solid #263D4F !important;
+}
+/* Color dorado al título de SweetAlert2 */
+.swal2-title.dorado {
+  color: #B49C73 !important;
+}
+

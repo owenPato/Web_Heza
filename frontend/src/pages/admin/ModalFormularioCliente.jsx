@@ -71,9 +71,9 @@ const ModalFormularioCliente = ({ show, onClose, onSubmit, initialData = {} }) =
           <Row className="g-3">
             {Object.keys(form).filter(key => key !== 'solicitud_id').map((key) => (
               <Col md={6} key={key}>
-                <Form.Group>
-                  <Form.Label>{key.replace('_', ' ').toUpperCase()}</Form.Label>
-                  <Form.Control
+                <Form.Group className='formulario-usuario-label'>
+                  <Form.Label >{key.replace('_', ' ').toUpperCase()}</Form.Label>
+                  <Form.Control 
                     type={key.includes('numero') || key.includes('ventas') ? 'number' : 'text'}
                     name={key}
                     value={form[key]}
@@ -83,13 +83,12 @@ const ModalFormularioCliente = ({ show, onClose, onSubmit, initialData = {} }) =
                 </Form.Group>
               </Col>
             ))}
-          </Row>
-          <div className="text-end mt-4">
-            <Button variant="primary" type="submit">Guardar</Button>
-            <Button variant="secondary" className="ms-2" onClick={onClose}>Cancelar</Button>
-          </div>
-        </Form>
-      </Modal.Body>
+          </Row></Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button className='formulario-usuario-label' variant="primary" type="submit">Guardar</Button>
+            <Button className='formulario-usuario-label ms-2' variant="secondary"  onClick={onClose}>Cancelar</Button>
+          </Modal.Footer> 
     </Modal>
   );
 };

@@ -53,9 +53,14 @@ const ModalEditarCliente = ({ show, onHide, cliente, onUpdated }) => {
 
   return (
     <Modal show={show} onHide={onHide} size="lg">
-      <Form onSubmit={handleSubmit}>
+      <Form className='formulario-usuario-label' onSubmit={handleSubmit}>
         <Modal.Header closeButton>
-          <Modal.Title>Editar Cliente</Modal.Title>
+          <div className="w-100 text-center">
+            <h2 className="display-5 text-dark mb-0">
+              <span className="text-gradient-primary">Editar </span>
+              <span className="text-gradient-secondary">datos de empresa</span>
+            </h2>
+          </div>
         </Modal.Header>
         <Modal.Body>
           <Row>

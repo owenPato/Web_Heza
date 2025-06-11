@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Modal, Button, Row, Col, Form } from 'react-bootstrap';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import "./admin.css";
 
 const ModalFormularioUsuario = ({ show, onClose, onSubmit, initialData }) => {
   const [formData, setFormData] = useState({
@@ -42,19 +43,45 @@ useEffect(() => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = () => {
-    onSubmit(formData);
-  };
+const handleSubmit = async () => {
+  try {
+    await onSubmit(formData); // asegúrate de que onSubmit devuelva una promesa
+    Swal.fire({
+      title: 'Éxito',
+      text: 'Datos de usuario registrados correctamente',
+      icon: 'success',
+      confirmButtonColor: '#263D4F',
+      customClass: {
+        title: 'dorado'
+      }
+});
+    onClose();
+  } catch (error) {
+    console.error('Error al guardar datos:', error);
+    Swal.fire({
+      title: 'Error',
+      text: 'Ocurrió un problema al registrar los datos',
+      icon: 'error',
+      confirmButtonColor: '#263D4F'
+    });
+  }
+};
+
 
   return (
     <Modal show={show} onHide={onClose} centered>
       <Modal.Header closeButton>
-        <Modal.Title>Completar Datos del Usuario</Modal.Title>
+        <div className="w-100 text-center">
+        <h3 className="display-5 text-dark mb-0">
+          <span className="text-gradient-primary">Completar  </span>
+          <span className="text-gradient-secondary">datos de Usuarios</span>
+        </h3>
+      </div>
       </Modal.Header>
       <Modal.Body>
         <Form>
           <Form.Group className="mb-3">
-            <Form.Label>Puesto</Form.Label>
+            <Form.Label className='formulario-usuario-label'>Puesto</Form.Label>
             <Form.Select
               name="puesto_id"
               value={formData.puesto_id}
@@ -69,7 +96,7 @@ useEffect(() => {
             </Form.Select>
           </Form.Group>
           <Form.Group className="mb-3">
-          <Form.Label>Departamento</Form.Label>
+          <Form.Label className='formulario-usuario-label'>Departamento</Form.Label>
             <Form.Select
               name="departamento_id"
               value={formData.departamento_id}
@@ -85,7 +112,7 @@ useEffect(() => {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Fecha de Contratación</Form.Label>
+            <Form.Label className='formulario-usuario-label'>Fecha de Contratación</Form.Label>
             <Form.Control
               type="date"
               name="fecha_contratacion"
@@ -96,10 +123,10 @@ useEffect(() => {
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>
+        <Button  className='formulario-usuario-label' variant="secondary" onClick={onClose}>
           Cancelar
         </Button>
-        <Button variant="primary" onClick={handleSubmit}>
+        <Button className='formulario-usuario-label' variant="primary" onClick={handleSubmit}>
           Guardar
         </Button>
       </Modal.Footer>
