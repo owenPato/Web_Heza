@@ -1,204 +1,140 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Table, Button, FormControl } from 'react-bootstrap';
+import * as XLSX from 'xlsx';
+import Swal from 'sweetalert2';
+import ModalEditarEmpleado from './ModalEditarEmpleado';
 import './admin.css';
 
-const UsuariosAdmin = ({ fullScreen }) => {
-  const [username, setUsername] = useState('');
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [telefono, setTelefono] = useState('');
-  const [rol, setRol] = useState('empleado');
-  const [showPassword, setShowPassword] = useState(false);
-
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+const EmpleadosAdmin = () => {
+  const [empleados, setEmpleados] = useState([]);
+  const [filtro, setFiltro] = useState('');
+  const [modalShow, setModalShow] = useState(false);
+  const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('adminToken');
-    if (!token) {
-      navigate('/admin/login');
-    }
-  }, [navigate]);
+    obtenerEmpleados();
+  }, []);
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
-
+  const obtenerEmpleados = async () => {
     try {
-      const token = localStorage.getItem('adminToken');
-      if (!token) {
-        setError('No estás autorizado. Por favor inicia sesión.');
-        navigate('/admin/login');
-        return;
-      }
-
-      const userData = { 
-        username,
-        nombre: name, 
-        email, 
-        password, 
-        telefono, 
-        rol,
-        activo: 1
-      };
-
-      // Se elimina el bloque condicional que agregaba campos adicionales
-
-      await axios.post('/api/auth/register', userData, {
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      });
-
-      alert('Usuario registrado con éxito');
-      
-      setName('');
-      setEmail('');
-      setPassword('');
-      setTelefono('');
-      setRol('empleado');
-      
-      navigate('/admin/dashboard');
+      const res = await axios.get('/api/empleados');
+      setEmpleados(res.data);
     } catch (err) {
-      console.error('Register error:', err);
-      if (err.response && err.response.data) {
-        setError(err.response.data.error || 'Error al registrar usuario');
-      } else {
-        setError('Error de conexión al servidor');
-      }
-    } finally {
-      setIsLoading(false);
+      console.error('Error al obtener empleados:', err);
     }
   };
 
+  const handleBuscar = (e) => {
+    setFiltro(e.target.value.toLowerCase());
+  };
+
+  const handleEditar = (empleado) => {
+    setEmpleadoSeleccionado(empleado);
+    setModalShow(true);
+  };
+
+  const handleEliminar = async (id) => {
+    const result = await Swal.fire({
+      title: '¿Eliminar empleado?',
+      text: 'Esta acción no se puede deshacer.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#263D4F',
+      cancelButtonColor: '#A5A5A5'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await axios.delete(`/api/empleados/${id}`);
+        await obtenerEmpleados();
+        Swal.fire('Eliminado', 'Empleado eliminado correctamente.', 'success');
+      } catch (error) {
+        console.error('Error al eliminar empleado:', error);
+        Swal.fire('Error', 'No se pudo eliminar el empleado.', 'error');
+      }
+    }
+  };
+
+  const exportarExcel = () => {
+    const datos = empleados.map(({ empleado_id, nombre, email, puesto_nombre, departamento_nombre }) => ({
+      ID: empleado_id,
+      Nombre: nombre,
+      Email: email,
+      Puesto: puesto_nombre,
+      Departamento: departamento_nombre
+    }));
+    const hoja = XLSX.utils.json_to_sheet(datos);
+    const libro = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(libro, hoja, 'Empleados');
+    XLSX.writeFile(libro, 'empleados.xlsx');
+  };
+
+  const empleadosFiltrados = empleados.filter(e =>
+    e.nombre?.toLowerCase().includes(filtro) ||
+    e.email?.toLowerCase().includes(filtro)
+  );
+
   return (
-    <div className={`register-container ${fullScreen ? 'full-screen' : ''}`}>
-      <div className="text-center register-form form-card bg-white rounded-20 shadow-lg row justify-content-center col-lg-15 bg-white rounded-4 shadow-lg p-5 row g-8">
-      <h5 className="display-6 text-dark mb-4">
-            <span className="text-gradient-primary">Registro</span>
-            <span className="text-gradient-secondary"> de Usuario </span>
-        </h5>
-        {error && <div className="alert alert-danger">{error}</div>}
-        <div  className="admin-login-form mb-4 col-md-6 form-floating">
+    <div className="container mt-4">
+      <h2 className="display-5 text-dark mb-4">
+        <span className="text-gradient-primary">Empleados </span> 
+        <span className="text-gradient-secondary">Registrados</span>
+      </h2>
 
-        <form  onSubmit={handleRegister}>
-        <div className="row">
-          <div className="col-md-6 admin-form-group">
-            <div className=" mb-3 ">
-              <label htmlFor="username">Nombre de usuario</label>
-              <input
-                type="text"
-                id="username"
-                className="form-control text-dark"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-              <label htmlFor="name"> Nombre completo</label>
-              <input
-                type="text"
-                id="name"
-                className="form-control text-dark"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                
-              />
-            </div>
-            
-            <div className="mb-3">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                className="form-control text-dark"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className=" mb-3">
-              <label htmlFor="password">Contraseña</label>
-              <div className="password-input-container">
-                  <input                
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  className="form-control text-dark"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  placeholder="••••••••"
-                />          
-                  <button 
-                    type="button" 
-                    className="password-toggle-btn"
-                    onClick={togglePasswordVisibility}
-                    aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                    >
-                        <FontAwesomeIcon 
-                        icon={showPassword ? faEyeSlash : faEye} 
-                        className="eye-icon"
-                        />
-                  </button>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-6 admin-form-group">
-            <div className=" mb-3">
-              <label htmlFor="telefono">Telefono</label>
-              <input
-                type="tel"
-                id="telefono"
-                className="form-control text-dark"
-                value={telefono}
-                onChange={(e) => setTelefono(e.target.value)}
-                required
-              />
-            </div>
-
-            
-            <div className="mb-3">
-              <label htmlFor="rol">Rol</label>
-              <select
-                id="rol"
-                className="form-control text-dark"
-                value={rol}
-                onChange={(e) => setRol(e.target.value)}
-                required
-              >
-                <option value="empleado">Empleado</option>
-                <option value="admin">Administrador</option>
-              </select>
-            </div>
-            </div>
-        </div>  
-          <div className="mb-5 mr-4 mt-4">
-            <button type="submit" className="btn btn-primary btn-lg px-5 py-3 rounded-pill shadow-hover" disabled={isLoading}>
-            <i className="fas fa-arrow-right ms-2"></i>
-              {isLoading ? 'Registrando...' : 'Registrar'}
-            </button>
-          </div>
-        </form>
-        </div>
+      <div className="filtros-clientes">
+        <FormControl
+          placeholder="Buscar por nombre"
+          className="filtro-heza input-heza"
+          onChange={handleBuscar}
+        />
+        <button className="filtro-heza boton-exportar" onClick={exportarExcel}>
+          Exportar Excel
+        </button>
       </div>
+
+      <Table striped bordered hover responsive className="table table-con-sombra mt-3">
+        <thead className="table-dark">
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Puesto</th>
+            <th>Departamento</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {empleadosFiltrados.map(emp => (
+            <tr key={emp.empleado_id}>
+              <td>{emp.nombre}</td>
+              <td>{emp.email}</td>
+              <td>{emp.puesto_nombre}</td>
+              <td>{emp.departamento_nombre}</td>
+              <td>
+                <Button className="boton-heza me-2 mb-2" onClick={() => handleEditar(emp)}>
+                  Editar
+                </Button>
+                <Button className="boton-heza-outline" onClick={() => handleEliminar(emp.empleado_id)}>
+                  Eliminar
+                </Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+
+      {modalShow && empleadoSeleccionado && (
+        <ModalEditarEmpleado
+          empleado={empleadoSeleccionado}
+          show={modalShow}
+          onHide={() => setModalShow(false)}
+          onUpdated={obtenerEmpleados}
+        />
+      )}
     </div>
   );
 };
 
-UsuariosAdmin.propTypes = {
-  fullScreen: PropTypes.bool,
-};
-
-export default UsuariosAdmin;
+export default EmpleadosAdmin;

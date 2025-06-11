@@ -11,7 +11,7 @@ import fs from 'fs';
 import newsRoutes from './src/routes/newsRoutes.js';
 import eventRoutes from './src/routes/eventRoutes.js';
 import sucursalesRoutes from './src/routes/sucursalesRoutes.js';
-
+import empleadoRoutes from './src/routes/empleado.js';
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -65,6 +65,7 @@ app.use('/api/events', eventRoutes);
 app.use('/api/clientes', clientesRoutes);
 app.use('/api/sucursales', sucursalesRoutes);
 
+app.use('/api/empleados', empleadoRoutes);
 
 
 app.get('/api/debug', (req, res) => {
