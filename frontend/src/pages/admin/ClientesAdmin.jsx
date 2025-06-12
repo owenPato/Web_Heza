@@ -33,6 +33,7 @@ const ClientesAdmin = () => {
     console.error('Error al obtener clientes:', err);
   }
 };
+
 useEffect(() => {
   obtenerClientes();
 }, [sedeSeleccionada]);

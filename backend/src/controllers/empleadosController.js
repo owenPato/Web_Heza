@@ -2,15 +2,18 @@ import pool from '../config/db.js';
 
 // 📥 GET - Obtener todos los empleados
 const obtenerEmpleados = async (req, res) => {
+  const { sede_id } = req.query;
+
   try {
     const connection = await pool.getConnection();
 
-    const [empleados] = await connection.query(`
+    const query = `
       SELECT 
         e.id AS empleado_id,
         u.id AS user_id,
         u.nombre,
         u.email,
+        u.telefono,
         e.fecha_contratacion,
         e.solicitud_id,
         e.departamento_id,
@@ -21,10 +24,14 @@ const obtenerEmpleados = async (req, res) => {
       LEFT JOIN users u ON u.id = e.user_id
       LEFT JOIN puestos p ON p.id = e.puesto_id
       LEFT JOIN departamento d ON d.id = e.departamento_id
-    `);
+      ${sede_id ? 'WHERE u.sede_id = ?' : ''}
+    `;
 
+    const [empleados] = await connection.query(query, sede_id ? [sede_id] : []);
     connection.release();
+
     res.json(empleados);
+
   } catch (error) {
     console.error("Error al obtener empleados:", error);
     res.status(500).json({ error: "Error al obtener empleados" });

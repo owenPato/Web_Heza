@@ -5,11 +5,11 @@ const SelectHeza = ({ options, value, onChange }) => {
   const customStyles = {
     control: (base, state) => ({
       ...base,
-      borderColor: '#B49C73',
+      borderColor: '#263D4F',
       borderWidth: 2,
       boxShadow: 'none',
       '&:hover': {
-        borderColor: '#B49C73',
+        borderColor: '#263D4F',
       },
       borderRadius: 8,
       fontWeight: 600,

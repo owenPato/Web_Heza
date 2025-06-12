@@ -5,20 +5,32 @@ import * as XLSX from 'xlsx';
 import Swal from 'sweetalert2';
 import ModalEditarEmpleado from './ModalEditarEmpleado';
 import './admin.css';
+import SelectHeza from './SelectHeza'; 
 
 const EmpleadosAdmin = () => {
   const [empleados, setEmpleados] = useState([]);
   const [filtro, setFiltro] = useState('');
   const [modalShow, setModalShow] = useState(false);
   const [empleadoSeleccionado, setEmpleadoSeleccionado] = useState(null);
+  const [sedes, setSedes] = useState([]);
+  const [sedeSeleccionada, setSedeSeleccionada] = useState('');
 
   useEffect(() => {
+    axios.get('/api/sucursales')
+    .then(res => setSedes(res.data))
+    .catch(err => console.error('Error al cargar sedes', err));
     obtenerEmpleados();
   }, []);
 
+  useEffect(() => {
+    obtenerEmpleados();
+  }, [sedeSeleccionada]);
+
   const obtenerEmpleados = async () => {
     try {
-      const res = await axios.get('/api/empleados');
+      const res = await axios.get('/api/empleados', {
+        params: sedeSeleccionada ? { sede_id: sedeSeleccionada } : {}
+      });
       setEmpleados(res.data);
     } catch (err) {
       console.error('Error al obtener empleados:', err);
@@ -89,6 +101,21 @@ const EmpleadosAdmin = () => {
           placeholder="Buscar por nombre"
           className="filtro-heza input-heza"
           onChange={handleBuscar}
+        />
+        <SelectHeza
+          options={[{ label: 'Todas las sedes', value: '' }, ...sedes.map(s => ({
+            label: s.nombre,
+            value: s.id
+          }))]}
+          value={
+            sedes.length
+              ? {
+                  label: sedes.find(s => s.id === sedeSeleccionada)?.nombre || 'Todas las sedes',
+                  value: sedeSeleccionada
+                }
+              : ''
+          }
+          onChange={(selected) => setSedeSeleccionada(selected.value)}
         />
         <button className="filtro-heza boton-exportar" onClick={exportarExcel}>
           Exportar Excel
