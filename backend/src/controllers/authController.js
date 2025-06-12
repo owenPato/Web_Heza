@@ -352,7 +352,7 @@ export const requestClientAccess = async (req, res) => {
                 <h1>Nueva Solicitud de Acceso de Usuario</h1>
                 <p>Un usuario ha solicitado acceso a la plataforma:</p>
                 <ul>
-                  <li><strong>Nombre:</strong> ${nombre}</li>
+                  <li><strong>Nombre:</strong> ${empresa}</li>
                   <li><strong>Teléfono:</strong> ${telefono}</li>
                   <li><strong>Empresa:</strong> ${empresa}</li>
                   <li><strong>Email:</strong> ${email}</li>

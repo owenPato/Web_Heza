@@ -58,14 +58,14 @@ const ModalFormularioCliente = ({ show, onClose, onSubmit, initialData = {} }) =
 
   return (
     <Modal show={show} onHide={onClose} centered size="lg">
-      <Modal.Header closeButton>
-      <div className="w-100 text-center">
-        <h3 className="display-5 text-dark mb-0">
-          <span className="text-gradient-primary">Completar  </span>
-          <span className="text-gradient-secondary">datos de empresa</span>
-        </h3>
-      </div>
-      </Modal.Header>
+        <Modal.Header closeButton>
+          <div className="w-100 text-center">
+            <h3 className="display-5 text-dark mb-0">
+              <span className="text-gradient-primary">Completar  </span>
+              <span className="text-gradient-secondary">datos de empresa</span>
+            </h3>
+          </div>
+        </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleSubmit}>
           <Row className="g-3">
@@ -83,12 +83,13 @@ const ModalFormularioCliente = ({ show, onClose, onSubmit, initialData = {} }) =
                 </Form.Group>
               </Col>
             ))}
-          </Row></Form>
-          </Modal.Body>
+          </Row>
           <Modal.Footer>
-            <Button className='formulario-usuario-label' variant="primary" type="submit">Guardar</Button>
+           <Button className='formulario-usuario-label' variant="primary" type="submit">Guardar</Button>
             <Button className='formulario-usuario-label ms-2' variant="secondary"  onClick={onClose}>Cancelar</Button>
-          </Modal.Footer> 
+          </Modal.Footer>            
+          </Form>
+          </Modal.Body>        
     </Modal>
   );
 };
