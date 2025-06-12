@@ -4,6 +4,7 @@ import axios from 'axios';
 import ImageUploader from '../../components/ImageUploader';
 import MultiImageUploader from '../../components/MultiImageUploader';
 import TimeInput from '../../components/Time/TimeInput';
+import './admin.css';
 
 const EventosAdmin = () => {
   const [showModal, setShowModal] = useState(false);
@@ -289,10 +290,10 @@ const EventosAdmin = () => {
             </Row>
 
             <div className="d-flex justify-content-end gap-2">
-              <Button variant="secondary" onClick={() => setShowModal(false)}>
+              <Button className='boton-heza-outline' onClick={() => setShowModal(false)}>
                 Cancelar
               </Button>
-              <Button variant="primary" type="submit">
+              <Button className="boton-heza" type="submit">
                 {editMode ? 'Actualizar' : 'Guardar'} Evento
               </Button>
             </div>

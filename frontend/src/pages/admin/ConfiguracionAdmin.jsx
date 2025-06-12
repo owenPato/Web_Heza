@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { AlertCircle, CheckCircle } from 'react-feather';
+import "./admin.css";
 
 const ConfiguracionAdmin = () => {
   const [userData, setUserData] = useState({
@@ -15,6 +16,7 @@ const ConfiguracionAdmin = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [passwordSection, setPasswordSection] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -134,12 +136,12 @@ const ConfiguracionAdmin = () => {
 
   return (
     <div className="col-lg-9 p-6">
-      <div className="mb-6">
-        <h1 className="display-7 text-dark mb-4">
+      <div className="mb-8 ">
+        <h1 className="display-7 text-dark mb-6 mt-3">
           <span className="text-gradient-primary">Configuración </span>
           <span className="text-gradient-secondary">de Cuenta</span>
         </h1>
-        <h5 className="section-subtitle text-primary mb-4">
+        <h5 className="section-subtitle text-gradient-secondary mb-4 mt-2">
           Actualiza tu información de contacto y seguridad
         </h5>
       </div>
@@ -155,13 +157,13 @@ const ConfiguracionAdmin = () => {
       )}
 
       <div className="row">
-        <div className="col-lg-6 mb-4">
-          <div className="card shadow-sm border-0 h-100">
-            <div className="card-header bg-white border-0 pt-4">
-            <span className="section-badge bg-primary-soft text-primary mb-3">
-                Información de Contacto
-            </span>
-            <p className="small text-primary mb-0 ">Actualiza tu información personal y de contacto</p>
+        <div className="col-lg-6 mb-4 ">
+          <div className="card shadow-sm border-0 h-100 modal-content card-heza">
+            <div className=" border-0 pt-4">
+              <span className="section-badge bg-primary-soft text-primary mb-3">
+                  Información de Contacto
+              </span>
+              <p className="small text-primary mb-0 ">Actualiza tu información personal y de contacto</p>
             </div>
             <div className="card-body admin-form-group">
               <form onSubmit={handleProfileUpdate}>
@@ -209,7 +211,7 @@ const ConfiguracionAdmin = () => {
                 
                 <button 
                   type="submit" 
-                  className="btn btn-primary"
+                  className="boton-heza-invertido"
                   disabled={loading}
                 >
                   {loading ? 'Guardando...' : 'Guardar Cambios'}
@@ -219,26 +221,31 @@ const ConfiguracionAdmin = () => {
           </div>
         </div>
         
-        <div className="col-lg-6 mb-4">
-          <div className="card shadow-sm border-0 h-100">
-            <div className="card-header bg-white border-0 pt-4">
-              <span className="section-badge bg-primary-soft text-primary mb-3">
-                Seguridad
-              </span>
-              <p className="small text-primary mb-0">Actualiza tu contraseña para mantener tu cuenta segura</p>
+        <div className="card-flip-container col-lg-6 mb-4">
+        <div className={`card-flip ${isFlipped ? 'flipped' : ''}`}>
+              {/* Frente */}
+          <div className="card-front ">
+            <div className="card shadow-sm border-0 h-100">
+              <div className="card-header bg-white border-0 pt-4">
+                <span className="section-badge bg-primary-soft text-primary mb-3">Seguridad</span>
+                <p className="small text-primary mb-0">Actualiza tu contraseña para mantener tu cuenta segura</p>
+              </div>
+              <div className="card-body d-flex flex-column align-items-center justify-content-center text-center">
+                <h5 className="mb-4">Cambia tu contraseña periódicamente para mantener tu cuenta segura.</h5>
+                <button className="btn btn-outline-primary" onClick={() => setIsFlipped(true)}>
+                  Cambiar Contraseña
+                </button>
+              </div>
             </div>
-            <div className="card-body">
-              {!passwordSection ? (
-                <div className="text-center py-4">
-                  <h5 className="mb-4 ">Cambia tu contraseña periódicamente para mantener tu cuenta segura.</h5>
-                  <button 
-                    className="btn btn-outline-primary"
-                    onClick={() => setPasswordSection(true)}
-                  >
-                    Cambiar Contraseña
-                  </button>
-                </div>
-              ) : (
+          </div>
+
+          {/* Reverso */}
+          <div className="card-back ">
+            <div className="card shadow-sm border-0 h-100 modal-content">
+              <div className=" border-0 pt-4">
+                <span className="section-badge bg-primary-soft text-primary mb-3">Actualizar Contraseña</span>
+              </div>
+              <div className="card-body">
                 <form onSubmit={handlePasswordUpdate}>
                   <div className="mb-3 admin-form-group">
                     <label htmlFor="currentPassword" className="form-label">Contraseña Actual</label>
@@ -282,36 +289,32 @@ const ConfiguracionAdmin = () => {
                       required
                     />
                   </div>
-                  
+
                   <div className="d-flex gap-2">
-                    <button 
-                      type="submit" 
-                      className="btn btn-primary"
-                      disabled={loading}
-                    >
+                    <button type="submit" className="boton-heza-invertido" disabled={loading}>
                       {loading ? 'Actualizando...' : 'Actualizar Contraseña'}
                     </button>
-                    <button 
-                      type="button" 
-                      className="btn btn-outline-secondary"
+                    <button
+                      type="button"
+                      className="boton-heza-outline"
                       onClick={() => {
-                        setPasswordSection(false);
-                        setUserData(prevState => ({
-                          ...prevState,
+                        setIsFlipped(false);
+                        setUserData(prev => ({
+                          ...prev,
                           currentPassword: '',
                           newPassword: '',
                           confirmPassword: ''
                         }));
                       }}
-                    >Cancelar
-                    </button>
+                    >Cancelar</button>
                   </div>
                 </form>
-              )}
+              </div>
             </div>
           </div>
         </div>
       </div>
+     </div> 
     </div>
   );
 };
