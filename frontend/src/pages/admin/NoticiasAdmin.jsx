@@ -213,13 +213,13 @@ const NoticiasAdmin = () => {
                   <Button 
                     variant="info" 
                     size="sm" 
-                    className="me-2"
+                    className="boton-heza me-2 mb-2"
                     onClick={() => handleOpenModal(noticia)}
                   >
                     Editar
                   </Button>
                   <Button 
-                    variant="danger" 
+                    className="boton-heza-outline"
                     size="sm" 
                     onClick={() => handleDelete(noticia.id)}
                   >
@@ -234,7 +234,11 @@ const NoticiasAdmin = () => {
 
       <Modal show={showModal} onHide={() => setShowModal(false)} centered className="modal-xl-custom">
         <Modal.Header closeButton>
-          <Modal.Title>{editMode ? 'Editar Noticia' : 'Nueva Noticia'}</Modal.Title>
+          <Modal.Title>
+              <h2 className="display-5 text-dark mb-4">
+                <span className="text-gradient-secondary"> {editMode ? 'Editar Noticia' : 'Nueva Noticia'}</span>
+              </h2>
+           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -299,10 +303,10 @@ const NoticiasAdmin = () => {
             </Row>
 
             <div className="d-flex justify-content-end">
-              <Button variant="secondary" className="me-2" onClick={() => setShowModal(false)}>
+              <Button className="boton-heza-outline" onClick={() => setShowModal(false)}>
                 Cancelar
               </Button>
-              <Button variant="primary" type="submit">
+              <Button className="boton-heza me-2 mb-2" type="submit">
                 {editMode ? 'Actualizar' : 'Guardar'}
               </Button>
             </div>
