@@ -88,15 +88,34 @@ export const createEvent = async (req, res) => {
       }
     }
     
-    const eventData = {
-      titulo: req.body.titulo,
-      fecha: req.body.fecha || new Date().toISOString().split('T')[0],
-      ubicacion: req.body.ubicacion || '',
-      tipo: req.body.tipo || 'Próximo',
-      descripcion: req.body.descripcion || '',
-      imagen: imagePath,
-      galeria: galeriaArray
-    };
+   const eventData = {
+    titulo: req.body.titulo,
+    fecha: req.body.fecha || new Date().toISOString().split('T')[0],
+    hora: convertTo24HourFormat(req.body.hora),  // ✅ Aquí la hora en 24h
+    ubicacion: req.body.ubicacion || '',
+    tipo: req.body.tipo || 'Próximo',
+    descripcion: req.body.descripcion || '',
+    imagen: imagePath,
+    galeria: galeriaArray
+   };
+
+    
+  function convertTo24HourFormat(timeStr) {
+    if (!timeStr) return null;
+
+    const [time, modifier] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':');
+
+    hours = parseInt(hours, 10);
+    if (modifier === 'PM' && hours !== 12) {
+      hours += 12;
+    } else if (modifier === 'AM' && hours === 12) {
+      hours = 0;
+    }
+
+  return `${String(hours).padStart(2, '0')}:${minutes}:00`;
+  }
+
     
     const eventId = await Event.create(eventData);
     

@@ -594,3 +594,73 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   color: #ffffff;
   border-color: #ffffff;
 }
+
+.modal-xl-custom .modal-content {
+  width: 100%;
+  max-width: 1250px;
+}
+
+.time-input-container {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  width: 75%;
+}
+
+.time-input-container select,
+.time-input-container input {
+  width: 75%;
+  max-width: 35px;
+  text-align: center;
+}
+/* Asegura visibilidad del separador ":" */
+.time-separator {
+  color: #B49C73 !important;
+  font-weight: bold;
+  padding: 0 6px;
+  font-size: 1.2rem;
+}
+
+.time-select {
+  min-width: 60px;
+  text-align: center;
+  font-weight: 600;
+  background-color: transparent;
+  color: #B49C73; /* Texto dorado */
+  border: 1px solid #B49C73;
+  border-radius: 4px;
+  padding: 4px 8px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Flecha de desplegable (pseudo-elemento nativo en algunos navegadores) */
+.time-select::-ms-expand {
+  display: none;
+}
+
+/* Hover & focus */
+.time-select:hover,
+.time-select:focus {
+  border-color: #F2C879; /* un dorado más claro */
+  box-shadow: 0 0 0 2px rgba(242, 200, 121, 0.3);
+}
+
+/* Opciones del menú desplegable */
+.time-select option {
+  background-color: #263D4F;  /* fondo modal */
+  color: #B49C73;             /* texto dorado */
+  font-weight: 600;
+}
+
+/* Ajusta el texto "PM" */
+.am-pm {
+  margin-left: 8px;
+  color: #B49C73;
+  font-weight: 600;
+  white-space: nowrap;
+}
+

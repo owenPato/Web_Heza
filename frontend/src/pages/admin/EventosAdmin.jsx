@@ -3,7 +3,7 @@ import { Button, Form, Modal, Card, Row, Col, Badge } from 'react-bootstrap';
 import axios from 'axios';
 import ImageUploader from '../../components/ImageUploader';
 import MultiImageUploader from '../../components/MultiImageUploader';
-import TimeInput from '../../components/Time/TimeInput';
+import  TimeInput from './TimeInput.jsx';
 import './admin.css';
 
 const EventosAdmin = () => {
@@ -46,7 +46,18 @@ const EventosAdmin = () => {
     }
   };
 
-  useEffect(() => {
+  const formatTimeTo12h = (timeStr) => {
+  if (!timeStr) return '';
+  const [hourStr, minute] = timeStr.split(':');
+  let hour = parseInt(hourStr, 10);
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  if (hour === 0) hour = 12;
+  else if (hour > 12) hour -= 12;
+  return `${String(hour).padStart(2, '0')}:${minute} ${ampm}`;
+};
+
+
+   useEffect(() => {
     fetchEventos();
   }, []);
 
@@ -179,7 +190,7 @@ const EventosAdmin = () => {
         </Button>
       </div>
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+      <Modal show={showModal} onHide={() => setShowModal(false)} size="xl" centered className="modal-xl-custom formulario-usuario-label">
         <Modal.Header closeButton>
           <Modal.Title>{editMode ? 'Editar Evento' : 'Nuevo Evento'}</Modal.Title>
         </Modal.Header>
@@ -187,7 +198,7 @@ const EventosAdmin = () => {
           <Form onSubmit={handleSubmit}>
             <Row>
               <Col md={6}>
-                <Form.Group className="mb-3">
+                <Form.Group className="mb-3 formulario-usuario-label">
                   <Form.Label>Título del Evento</Form.Label>
                   <Form.Control
                     type="text"
@@ -200,7 +211,7 @@ const EventosAdmin = () => {
               </Col>
               
               <Col md={3}>
-                <Form.Group className="mb-3">
+                <Form.Group className="mb-3 formulario-usuario-label">
                   <Form.Label>Fecha</Form.Label>
                   <Form.Control
                     type="date"
@@ -212,21 +223,24 @@ const EventosAdmin = () => {
                 </Form.Group>
               </Col>
 
-              <Col md={3}>
-                <Form.Group className="mb-3">
+              <Col md={4}>
+                <Form.Group className="mb-3 formulario-usuario-label ">
                   <Form.Label>Hora del Evento</Form.Label>
-                  <TimeInput
-                    value={nuevoEvento.hora}
-                    onChange={(newTime) => setNuevoEvento(prev => ({
-                      ...prev,
-                      hora: newTime
-                    }))}
-                  />
+                  <div className="d-flex  align-items-center"> 
+                    <TimeInput
+                    className="form-select time-select mt-5"
+                      value={nuevoEvento.hora}
+                      onChange={(newTime) => setNuevoEvento(prev => ({
+                        ...prev,
+                        hora: newTime
+                      }))}
+                    />
+                  </div>
                 </Form.Group>
               </Col>
               
               <Col md={3}>
-                <Form.Group className="mb-3">
+                <Form.Group className="mb-3 formulario-usuario-label">
                   <Form.Label>Tipo de Evento</Form.Label>
                   <Form.Select
                     name="tipo"
@@ -240,7 +254,7 @@ const EventosAdmin = () => {
               </Col>
             </Row>
 
-            <Form.Group className="mb-3">
+            <Form.Group className="mb-3 formulario-usuario-label">
               <Form.Label>Ubicación</Form.Label>
               <Form.Control
                 type="text"
@@ -251,7 +265,7 @@ const EventosAdmin = () => {
               />
             </Form.Group>
 
-            <Form.Group className="mb-3">
+            <Form.Group className="mb-3 formulario-usuario-label">
               <Form.Label>Descripción</Form.Label>
               <Form.Control
                 as="textarea"
@@ -265,7 +279,7 @@ const EventosAdmin = () => {
 
             <Row>
               <Col md={6}>
-                <Form.Group className="mb-3">
+                <Form.Group className="mb-3 formulario-usuario-label">
                   <Form.Label>Imagen Principal</Form.Label>
                   <ImageUploader 
                     onImageUpload={handleImageUpload} 
@@ -274,7 +288,7 @@ const EventosAdmin = () => {
                 </Form.Group>
               </Col>
               <Col md={6}>
-                <Form.Group className="mb-3">
+                <Form.Group className="mb-3 formulario-usuario-label">
                   <Form.Label>Galería de Imágenes</Form.Label>
                   <MultiImageUploader 
                     onImagesUpload={handleMultipleImagesUpload}
@@ -323,7 +337,7 @@ const EventosAdmin = () => {
                   <Card.Title className="fw-bold">{evento.titulo}</Card.Title>
                   <Card.Subtitle className="mb-2 text-muted">
                     <i className="bi bi-calendar-event me-2"></i>
-                    {new Date(evento.fecha).toLocaleDateString()} - {evento.ubicacion}
+                    {new Date(evento.fecha).toLocaleDateString()} - {formatTimeTo12h(evento.hora)} - {evento.ubicacion}
                   </Card.Subtitle>
                   {evento.descripcion && (
                     <p className="text-muted small mb-3 text-truncate">{evento.descripcion}</p>

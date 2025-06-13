@@ -3,6 +3,7 @@ import { Button, Form, Modal, Table, Badge, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 import ImageUploader from '../../components/ImageUploader';
 import MultiImageUploader from '../../components/MultiImageUploader';
+import './admin.css';
 
 const NoticiasAdmin = () => {
   const [showModal, setShowModal] = useState(false);
@@ -231,7 +232,7 @@ const NoticiasAdmin = () => {
         </Table>
       )}
 
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered className="modal-xl-custom">
         <Modal.Header closeButton>
           <Modal.Title>{editMode ? 'Editar Noticia' : 'Nueva Noticia'}</Modal.Title>
         </Modal.Header>
