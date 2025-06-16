@@ -192,7 +192,11 @@ const EventosAdmin = () => {
 
       <Modal show={showModal} onHide={() => setShowModal(false)} size="xl" centered className="modal-xl-custom formulario-usuario-label">
         <Modal.Header closeButton>
-          <Modal.Title>{editMode ? 'Editar Evento' : 'Nuevo Evento'}</Modal.Title>
+          <Modal.Title>
+            <h3 className="display-5 text-dark mb-4">
+                <span className="text-gradient-secondary">  {editMode ? 'Editar Evento' : 'Nuevo Evento'} </span>
+            </h3>
+           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -276,7 +280,6 @@ const EventosAdmin = () => {
                 placeholder="Describe los detalles del evento"
               />
             </Form.Group>
-
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3 formulario-usuario-label">
@@ -343,16 +346,15 @@ const EventosAdmin = () => {
                     <p className="text-muted small mb-3 text-truncate">{evento.descripcion}</p>
                   )}
                   <div className="d-flex justify-content-between align-items-center mb-3">
-                    <span className={`badge ${evento.tipo === 'Próximo' ? 'bg-success' : 'bg-secondary'} px-3 py-2`}>
-                      {evento.tipo}
+                    <span className={`boton-heza-dorado`}>
+                        {evento.tipo}
                     </span>
                     {evento.galeria && Array.isArray(evento.galeria) && evento.galeria.length > 0 && (
-                      <Badge bg="info" className="px-3 py-2">
+                      <span className="boton-heza-claro">
                         {evento.galeria.length} fotos
-                      </Badge>
+                      </span>
                     )}
-                  </div>
-                  
+                  </div>                  
                   {evento.galeria && Array.isArray(evento.galeria) && evento.galeria.length > 0 && (
                     <div className="mb-3 overflow-auto" style={{ whiteSpace: 'nowrap' }}>
                       {evento.galeria.slice(0, 3).map((img, idx) => (
@@ -374,14 +376,14 @@ const EventosAdmin = () => {
                   
                   <div className="d-flex gap-2">
                     <Button 
-                      variant="outline-primary" 
+                      className="boton-heza me-2 mb-2" 
                       size="sm"
                       onClick={() => handleOpenModal(evento)}
                     >
                       Editar
                     </Button>
                     <Button 
-                      variant="outline-danger" 
+                      className="boton-heza-outline"
                       size="sm"
                       onClick={() => handleDelete(evento.id)}
                     >

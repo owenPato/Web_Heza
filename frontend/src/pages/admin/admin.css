@@ -664,3 +664,20 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   white-space: nowrap;
 }
 
+.boton-heza-claro {
+  background-color: #ffffff;
+  color: #B49C73;
+  border: 1px solid #B49C73;
+  font-weight: 600;
+  border-radius: 4px;
+  padding: 6px 12px;
+}
+
+.boton-heza-dorado {
+  background-color: #B49C73;
+  color: #263D4F;
+  border: none;
+  font-weight: 600;
+  border-radius: 4px;
+  padding: 6px 12px;
+}

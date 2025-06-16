@@ -231,13 +231,12 @@ const NoticiasAdmin = () => {
           </tbody>
         </Table>
       )}
-
       <Modal show={showModal} onHide={() => setShowModal(false)} centered className="modal-xl-custom">
         <Modal.Header closeButton>
           <Modal.Title>
-              <h2 className="display-5 text-dark mb-4">
+              <h3 className="display-5 text-dark mb-4">
                 <span className="text-gradient-secondary"> {editMode ? 'Editar Noticia' : 'Nueva Noticia'}</span>
-              </h2>
+              </h3>
            </Modal.Title>
         </Modal.Header>
         <Modal.Body>
