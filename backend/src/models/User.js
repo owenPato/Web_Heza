@@ -110,11 +110,12 @@ class User {
       }
       
       const userFields = {};
-      ['nombre', 'email', 'password', 'telefono', 'rol', 'activo'].forEach(field => {
+      ['nombre', 'email', 'password', 'telefono', 'rol', 'activo', 'primera_vez'].forEach(field => {
         if (userData[field] !== undefined) {
           userFields[field] = userData[field];
         }
       });
+
       
       if (Object.keys(userFields).length > 0) {
         await connection.query(

@@ -187,7 +187,7 @@ export const changePassword = async (req, res) => {
       return res.status(401).json({ error: 'Contraseña actual incorrecta' });
     }
     
-    await User.update(userId, { password: newPassword });
+    await User.update(userId, { password: newPassword,  primera_vez: 0 });
     
     res.json({ success: true, message: 'Contraseña actualizada correctamente' });
   } catch (error) {

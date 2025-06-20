@@ -319,6 +319,8 @@ ADD CONSTRAINT fk_solicitud_usuario
   FOREIGN KEY (user_id_creado) REFERENCES users(id)
   ON DELETE SET NULL;
 
+ALTER TABLE users ADD COLUMN primera_vez TINYINT(1) DEFAULT 1;
+
 -- ========================================================================
 -- CREACIÓN DE ÍNDICES PARA OPTIMIZACIÓN
 -- ========================================================================

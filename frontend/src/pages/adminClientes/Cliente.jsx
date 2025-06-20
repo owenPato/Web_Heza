@@ -1,60 +1,76 @@
-import React from 'react';
-import { Link, Outlet } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, Outlet } from 'react-router-dom';
+import useCliente from '../../hooks/useCliente';
+import ModalPrimeravez from './ModalPrimeravez'; // ✅ Import correcto
 
 const Cliente = () => {
-  const empresaInfo = {
-    nombre: 'Empresa Ejemplo S.A. de C.V.',
-    rfc: 'EJE210506ABC',
-    industria: 'Consultoría Financiera',
-    contacto: 'Juan Pérez - juan@empresa.com',
-    regimenFiscal: 'Régimen General'
+  const cliente = useCliente();
+  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(() => {
+  const storedUser = JSON.parse(localStorage.getItem('user'));
+  return storedUser?.primera_vez === 1;
+});
+
+
+  useEffect(() => {
+    if (cliente && !localStorage.getItem('primera_vez_cliente')) {
+      setShowModal(true);
+    }
+  }, [cliente]);
+
+  const handleModalClose = () => {
+    localStorage.setItem('primera_vez_cliente', 'true');
+    setShowModal(false);
   };
+
+  if (!cliente) return <p>Cargando datos del cliente...</p>;
 
   return (
     <div className="container py-5">
       <h1 className="display-2 text-dark mb-4">
-              <span className="text-gradient-primary">Bienvenido</span> 
-              <span className="text-gradient-secondary"> {empresaInfo.nombre}</span>
+        <span className="text-gradient-primary">Bienvenido</span>
+        <span className="text-gradient-secondary"> {cliente.empresa}</span>
       </h1>
+
       <div className="row ">
         <div className="col-md-3">
           <div className="card shadow-sm mb-4">
             <div className="card-body">
               <h5 className="display-7 text-dark mb-4">
-                  <span className="text-gradient-primary">Información </span>
-                  <span className="text-gradient-secondary"> Empresa</span>
-              </h5>              
+                <span className="text-gradient-primary">Información </span>
+                <span className="text-gradient-secondary"> Empresa</span>
+              </h5>
               <ul className="list-group list-group-flush">
                 <li className="list-group-item specialty-card">
-                  <strong className="form-text text-primary">RFC:</strong> {empresaInfo.rfc}
+                  <p><strong className="form-text text-primary">RFC:</strong> {cliente.rfc}</p>
                 </li>
                 <li className="list-group-item specialty-card">
-                <strong className="form-text text-primary">Régimen Fiscal:</strong> {empresaInfo.regimenFiscal}
+                  <p><strong className="form-text text-primary">Dirección:</strong> {cliente.direccion}, {cliente.ciudad}, {cliente.estado}, C.P. {cliente.codigo_postal}</p>
                 </li>
                 <li className="list-group-item specialty-card">
-                <strong className="form-text text-primary">Contacto:</strong> {empresaInfo.contacto}
+                  <p><strong className="form-text text-primary">Giro:</strong> {cliente.giro}</p>
                 </li>
               </ul>
             </div>
           </div>
-          
+
           <nav className="card shadow-sm">
             <div className="list-group list-group-flush ">
-              <Link to="documentos" className="list-group-item list-group-item-action specialty-card">
+              <button to="documentos" className="list-group-item list-group-item-action specialty-card"  onClick={() => navigate('/clientes/dashboard')}>
                 <span className="section-badge bg-primary-soft text-primary fas fa-folder-open ">
-                 Documentos
+                  Documentos
                 </span>
-              </Link>
-              <Link to="perfil" className="list-group-item list-group-item-action specialty-card">
+              </button>
+              <button to="perfil" className="list-group-item list-group-item-action specialty-card"  onClick={() => navigate('/clientes/dashboard/perfil')}>
                 <span className="section-badge bg-primary-soft text-primary fas fa-folder-open ">
                   Perfil Empresa
-                </span>                
-              </Link>
-              <Link to="configuracion" className="list-group-item list-group-item-action specialty-card">
+                </span>
+              </button>
+              <button to="configuracion" className="list-group-item list-group-item-action specialty-card"  onClick={() => navigate('/clientes/dashboard/configuracion')}>
                 <span className="section-badge bg-primary-soft text-primary fas fa-folder-open ">
-                    Configuración
-                </span> 
-              </Link>
+                  Configuración
+                </span>
+              </button>
             </div>
           </nav>
         </div>
@@ -63,6 +79,9 @@ const Cliente = () => {
           <Outlet />
         </div>
       </div>
+
+      {/* ✅ Modal controlado por estado */}
+      {showModal && <ModalPrimeravez onClose={handleModalClose} />}
     </div>
   );
 };

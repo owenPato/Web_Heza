@@ -1,0 +1,429 @@
+/* === CARD DE PERFIL EMPRESA === */
+form.specialty-cards {
+  background-color: rgb(59, 95, 122); /* azul heza */
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 750px;         /* 👈 limita el ancho del formulario */
+  margin: auto;             /* 👈 centra el formulario horizontalmente */
+  box-shadow: 0 100px 200px rgba(0, 0, 0, 0.25); /* 👈 sombra elegante */
+  transition: all 0.25s ease-in-out;
+}
+
+/* === LABELS EN DORADO === */
+form.specialty-cards .form-label {
+  font-weight: 600;
+  color: #B49C73;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+/* === INPUTS BLANCOS CON BORDE DORADO === */
+form.specialty-cards .form-control {
+  background-color: #5E7D95; /* azul más opaco */
+  color: #fff;
+  border: 1px solid #B49C73;
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 15px;
+  box-shadow: 0 1px 3px #B49C73;
+  transition: all 0.25s ease-in-out;
+}
+
+form.specialty-cards .form-control::placeholder {
+  color: #dcdcdc;
+}
+
+form.specialty-cards .form-control:hover,
+form.specialty-cards .form-control:focus {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 2px #B49C73;
+  outline: none;
+}
+
+.swal2-icon.swal2-success {
+  border-color: #263D4F !important;
+}
+
+.swal2-icon.swal2-success .swal2-success-ring {
+  border: 4px solid #263D4F !important;
+}
+
+.swal2-icon.swal2-success [class^='swal2-success-line'] {
+  background-color: #263D4F !important;
+}
+
+/* Estilo del botón SweetAlert2 */
+.swal2-confirm {
+  background-color: #263D4F !important;
+  border: 1px solid #ffffff !important;
+  color: #ffffff !important;
+}
+
+/* Hover dorado */
+.swal2-confirm:hover {
+  background-color: #B49C73 !important;
+  color: #263D4F !important;
+  border: 1px solid #263D4F !important;
+}
+/* Color dorado al título de SweetAlert2 */
+.swal2-title.dorado {
+  color: #B49C73 !important;
+}
+
+.alert-success {
+  background-color: #F0F5F2;
+  color: #B49C73;
+  border: 1px solid #B49C73;
+}
+
+.accesos-rapidos {
+  display: flex;
+  flex-direction: row-reverse;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin: 2rem 0;
+}
+
+.acceso-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 220px;
+  padding: 1.5rem;
+  background-color: #fff;
+  border-radius: 12px;
+  border: 2px solid #263D4F; /* AzulHeza */
+  transition: all 0.3s ease;
+  box-shadow: 0 0 5px rgba(0,0,0,0.05);
+  cursor: pointer;
+}
+
+.acceso-card svg {
+  color: #263D4F;
+  transition: color 0.3s ease;
+}
+
+.acceso-card h4 {
+  margin: 0.8rem 0 0.3rem;
+  color: #263D4F;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+.acceso-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #666;
+  transition: color 0.3s ease;
+}
+
+.acceso-card:hover {
+  background-color: #263D4F; /* AzulHeza al hacer hover */
+  border-color: #263D4F;
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.acceso-card:hover svg,
+.acceso-card:hover h4,
+.acceso-card:hover p {
+  color: #fff; /* Texto e íconos en blanco sobre azul */
+}
+
+.lista-facturas {
+  margin-top: 2rem;
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.2rem;
+  border: 2px solid #263D4F;
+}
+
+.lista-facturas h3 {
+  margin-bottom: 1rem;
+  color: #263D4F;
+}
+
+.lista-facturas ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.lista-facturas li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.lista-facturas li:last-child {
+  border-bottom: none;
+}
+
+.lista-facturas .info {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.lista-facturas .info strong {
+  display: block;
+  font-size: 1rem;
+}
+
+.lista-facturas .info small {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.lista-facturas .acciones button {
+  margin-left: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #263D4F;
+}
+
+.lista-facturas li.pendiente {
+  background-color: #fff6e5;
+}
+
+.lista-facturas li.pagada {
+  background-color: #e6f8ec;
+}
+.avance-contaduria-box {
+  margin-top: 2rem;
+  background: #ffffff;
+  border: 2px solid #263D4F;
+  border-radius: 16px;
+  padding: 1.5rem;
+  max-width: 420px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+  transition: box-shadow 0.3s ease;
+}
+
+.avance-contaduria-box h3 {
+  color: #263D4F;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+
+.progreso-barra {
+  background: #E5E5E5;
+  border-radius: 30px;
+  height: 22px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.progreso-barra:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(11, 37, 98, 0.1);
+}
+
+.progreso {
+  background: linear-gradient(90deg, #B49C73, #cbb288);
+  height: 100%;
+  color: #263D4F;;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 22px;
+  transition: width 0.5s ease;
+  border-radius: 30px 0 0 30px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.avance-contaduria-box p {
+  font-size: 0.9rem;
+  color: #263D4F;
+  margin-bottom: 1rem;
+}
+
+.avance-contaduria-box button {
+  background: #263D4F;
+  color: #fff;
+  border: none;
+  padding: 0.6rem 1.4rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.avance-contaduria-box button:hover {
+  background: #B49C73;
+  color: #263D4F;
+  box-shadow: 0 0 10px rgba(180, 156, 115, 0.6);
+}
+
+/* src/components/ColaboradoresGaleria.css */
+
+.galeria-colaboradores {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  padding: 1rem 0;
+}
+
+.avatar-wrapper {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 3px solid #263D4F;
+  border-radius: 50%;
+  transition: transform 0.3s ease;
+}
+
+.avatar-wrapper:hover .avatar-img {
+  transform: scale(1.05);
+}
+
+.avatar-hover {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 110%);
+  width: 150px;
+  padding: 0.5rem;
+  background: #ffffff;
+  border: 1px solid #263D4F;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;
+  font-size: 0.8rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 5;
+}
+
+.avatar-wrapper:hover .avatar-hover {
+  opacity: 1;
+  transform: translate(-50%, 100%);
+}
+
+.flex-row {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  margin-top: 2rem;
+}
+
+.bitacora-container {
+  background: #fff;
+  border: 2px solid #263D4F;
+  border-radius: 16px;
+  padding: 1.5rem;
+  max-width: 600px;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.05);
+  margin-top: 2rem;
+}
+
+.bitacora-header {
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: #263D4F;
+  margin-bottom: 1rem;
+}
+
+.bitacora-mensaje {
+  font-size: 0.9rem;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.bitacora-mensaje strong {
+  color: #263D4F;
+}
+
+.bitacora-input {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-top: 1rem;
+}
+
+.bitacora-input textarea {
+  flex: 1;
+  resize: vertical;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  outline: none;
+  transition: border 0.3s ease;
+  min-height: 80px;
+}
+
+.bitacora-input textarea:focus {
+  border-color: #263D4F;
+}
+
+.bitacora-input button {
+  background-color: #263D4F;
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.bitacora-input button:hover {
+  background-color: #B49C73;
+  color: #263D4F;
+}
+
+/* DORADO al texto de bienvenida (el span que sigue a "Soporte:") */
+.bitacora-mensaje span {
+  color: #B49C73;
+  font-weight: 500;
+}
+
+/* TEXAREA con borde azulHeza */
+.bitacora-input textarea {
+  flex: 1;
+  resize: vertical;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 2px solid #263D4F;
+  outline: none;
+  transition: border 0.3s ease;
+  min-height: 80px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.bitacora-input textarea:focus {
+  border-color: #B49C73;
+  box-shadow: 0 0 0 2px rgba(180, 156, 115, 0.2);
+}
+
+/* Color personalizado de selección de texto (dorado y fondo suave) */
+.bitacora-container ::selection {
+  background: #B49C73;
+  color: #fff;
+}

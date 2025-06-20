@@ -26,7 +26,7 @@ const HeroCarousel = () => {
             <h3 className="text-white text-uppercase mb-4 animate__fadeInDown">
               CUIDA LA SALUD DE TU EMPRESA
             </h3>
-            <h4 className="display-5 text-capitalize text-white mb-4 animate__fadeInUp">
+            <h4 className="display-5  text-white mb-4 animate__fadeInUp">
               En Heza nos encargamos de la salud fiscal de tu empresa, cuidando siempre el patrimonio de tus socios y colaboradores.
             </h4>
             <button 
@@ -53,7 +53,7 @@ const HeroCarousel = () => {
             <h3 className="text-white text-uppercase mb-4 animate__fadeInDown">
               GUIAMOS FISCAL Y CORPORATIVAMENTE
             </h3>
-            <h4 className="display-5 text-capitalize text-white mb-4 animate__fadeInUp">
+            <h4 className="display-5  text-white mb-4 animate__fadeInUp">
               Te diseñamos una estrategia fiscal especializada para tu empresa, minimizando los riesgos y protegiendo tu patrimonio.
             </h4>
             <button 

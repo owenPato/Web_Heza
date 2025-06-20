@@ -13,6 +13,8 @@ import Eventos from './pages/public/Eventos';
 import EventoDetalle from './pages/public/EventoDetalle';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminPanelLayout from './components/PanelAdmin/AdminPanelLayout.jsx';
+import ContaduriaAvance from './pages/adminClientes/components/ContaduriaAvance';
+
 
 // Componentes públicos
 const Home = lazy(() => import('./pages/public/Home'));
@@ -39,6 +41,12 @@ const DocumentosCliente = lazy(() => import('./pages/adminClientes/DocumentosCli
 const DetalleDocumento = lazy(() => import('./pages/adminClientes/DetalleDocumento'));
 const PerfilCliente = lazy(() => import('./pages/adminClientes/PerfilCliente'));
 const ConfiguracionCliente = lazy(() => import('./pages/adminClientes/ConfiguracionCliente'));
+// Nuevos componentes para cliente
+const DashboardClientes = lazy(() => import('./pages/adminClientes/DashboardClientes'));
+const SubirArchivosCliente = lazy(() => import('./pages/adminClientes/SubirArchivosCliente'));
+const CheckListCliente = lazy(() => import('./pages/adminClientes/CheckListCliente'));
+
+
 
 // Admin
 const DashboardAdmin = lazy(() => import('./pages/admin/Dashboard'));
@@ -79,16 +87,22 @@ function App() {
           <Route path="/servicios/proteccion-patrimonial" element={<ProteccionPatrimonial />} />
           <Route path="/devoluciones" element={<Devoluciones />} />
 
-          {/* Dashboard Cliente */}
-          {
+               
+           {/* Dashboard Cliente */}
           <Route path="/clientes/dashboard" element={<ClienteLayout />}>
-            <Route index element={<DocumentosCliente />} />
+            {/* Página principal del dashboard en forma de tarjetas */}
+            <Route index element={<DashboardClientes />} />
+
+            {/* Rutas específicas */}
+            <Route path="subir" element={<SubirArchivosCliente />} />
             <Route path="documentos" element={<DocumentosCliente />} />
             <Route path="documentos/:id" element={<DetalleDocumento />} />
+            <Route path="checklist" element={<CheckListCliente />} />
             <Route path="perfil" element={<PerfilCliente />} />
             <Route path="configuracion" element={<ConfiguracionCliente />} />
+            <Route path="contaduria" element={<ContaduriaAvance />} />
           </Route>
-          }
+          
 
           {/* Administración con Layout Persistente */}
           <Route path="/admin" element={<ProtectedRoute><AdminPanelLayout /></ProtectedRoute>}>
