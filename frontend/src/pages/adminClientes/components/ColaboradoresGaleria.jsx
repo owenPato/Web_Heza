@@ -13,6 +13,17 @@ const colaboradores = [
     puesto: 'Asistente Fiscal',
     imagen: '/img/colaboradores/carlos.jpg',
   },
+  {
+    nombre: 'Owen Hurto',
+    puesto:'Desarrollador',
+    imagen: '/img/Colaboradores/OwenHuer.jpg',
+  },
+  {
+   nombre: 'Gilberto Gonzalez',
+   puesto: 'desarrollador',
+   imagen: '/img/Colaboradores/Gilberto.jpg',    
+  }
+
 ];
 
 const ColaboradoresGaleria = () => {

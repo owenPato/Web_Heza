@@ -54,21 +54,26 @@ const Cliente = () => {
             </div>
           </div>
 
-          <nav className="card shadow-sm">
+          <nav className="card shadow-sm menu-cliente-lateral">
             <div className="list-group list-group-flush ">
-              <button to="documentos" className="list-group-item list-group-item-action specialty-card"  onClick={() => navigate('/clientes/dashboard')}>
-                <span className="section-badge bg-primary-soft text-primary fas fa-folder-open ">
+              <button to="documentos" className="list-group-item  "  onClick={() => navigate('/clientes/dashboard')}>
+                <span className="section-badge bg-primary-soft text-primary fas fa-folder-open  boton-ovalado ">
                   Documentos
                 </span>
               </button>
-              <button to="perfil" className="list-group-item list-group-item-action specialty-card"  onClick={() => navigate('/clientes/dashboard/perfil')}>
-                <span className="section-badge bg-primary-soft text-primary fas fa-folder-open ">
+              <button to="perfil" className="list-group-item  "  onClick={() => navigate('/clientes/dashboard/perfil')}>
+                <span className="section-badge bg-primary-soft text-primary fas fa-folder-open boton-ovalado">
                   Perfil Empresa
                 </span>
               </button>
-              <button to="configuracion" className="list-group-item list-group-item-action specialty-card"  onClick={() => navigate('/clientes/dashboard/configuracion')}>
-                <span className="section-badge bg-primary-soft text-primary fas fa-folder-open ">
+              <button to="configuracion" className="list-group-item "  onClick={() => navigate('/clientes/dashboard/configuracion')}>
+                <span className="section-badge bg-primary-soft text-primary fas fa-folder-open  boton-ovalado">
                   Configuración
+                </span>
+              </button>
+               <button to="configuracion" className="list-group-item "  onClick={() => navigate('/clientes/dashboard/configuracion')}>
+                <span className="section-badge bg-primary-soft text-primary fas fa-folder-open boton-ovalado">
+                  Solucitudes
                 </span>
               </button>
             </div>

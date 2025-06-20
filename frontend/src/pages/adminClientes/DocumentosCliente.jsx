@@ -10,7 +10,7 @@ const categoriasDocumentos = [
     ]
   },
   {
-    nombre: 'Contratos',
+    nombre: 'Estados de cuenta',
     documentos: [
       { id: 3, nombre: 'Contrato Cliente XYZ', tipo: 'DOCX', fecha: '2023-12-15' },
       { id: 4, nombre: 'Adenda Contrato ABC', tipo: 'PDF', fecha: '2024-01-20' }
@@ -18,13 +18,13 @@ const categoriasDocumentos = [
   },
   // Agregar más categorías hasta 10
   {
-    nombre: 'Estados Financieros',
+    nombre: 'Descargables',
     documentos: [
       { id: 5, nombre: 'Balance General 2023', tipo: 'PDF', fecha: '2024-03-01' }
     ]
   },
   {
-    nombre: 'Nóminas',
+    nombre: 'Costancias',
     documentos: [
       { id: 6, nombre: 'Nómina Marzo 2024', tipo: 'XLSX', fecha: '2024-03-30' }
     ]
