@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import '../../pages/admin/admin.css';
-
+import './Cliente.css';
 
 const ConfiguracionCliente = () => {
   const [flipped, setFlipped] = useState(false);
@@ -75,7 +75,7 @@ const ConfiguracionCliente = () => {
           </div>
 
           {/* Lado trasero */}
-          <div className="card-back card shadow p-4">
+          <div className="card-back perfilCliente-card p-4">
             <h4 className="text-center text-white mb-3">Nueva Contraseña</h4>
             <form onSubmit={handleSubmit} className="specialty-cards">
               <div className="form-group mb-3">

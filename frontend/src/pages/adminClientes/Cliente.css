@@ -810,4 +810,59 @@ dd {
   color: white;
 }
 
+.perfilCliente-card {
+  background-color: #3c5d73;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 2rem;
+  color: white;
+  width: 100%;
+  max-width: 600px;
+}}
+.subir-card {
+  background-color: #ffffff;
+  border-left: 5px solid #3c5d73;
+  border-radius: 8px;
 }
+
+.subir-card-header {
+  background-color: #3c5d73;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+.input-heza {
+  background-color: #f8f9fa;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.boton-heza {
+  background-color: #b49c73;
+  color: white;
+  border: none;
+  font-weight: 600;
+  padding: 8px 20px;
+  border-radius: 6px;
+}
+.custom-upload {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 12px 24px;
+  background-color: #3c5d73;
+  color: white;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.custom-upload:hover {
+  background-color: #fff;
+  color:#3c5d73;
+  border: 2px solid #3c5d73;
+}
+
+
