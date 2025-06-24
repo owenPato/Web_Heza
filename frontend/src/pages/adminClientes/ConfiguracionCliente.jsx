@@ -3,6 +3,7 @@ import Swal from 'sweetalert2';
 import axios from 'axios';
 import '../../pages/admin/admin.css';
 
+
 const ConfiguracionCliente = () => {
   const [flipped, setFlipped] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
@@ -74,11 +75,11 @@ const ConfiguracionCliente = () => {
           </div>
 
           {/* Lado trasero */}
-          <div className="card-back card shadow card-heza p-4">
-            <h4 className="text-center text-dark">Nueva Contraseña</h4>
-            <form onSubmit={handleSubmit}>
+          <div className="card-back card shadow p-4">
+            <h4 className="text-center text-white mb-3">Nueva Contraseña</h4>
+            <form onSubmit={handleSubmit} className="specialty-cards">
               <div className="form-group mb-3">
-                <label>Contraseña actual</label>
+                <label className="form-label">Contraseña actual</label>
                 <input
                   type="password"
                   className="form-control"
@@ -88,7 +89,7 @@ const ConfiguracionCliente = () => {
                 />
               </div>
               <div className="form-group mb-3">
-                <label>Nueva contraseña</label>
+                <label className="form-label">Nueva contraseña</label>
                 <input
                   type="password"
                   className="form-control"
@@ -99,7 +100,7 @@ const ConfiguracionCliente = () => {
                 />
               </div>
               <div className="form-group mb-3">
-                <label>Confirmar contraseña</label>
+                <label className="form-label">Confirmar contraseña</label>
                 <input
                   type="password"
                   className="form-control"
@@ -108,16 +109,18 @@ const ConfiguracionCliente = () => {
                   required
                 />
               </div>
-              <div className="modal-actions d-flex gap-2">
-                <button type="button" className="btn btn-secondary" onClick={handleFlip}>
+
+              <div className="d-flex justify-content-end gap-3">
+                <button type="button" className="btn btn-outline-secondary-custom" onClick={handleFlip}>
                   Cancelar
                 </button>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-outline-secondary-custom">
                   Guardar Cambios
                 </button>
               </div>
             </form>
           </div>
+
         </div>
       </div>
     </div>

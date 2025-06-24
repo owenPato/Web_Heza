@@ -460,3 +460,354 @@ form.specialty-cards .form-control:focus {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(180, 156, 115, 0.4); /* sombra dorada suave */
 }
+
+.facturacion-section {
+  background: #fff;
+  border-radius: 6px;
+  padding: 1rem;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+}
+
+.facturacion-header {
+  background-color: #b49c73;
+  color: #333;
+  font-weight: bold;
+  padding: 0.8rem 1rem;
+  border-radius: 4px 4px 0 0;
+  font-size: 1.1rem;
+}
+
+.facturas-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding-top: 1rem;
+}
+
+.factura-card {
+  flex: 1 1 250px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 1rem;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.factura-titulo {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #263d4f;
+}
+
+.factura-fecha {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.factura-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn-pdf {
+  background-color: #000;
+  color: #fff;
+  padding: 0.4rem 0.8rem;
+  font-weight: bold;
+  border-radius: 4px;
+  text-decoration: none;
+}
+
+.btn-detalle {
+  background: transparent;
+  border: 1px solid #b49c73;
+  color: #b49c73;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-detalle:hover {
+  background: #b49c73;
+  color: white;
+}
+
+.documento-resumen {
+  margin-bottom: 2rem;
+}
+
+.documento-resumen h4 {
+  color: #263D4F;
+  margin-bottom: 0.5rem;
+}
+
+{/*css del gitDocumentos*/
+
+.parent {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 8px;
+}
+    
+.div1 {
+    grid-row: span 3 / span 3;
+}
+
+.div2 {
+    grid-row: span 2 / span 2;
+    grid-column-start: 1;
+    grid-row-start: 4;
+}
+
+.div3 {
+    grid-column: span 2 / span 2;
+    grid-row: span 2 / span 2;
+    grid-column-start: 2;
+    grid-row-start: 1;
+}
+
+.div4 {
+    grid-column: span 2 / span 2;
+    grid-row: span 2 / span 2;
+    grid-column-start: 4;
+    grid-row-start: 1;
+}
+
+.div5 {
+    grid-row: span 2 / span 2;
+    grid-column-start: 2;
+    grid-row-start: 3;
+}
+
+.div6 {
+    grid-row: span 2 / span 2;
+    grid-column-start: 3;
+    grid-row-start: 3;
+}
+
+.div7 {
+    grid-row: span 2 / span 2;
+    grid-column-start: 4;
+    grid-row-start: 3;
+}
+
+.div8 {
+    grid-row: span 2 / span 2;
+    grid-column-start: 5;
+    grid-row-start: 3;
+}
+
+.div9 {
+    grid-column: span 2 / span 2;
+    grid-column-start: 2;
+    grid-row-start: 5;
+}
+
+.div10 {
+    grid-column: span 2 / span 2;
+    grid-column-start: 4;
+    grid-row-start: 5;
+    
+}}
+.documentos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.documentos-container {
+  padding: 2rem 1rem;
+}
+
+.factura-card {
+  border: 2px solid #3c5d73; /* Borde azul oscuro */
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.factura-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.factura-titulo {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #163d57;
+}
+
+.factura-fecha {
+  color: #555;
+  margin-top: 0.5rem;
+}
+
+.badge-tipo {
+  padding: 0.2rem 0.6rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: white;
+}
+
+.badge-opinion {
+  background-color:#3c5d73;
+}
+
+.badge-buzon {
+  background-color: #b49c73;
+}
+
+.factura-actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-pdf {
+  background-color: #3c5d73;
+  color: #fff;
+  padding: 0.45rem 1rem;
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: bold;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.btn-pdf:hover {
+  background-color: #b49c73; /* dorado */
+  color: #fff;
+}
+
+.btn-detalle {
+  background-color: transparent;
+  border: 2px solid #263D4F;
+  color: #163d57;
+  font-weight: bold;
+  border-radius: 6px;
+  padding: 0.45rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.btn-detalle:hover {
+  background-color: #3c5d73;
+  color: white;
+}
+
+.facturacion-header {
+  background-color:#3c5d73; /* dorado con 70% opacidad */
+  color: white;            /* azul oscuro */
+  font-weight: bold;
+  padding: 0.75rem 1.25rem;
+  font-size: 1.25rem;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+.badge-fiscal {
+  background-color:  #b49c73;
+  color: white;
+}
+
+.badge-imss {
+  background-color: #3d8b82;
+  color: white;
+}
+
+.badge-laboral {
+  background-color:  #3c5d73;
+  color: white;
+}
+
+.card-custom {
+  background-color: #3c5d73;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  color: white;
+}
+
+.titulo-documento {
+  font-weight: bold;
+  color: white;
+}
+
+dt {
+  color:  #b49c73; /* dorado */
+  font-weight: 600;
+}
+
+dd {
+  color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+/* Botón tipo "Ver Detalle" estilo outline */
+.btn-outline-secondary-custom {
+  border: 1px solid  #b49c73;
+  color:  #163d57;
+  background-color: white;
+  padding: 0.5rem 1.2rem;
+  font-weight: 550;
+  border-radius: 0.4rem;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-secondary-custom:hover {
+  background-color:  #b49c73;
+  color: white;
+}
+
+{ /* cCambio de contraceña*/
+.card-back {
+  width: 100%;
+  max-width: 600px;
+  padding: 2rem 3rem;
+  border-radius: 12px;
+  background-color: #3c5d73;
+  color: white;
+}
+
+.card-back .btn {
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.perfilCliente-card {
+  background-color: #3c5d73;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 2rem;
+  color: white;
+  width: 100%;
+  max-width: 600px;
+}
+
+.card-back label {
+  color: #b89c6a;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-back {
+  width: 100%;
+  max-width: 600px;
+  padding: 2rem 3rem;
+  border-radius: 12px;
+  background-color: #3c5d73;
+  color: white;
+}
+
+}

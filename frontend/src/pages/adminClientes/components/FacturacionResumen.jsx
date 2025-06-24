@@ -1,37 +1,40 @@
 import React from 'react';
-import { Download, CreditCard, FileText } from 'react-feather';
+import { Link } from 'react-router-dom';
+import '../Cliente.css';
 
-const FacturacionResumen = () => {
-  // TODO: reemplaza con datos reales
- const facturas = [
-  { id: 1, nombre: 'Factura Enero 2024', fecha: '2024-01-05', estado: 'pagada' },
-  { id: 2, nombre: 'Factura Febrero 2024', fecha: '2024-02-05', estado: 'pendiente' },
-  { id: 3, nombre: 'Factura Marzo 2024', fecha: '2024-03-05', estado: 'pendiente' },
+const facturas = [
+  {
+    id: 1,
+    mes: 'Enero 2024',
+    fecha: '2024-01-05',
+    archivo: '/facturas/factura-enero.pdf'
+  },
+  {
+    id: 2,
+    mes: 'Febrero 2024',
+    fecha: '2024-02-05',
+    archivo: '/facturas/factura-febrero.pdf'
+  }
 ];
 
+const FacturacionResumen = () => {
   return (
-    <div className="lista-facturas">
-      <h3>Facturas Recientes</h3>
-      <ul>
-        {facturas.map(f => (
-          <li key={f.id} className={f.estado}>
-            <div className="info">
-              <FileText size={18} />
-              <div>
-                <strong>{f.nombre}</strong>
-                <small>{f.fecha}</small>
-              </div>
+    <div className="facturacion-section">
+      <div className="facturacion-header">Facturación</div>
+      <div className="facturas-lista">
+        {facturas.map(factura => (
+          <div className="factura-card" key={factura.id}>
+            <h3 className="factura-titulo">Factura {factura.mes}</h3>
+            <p className="factura-fecha">Subido: {factura.fecha}</p>
+            <div className="factura-actions">
+              <a href={factura.archivo} target="_blank" rel="noopener noreferrer" className="btn-pdf">PDF</a>
+              <Link to={`/clientes/dashboard/documentos/${factura.id}`} className="btn-detalle">
+                Ver Detalle
+              </Link>
             </div>
-            <div className="acciones">
-              <button title="Ver"><FileText size={16} /></button>
-              <button title="Descargar"><Download size={16} /></button>
-              {f.estado === 'pendiente' && (
-                <button title="Pagar"><CreditCard size={16} /></button>
-              )}
-            </div>
-          </li>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   );
 };
