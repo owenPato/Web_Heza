@@ -8,10 +8,6 @@ import './Cliente.css';
 const DocumentosCliente = () => {
   return (
     <div className="documentos-container">
-      <h2 className="display-7 text-dark mb-4">
-        <span className="text-gradient-primary">Documentos Disponibles</span>
-      </h2>
-
       <div className="documentos-grid">
         <FacturacionResumen />
         <EstadosCuentaResumen />

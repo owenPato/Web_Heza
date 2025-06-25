@@ -58,7 +58,7 @@ const Cliente = () => {
             <div className="list-group list-group-flush ">
               <button to="documentos" className="list-group-item  "  onClick={() => navigate('/clientes/dashboard')}>
                 <span className="section-badge bg-primary-soft text-primary fas fa-folder-open  boton-ovalado ">
-                  Documentos
+                 Inicio
                 </span>
               </button>
               <button to="perfil" className="list-group-item  "  onClick={() => navigate('/clientes/dashboard/perfil')}>
