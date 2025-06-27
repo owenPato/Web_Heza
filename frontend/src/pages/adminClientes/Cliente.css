@@ -1007,3 +1007,130 @@ dd {
   background-color: #3c5d73;
   color: white;
 }
+
+.barra-progreso-container {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.barra-progreso {
+  background-color: #dcdcdc;
+  border-radius: 10px;
+  height: 14px;
+  overflow: hidden;
+}
+
+.barra-relleno {
+  height: 100%;
+  background-color: #3c5d73;
+  transition: width 0.5s ease-in-out;
+}
+
+.progreso-texto {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #3c5d73;
+}
+
+.progress {
+  background-color: #e5e5e5; /* gris claro */
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  font-size: 0.8rem;
+  transition: width 0.5s ease-in-out;
+}
+
+.contaduria-avance-layout {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap; /* Opcional si en pantallas pequeñas quieres que bajen */
+  gap: 2rem; /* Espacio entre los cuadros */
+}
+
+.avance-contaduria-box {
+  flex: 1;
+  min-width: 300px; /* o el ancho mínimo que quieras para que no se rompan */
+  max-width: 48%;
+  background-color: #fff;
+  padding: 1.5rem;
+  border: 2px solid #1d3a50;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+@media (max-width: 768px) {
+  .contaduria-avance-layout {
+    flex-direction: column;
+  }
+
+  .avance-contaduria-box {
+    max-width: 100%;
+  }
+}
+
+.informe-mensual-box {
+  margin-top: 2rem;
+  padding: 1rem;
+  border: 1px solid #b3b3b3;
+  border-radius: 12px;
+  background-color: #f9f9f9;
+}
+
+.informe-mensual-box h4 {
+  margin-bottom: 0.8rem;
+  color: #1d2c3b;
+}
+
+.informe-mensual-box table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+}
+
+.informe-mensual-box td,
+.informe-mensual-box th {
+  padding: 8px;
+  border: 1px solid #ccc;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.indicadores-tarjetas h4 {
+  margin-bottom: 1rem;
+  color: #3c5d73;
+}
+
+.accesos-rapidos {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.acceso-card {
+  background-color: #f8f9fa;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+  max-width: 280px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
+}
+
+.acceso-card:hover {
+  transform: translateY(-5px);
+}
+
+.acceso-card h5 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #333;
+}
+
+.acceso-card p {
+  margin: 0.25rem 0;
+}

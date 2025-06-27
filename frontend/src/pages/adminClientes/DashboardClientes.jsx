@@ -25,8 +25,8 @@ const DashboardClientes = () => {
 
       {/* 🟨 Facturación y Avance */}
       <div className="resumen-contable flex-row">
-        <ContaduriaAvance />
-        <ColaboradoresGaleria />
+       <ContaduriaAvance mostrarBoton={true} mostrarProgresoCliente={false} />
+       <ColaboradoresGaleria />
       </div>
 
       {/* 🟩 Colaboradores */}
