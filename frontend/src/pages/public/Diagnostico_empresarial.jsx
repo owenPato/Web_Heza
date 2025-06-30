@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "bootstrap/dist/css/bootstrap.min.css";
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -6,11 +6,12 @@ import { useForm } from 'react-hook-form';
 import diagnosticoImg from '../../assets/img/img-diagnostico.png';
 import {FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faStethoscope} from '@fortawesome/free-solid-svg-icons';
+import SubirInformeModal from './Componentes/SubirInformeModal';
 
 const DiagnosticoEmpresarial = () => {
   const navigate = useNavigate();
   const { register, handleSubmit, formState: { errors } } = useForm();
-
+  const [modalVisible, setModalVisible] = useState(false);
   const onSubmit = (data) => {
     navigate('/encuesta', { 
       state: { 
@@ -183,6 +184,11 @@ const DiagnosticoEmpresarial = () => {
           </div>
         </div>
         </section>
+         <button className="btn btn-primary" onClick={() => setModalVisible(true)}>
+        Subir Informe PDF
+      </button>
+
+      <SubirInformeModal show={modalVisible} handleClose={() => setModalVisible(false)} />
       </div>      
     </div>
   );

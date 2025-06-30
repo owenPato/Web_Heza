@@ -15,6 +15,7 @@ USE heza;
 -- Primero eliminamos tablas con dependencias (claves foráneas)
 DROP TABLE IF EXISTS galeria_eventos;
 DROP TABLE IF EXISTS mensajes;
+DROP TABLE IF EXISTS informes_pdf;
 DROP TABLE IF EXISTS documentos;
 DROP TABLE IF EXISTS diagnosticos;
 DROP TABLE IF EXISTS cliente_servicio;
@@ -78,11 +79,12 @@ CREATE TABLE users (
 );
 
 -- Tabla de categorías de documentos
-CREATE TABLE categorias_documentos (
+CREATE TABLE IF NOT EXISTS categorias_documentos (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  nombre VARCHAR(100) NOT NULL,
-  descripcion TEXT
+  nombre VARCHAR(100) NOT NULL
 );
+INSERT IGNORE INTO categorias_documentos (id, nombre)
+VALUES (1, 'Diagnóstico PDF');
 
 -- Tabla de clientes
 CREATE TABLE clientes (
@@ -261,7 +263,7 @@ CREATE TABLE noticias (
   fecha DATE NOT NULL,
   imagen VARCHAR(255),
   imagenes TEXT,
-  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 -- 1. Primero eliminar (sin alterar claves que no existen)
 DROP TABLE IF EXISTS galeria_noticias;
@@ -276,6 +278,35 @@ CREATE TABLE galeria_noticias (
   -- otros campos si aplica
   INDEX (noticia_id)
 );
+
+
+CREATE TABLE IF NOT EXISTS informes_pdf (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_documento INT,
+  ingresos_2025 DECIMAL(15,2),
+  ingresos_2024 DECIMAL(15,2),
+  coeficiente_2025 DECIMAL(10,4),
+  coeficiente_2024 DECIMAL(10,4),
+  isr DECIMAL(12,2),
+  iva DECIMAL(12,2),
+  retencion_salarios DECIMAL(12,2),
+  ispt_asimilados DECIMAL(12,2),
+  retencion_profesionales DECIMAL(12,2),
+  retencion_resico DECIMAL(12,2),
+  compensacion DECIMAL(12,2),
+  total_impuestos DECIMAL(12,2),
+  cumplimiento_sat VARCHAR(20),
+  cumplimiento_contabilidad VARCHAR(20),
+  cumplimiento_imss VARCHAR(20),
+  cumplimiento_infonavit VARCHAR(20),
+  cumplimiento_nominas VARCHAR(20),
+  fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_informe_documento FOREIGN KEY (id_documento)
+    REFERENCES documentos(id)
+    ON DELETE CASCADE
+);
+
+
 
 -- 3. Luego agregar la relación si es necesario (por ejemplo con tabla noticias)
 ALTER TABLE galeria_noticias

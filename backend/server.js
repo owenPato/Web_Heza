@@ -12,7 +12,7 @@ import newsRoutes from './src/routes/newsRoutes.js';
 import eventRoutes from './src/routes/eventRoutes.js';
 import sucursalesRoutes from './src/routes/sucursalesRoutes.js';
 import empleadoRoutes from './src/routes/empleado.js';
-
+import informePdfRoutes from './src/routes/informePdfRoutes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -56,7 +56,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
   }
 }));
 
-
+app.use('/api', informePdfRoutes);
 app.use('/api', clientesRoutes);
 app.use('/api', apiRoutes);
 app.use('/api/auth', authRoutes);

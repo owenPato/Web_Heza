@@ -63,7 +63,7 @@ const cumplimiento = [
     <div className="contaduria-avance-layout">
       {/* Gráfica dorada */}
       <div className="avance-contaduria-box">
-        <h3>Avance de Contaduría</h3>
+        <h3>Avance de Contabilidad</h3>
         <div className="progreso-barra">
           <animated.div className="progreso" style={progressSpring}>
             <animated.span>{numberSpring.value.to(val => `${Math.round(val)}%`)}</animated.span>
