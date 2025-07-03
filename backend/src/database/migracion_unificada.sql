@@ -95,7 +95,8 @@ INSERT IGNORE INTO categorias_documentos (id, nombre) VALUES
 (4, 'Informe mensual'),
 (5, 'Opinión IMSS'),
 (6, 'Opinión SAT'),
-(7, 'Reporte EFOS');
+(7, 'Reporte EFOS'),
+(8, 'Entregable Modificable');
 
 CREATE TABLE  meses_entregables (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -350,6 +351,8 @@ ALTER TABLE empleados
   DROP COLUMN puesto,
   ADD COLUMN puesto_id INT,
   ADD CONSTRAINT fk_puesto FOREIGN KEY (puesto_id) REFERENCES puestos(id);  
+
+ALTER TABLE informes_pdf ADD UNIQUE (id_documento);
 
 -- Copiar valores existentes si quieres, o lo dejamos NULL por ahora
 -- Luego puedes hacer UPDATE con JOIN si los textos coinciden

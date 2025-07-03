@@ -1,17 +1,11 @@
 import express from 'express';
-import multer from 'multer';
-import { subirInformePDF } from '../controllers/informePdfController.js';
+import { registrarInformeMensual,  obtenerInformeMensual, procesarInformeMensualDesdeBD } from '../controllers/informeController.js';
 
 const router = express.Router();
 
-// ✅ Configuración de Multer para guardar en uploads/
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads/'),
-  filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`)
-});
-const upload = multer({ storage });
 
-// ✅ Ruta: POST /api/informe-pdf
-router.post('/informe-pdf', upload.single('archivo'), subirInformePDF);
+router.get('/informe/:id', registrarInformeMensual);       
+router.get('/informe/ver/:id', obtenerInformeMensual);     
+router.get('/informe/procesar/:id', procesarInformeMensualDesdeBD);
 
 export default router;
