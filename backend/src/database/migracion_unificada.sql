@@ -31,6 +31,7 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS sucursales;
 DROP TABLE IF EXISTS departamento;
 DROP TABLE IF EXISTS puestos;
+DROP TABLE IF EXISTS meses_entregables;
 
 -- ========================================================================
 -- CREACIÓN DE TABLAS PRINCIPALES
@@ -85,6 +86,28 @@ CREATE TABLE IF NOT EXISTS categorias_documentos (
 );
 INSERT IGNORE INTO categorias_documentos (id, nombre)
 VALUES (1, 'Diagnóstico PDF');
+
+INSERT IGNORE INTO categorias_documentos (id, nombre)
+VALUES (2, 'Constacia de Situacion Fiscal');
+
+INSERT IGNORE INTO categorias_documentos (id, nombre) VALUES
+(3, 'Buzón Tributario'),
+(4, 'Informe mensual'),
+(5, 'Opinión IMSS'),
+(6, 'Opinión SAT'),
+(7, 'Reporte EFOS');
+
+CREATE TABLE  meses_entregables (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  anio INT NOT NULL,
+  mes VARCHAR(20) NOT NULL
+);
+
+INSERT INTO meses_entregables (anio, mes) VALUES
+(2025, '05 Mayo'),
+(2025, '06 Junio');
+
+
 
 -- Tabla de clientes
 CREATE TABLE clientes (

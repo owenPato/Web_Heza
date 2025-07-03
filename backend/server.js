@@ -13,6 +13,14 @@ import eventRoutes from './src/routes/eventRoutes.js';
 import sucursalesRoutes from './src/routes/sucursalesRoutes.js';
 import empleadoRoutes from './src/routes/empleado.js';
 import informePdfRoutes from './src/routes/informePdfRoutes.js';
+import { mountNetworkDrive } from './src/utils/networkDrive.js';
+import csfRoutes from './src/routes/csfRoutes.js';
+import entregablesRoutes from './src/routes/entregables.js';
+
+
+
+mountNetworkDrive();
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -64,9 +72,9 @@ app.use('/api/news', newsRoutes);
 app.use('/api/events', eventRoutes);
 app.use('/api/clientes', clientesRoutes);
 app.use('/api/sucursales', sucursalesRoutes);
-
+app.use('/api', csfRoutes);
 app.use('/api/empleados', empleadoRoutes);
-
+app.use('/api/entregables', entregablesRoutes);   
 
 app.get('/api/debug', (req, res) => {
   res.json({ message: 'API is working correctly' });
