@@ -7,7 +7,7 @@ export const registrarEntregableModificable = async (req, res) => {
   try {
     const { id } = req.params;
     const id_cliente = id;
-    const anio = '2025';
+    const anio = '2025'; // puedes volverlo dinámico luego si quieres
     const mes = '05 Mayo';
     const nombreArchivo = 'Entregable Modificable.pdf';
     const categoria = 8;
@@ -16,6 +16,7 @@ export const registrarEntregableModificable = async (req, res) => {
       return res.status(400).json({ error: 'Falta el ID del cliente' });
     }
 
+    // Obtener nombre de empresa
     const [clientes] = await pool.query('SELECT empresa FROM clientes WHERE id = ?', [id_cliente]);
     if (clientes.length === 0) {
       return res.status(404).json({ error: 'Cliente no encontrado' });
@@ -30,6 +31,22 @@ export const registrarEntregableModificable = async (req, res) => {
 
     if (!fs.existsSync(rutaCompleta)) {
       return res.status(404).json({ error: 'Archivo no encontrado en la ruta esperada' });
+    }
+
+    // Obtener fecha actual
+    const ahora = new Date();
+    const anioActual = ahora.getFullYear();
+    const mesActual = ahora.getMonth() + 1;
+
+    // Validar si ya existe este documento para este mes y cliente
+    const [existe] = await pool.query(`
+      SELECT d.id FROM documentos d
+      WHERE d.id_cliente = ? AND d.id_categoria = ? AND d.nombre = ?
+        AND YEAR(d.fecha_subida) = ? AND MONTH(d.fecha_subida) = ?
+    `, [id_cliente, categoria, nombreArchivo, anioActual, mesActual]);
+
+    if (existe.length) {
+      return res.status(409).json({ mensaje: 'Este entregable ya fue registrado este mes' });
     }
 
     const stats = fs.statSync(rutaCompleta);
@@ -50,8 +67,13 @@ export const registrarEntregableModificable = async (req, res) => {
         id_cliente
       ]
     );
+    
+    await pool.query(`INSERT INTO check_docs (id_documento, id_cliente) VALUES (?, ?)`, [result.insertId, id_cliente]);
 
-    res.status(200).json({ message: 'Entregable Modificable registrado con éxito', id_documento: result.insertId });
+    res.status(201).json({
+      message: '✅ Entregable Modificable registrado con éxito',
+      id_documento: result.insertId
+    });
 
   } catch (error) {
     console.error('❌ Error al registrar entregable modificable:', error);

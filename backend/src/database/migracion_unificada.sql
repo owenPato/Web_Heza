@@ -14,9 +14,12 @@ USE heza;
 -- ========================================================================
 -- Primero eliminamos tablas con dependencias (claves foráneas)
 DROP TABLE IF EXISTS galeria_eventos;
-DROP TABLE IF EXISTS mensajes;
+DROP TABLE IF EXISTS check_docs;
 DROP TABLE IF EXISTS informes_pdf;
+DROP TABLE IF EXISTS constancias_docs;
+DROP TABLE IF EXISTS visitables_docs;
 DROP TABLE IF EXISTS documentos;
+DROP TABLE IF EXISTS mensajes;
 DROP TABLE IF EXISTS diagnosticos;
 DROP TABLE IF EXISTS cliente_servicio;
 DROP TABLE IF EXISTS empleados;
@@ -32,6 +35,7 @@ DROP TABLE IF EXISTS sucursales;
 DROP TABLE IF EXISTS departamento;
 DROP TABLE IF EXISTS puestos;
 DROP TABLE IF EXISTS meses_entregables;
+
 
 -- ========================================================================
 -- CREACIÓN DE TABLAS PRINCIPALES
@@ -191,6 +195,8 @@ INSERT INTO puestos (nombre) VALUES
 ('Contador jr');
 
 
+
+
 -- ========================================================================
 -- CREACIÓN DE TABLAS DE RELACIÓN Y DEPENDIENTES
 -- ========================================================================
@@ -330,7 +336,29 @@ CREATE TABLE IF NOT EXISTS informes_pdf (
     ON DELETE CASCADE
 );
 
+CREATE TABLE check_docs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_documento INT NOT NULL,
+  id_cliente INT NOT NULL,
+  FOREIGN KEY (id_documento) REFERENCES documentos(id),
+  FOREIGN KEY (id_cliente) REFERENCES clientes(id)
+);
 
+CREATE TABLE constancias_docs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_documento INT NOT NULL,
+  id_cliente INT NOT NULL,
+  FOREIGN KEY (id_documento) REFERENCES documentos(id),
+  FOREIGN KEY (id_cliente) REFERENCES clientes(id)
+);
+
+CREATE TABLE visitables_docs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_documento INT NOT NULL,
+  id_cliente INT NOT NULL,
+  FOREIGN KEY (id_documento) REFERENCES documentos(id),
+  FOREIGN KEY (id_cliente) REFERENCES clientes(id)
+);
 
 -- 3. Luego agregar la relación si es necesario (por ejemplo con tabla noticias)
 ALTER TABLE galeria_noticias

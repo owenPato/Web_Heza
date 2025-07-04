@@ -7,16 +7,17 @@ import pool from '../config/db.js';
 export const registrarInformeMensual = async (req, res) => {
   try {
     const { id } = req.params;
-    const anio = '2025';
-    const mes = '05 Mayo';
+    const id_cliente = id;
+    const anio = '2025'; // Fijo por ahora
+    const mes = '05 Mayo'; // Fijo por ahora
     const nombre_archivo = 'Informe mensual.pdf';
     const categoria = 4;
 
-    if (!id) {
+    if (!id_cliente) {
       return res.status(400).json({ error: 'Falta el id del cliente' });
     }
 
-    const [clientes] = await pool.query('SELECT empresa FROM clientes WHERE id = ?', [id]);
+    const [clientes] = await pool.query('SELECT empresa FROM clientes WHERE id = ?', [id_cliente]);
     if (!clientes.length) return res.status(404).json({ error: 'Cliente no encontrado' });
 
     const empresa = clientes[0].empresa.trim();
@@ -25,6 +26,22 @@ export const registrarInformeMensual = async (req, res) => {
 
     if (!fs.existsSync(rutaCompleta)) {
       return res.status(404).json({ error: 'Archivo Informe mensual.pdf no encontrado' });
+    }
+
+    // ✅ Prevención de duplicados (por cliente, categoría y mes actual)
+    const ahora = new Date();
+    const anioActual = ahora.getFullYear();
+    const mesActual = ahora.getMonth() + 1;
+
+    const [yaExiste] = await pool.query(`
+      SELECT id FROM documentos 
+      WHERE id_cliente = ? AND id_categoria = ? AND nombre = ?
+        AND YEAR(fecha_subida) = ? AND MONTH(fecha_subida) = ?`,
+      [id_cliente, categoria, nombre_archivo, anioActual, mesActual]
+    );
+
+    if (yaExiste.length) {
+      return res.status(409).json({ mensaje: '⚠️ Informe mensual ya registrado este mes para este cliente' });
     }
 
     const stats = fs.statSync(rutaCompleta);
@@ -42,12 +59,16 @@ export const registrarInformeMensual = async (req, res) => {
         tipo_archivo,
         stats.size,
         categoria,
-        id
+        id_cliente
       ]
     );
+    
+    
+    await pool.query(`INSERT INTO check_docs (id_documento, id_cliente) VALUES (?, ?)`, [result.insertId, id_cliente]);
+ 
 
-    res.status(200).json({
-      message: 'Informe mensual registrado exitosamente',
+    res.status(201).json({
+      message: '✅ Informe mensual registrado exitosamente',
       id_documento: result.insertId,
       ruta: rutaRelativa
     });

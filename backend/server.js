@@ -16,10 +16,12 @@ import informePdfRoutes from './src/routes/informePdfRoutes.js';
 import { mountNetworkDrive } from './src/utils/networkDrive.js';
 import csfRoutes from './src/routes/csfRoutes.js';
 import entregablesRoutes from './src/routes/entregables.js';
-
+import agrupadosRoutes from './src/routes/agrupadosRoutes.js';
 
 
 mountNetworkDrive();
+
+
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -75,6 +77,7 @@ app.use('/api/sucursales', sucursalesRoutes);
 app.use('/api', csfRoutes);
 app.use('/api/empleados', empleadoRoutes);
 app.use('/api/entregables', entregablesRoutes);   
+app.use('/api/documentos', agrupadosRoutes);
 
 app.get('/api/debug', (req, res) => {
   res.json({ message: 'API is working correctly' });

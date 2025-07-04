@@ -6,20 +6,40 @@ import pool from '../config/db.js';
 export const registrarReporteEFOS = async (req, res) => {
   try {
     const { id } = req.params;
+    const id_cliente = id;
     const anio = '2025';
     const mes = '05 Mayo';
     const nombreArchivo = 'Reporte efos.pdf';
     const categoria = 7;
 
-    const [clientes] = await pool.query('SELECT empresa FROM clientes WHERE id = ?', [id]);
-    if (!clientes.length) return res.status(404).json({ error: 'Cliente no encontrado' });
+    // Buscar nombre de empresa
+    const [clientes] = await pool.query('SELECT empresa FROM clientes WHERE id = ?', [id_cliente]);
+    if (!clientes.length) {
+      return res.status(404).json({ error: 'Cliente no encontrado' });
+    }
 
     const empresa = clientes[0].empresa.trim();
     const basePath = process.env.RUTA_CLIENTES || 'P:\\';
     const rutaCompleta = path.join(basePath, empresa, anio, mes, 'Entregable', nombreArchivo);
 
+    // Verificar si el archivo existe
     if (!fs.existsSync(rutaCompleta)) {
       return res.status(404).json({ error: 'Archivo Reporte efos.pdf no encontrado' });
+    }
+
+    // Fecha actual para validar si ya fue registrado este mes
+    const ahora = new Date();
+    const anioActual = ahora.getFullYear();
+    const mesActual = ahora.getMonth() + 1;
+
+    const [yaExiste] = await pool.query(`
+      SELECT id FROM documentos 
+      WHERE id_cliente = ? AND id_categoria = ? AND nombre = ?
+        AND YEAR(fecha_subida) = ? AND MONTH(fecha_subida) = ?
+    `, [id_cliente, categoria, nombreArchivo, anioActual, mesActual]);
+
+    if (yaExiste.length > 0) {
+      return res.status(409).json({ mensaje: '⚠️ Ya se ha registrado el Reporte EFOS este mes' });
     }
 
     const stats = fs.statSync(rutaCompleta);
@@ -30,15 +50,30 @@ export const registrarReporteEFOS = async (req, res) => {
       INSERT INTO documentos 
       (nombre, descripcion, ruta_archivo, tipo_archivo, tamano_archivo, id_categoria, id_cliente)
       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [nombreArchivo, 'Documento Reporte EFOS', rutaRelativa, tipoArchivo, stats.size, categoria, id]
+      [
+        nombreArchivo,
+        'Documento Reporte EFOS',
+        rutaRelativa,
+        tipoArchivo,
+        stats.size,
+        categoria,
+        id_cliente
+      ]
     );
 
-    res.status(200).json({ message: 'Reporte EFOS registrado exitosamente', id_documento: result.insertId });
+    await pool.query(`INSERT INTO check_docs (id_documento, id_cliente) VALUES (?, ?)`, [result.insertId, id_cliente]);
+
+        res.status(201).json({
+      message: '✅ Reporte EFOS registrado exitosamente',
+      id_documento: result.insertId
+    });
+
   } catch (err) {
     console.error('❌ Error Reporte EFOS:', err);
     res.status(500).json({ error: 'Error interno', detalle: err.message });
   }
 };
+
 
 export const obtenerReporteEFOS = async (req, res) => {
   try {

@@ -6,26 +6,42 @@ import pool from '../config/db.js';
 export const registrarOpinionSAT = async (req, res) => {
   try {
     const { id } = req.params;
+    const id_cliente = id;
     const anio = '2025';
     const mes = '05 Mayo';
-    const nombre_archivo = 'OPINION SAT.pdf';
+    const nombreArchivo = 'OPINION SAT.pdf';
     const categoria = 6;
 
-    if (!id) return res.status(400).json({ error: 'Falta el ID del cliente' });
-
-    const [clientes] = await pool.query('SELECT empresa FROM clientes WHERE id = ?', [id]);
-    if (!clientes.length) return res.status(404).json({ error: 'Cliente no encontrado' });
+    const [clientes] = await pool.query('SELECT empresa FROM clientes WHERE id = ?', [id_cliente]);
+    if (!clientes.length) {
+      return res.status(404).json({ error: 'Cliente no encontrado' });
+    }
 
     const empresa = clientes[0].empresa.trim();
     const basePath = process.env.RUTA_CLIENTES || 'P:\\';
-    const rutaCompleta = path.join(basePath, empresa, anio, mes, 'Entregable', nombre_archivo);
+    const rutaCompleta = path.join(basePath, empresa, anio, mes, 'Entregable', nombreArchivo);
 
     if (!fs.existsSync(rutaCompleta)) {
-      return res.status(404).json({ error: 'Archivo OPINION SAT.pdf no encontrado' });
+      return res.status(404).json({ error: 'Archivo Opinión SAT no encontrado' });
+    }
+
+    const ahora = new Date();
+    const anioActual = ahora.getFullYear();
+    const mesActual = ahora.getMonth() + 1;
+
+    const [yaExiste] = await pool.query(`
+      SELECT id FROM documentos 
+      WHERE id_cliente = ? AND id_categoria = ? AND nombre = ?
+        AND YEAR(fecha_subida) = ? AND MONTH(fecha_subida) = ?`,
+      [id_cliente, categoria, nombreArchivo, anioActual, mesActual]
+    );
+
+    if (yaExiste.length) {
+      return res.status(409).json({ mensaje: '⚠️ Opinión SAT ya registrada este mes' });
     }
 
     const stats = fs.statSync(rutaCompleta);
-    const tipo_archivo = mime.lookup(rutaCompleta) || 'application/pdf';
+    const tipoArchivo = mime.lookup(rutaCompleta) || 'application/pdf';
     const rutaRelativa = path.relative(basePath, rutaCompleta).replace(/\\/g, '/');
 
     const [result] = await pool.query(`
@@ -33,17 +49,22 @@ export const registrarOpinionSAT = async (req, res) => {
       (nombre, descripcion, ruta_archivo, tipo_archivo, tamano_archivo, id_categoria, id_cliente)
       VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
-        nombre_archivo,
+        nombreArchivo,
         'Documento Opinión SAT',
         rutaRelativa,
-        tipo_archivo,
+        tipoArchivo,
         stats.size,
         categoria,
-        id
+        id_cliente
       ]
     );
 
-    res.status(200).json({ message: 'Opinión SAT registrada exitosamente', id_documento: result.insertId });
+    await pool.query(`INSERT INTO constancias_docs (id_documento, id_cliente) VALUES (?, ?)`, [result.insertId, id_cliente]);
+
+    res.status(201).json({
+      message: '✅ Opinión SAT registrada exitosamente',
+      id_documento: result.insertId
+    });
 
   } catch (err) {
     console.error('❌ Error Opinión SAT:', err);

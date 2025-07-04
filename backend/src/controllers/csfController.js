@@ -7,7 +7,7 @@ export const registrarCSFDesdeRuta = async (req, res) => {
   const { id_cliente } = req.params;
 
   try {
-    // 1. Buscar nombre de empresa con ese id
+    // Obtener nombre de empresa
     const [clientes] = await pool.query(
       'SELECT empresa FROM clientes WHERE id = ?',
       [id_cliente]
@@ -18,6 +18,8 @@ export const registrarCSFDesdeRuta = async (req, res) => {
     }
 
     const nombreEmpresa = clientes[0].empresa;
+
+    // Ruta completa al archivo CSF
     const rutaCSF = path.join(
       process.env.RUTA_CLIENTES || 'P:\\',
       nombreEmpresa,
@@ -34,21 +36,30 @@ export const registrarCSFDesdeRuta = async (req, res) => {
     const tamano_archivo = stats.size;
     const tipo_archivo = mime.lookup(rutaCSF) || 'application/pdf';
     const nombre_archivo = 'CSF.pdf';
+    const categoria = process.env.CATEGORIA_CSF || 2;
 
-    // Revisar si ya está registrado (opcional)
-    const [existe] = await pool.query(
-      `SELECT id FROM documentos 
-       WHERE id_cliente = ? AND id_categoria = ? AND nombre = ?`,
-      [id_cliente, process.env.CATEGORIA_CSF || 2, nombre_archivo]
-    );
+    // 🗓️ Obtener fecha actual para validación por mes
+    const ahora = new Date();
+    const anioActual = ahora.getFullYear();
+    const mesActual = ahora.getMonth() + 1; // ⚠️ Enero es 0
 
-    if (existe.length) {
-      return res.status(409).json({ mensaje: 'CSF ya registrada previamente para este cliente' });
+    // 🔍 Validar si ya existe un documento CSF para ese cliente en este mes
+    const [yaExiste] = await pool.query(`
+      SELECT d.id FROM documentos d
+      JOIN meses_entregables m ON MONTH(d.fecha_subida) = m.id AND m.anio = ?
+      WHERE d.id_cliente = ? AND d.id_categoria = ? AND d.nombre = ?
+        AND YEAR(d.fecha_subida) = ?
+        AND MONTH(d.fecha_subida) = ?
+    `, [anioActual, id_cliente, categoria, nombre_archivo, anioActual, mesActual]);
+
+    if (yaExiste.length) {
+      return res.status(409).json({ mensaje: 'CSF ya registrada para este mes' });
     }
 
-    // Insertar
+    // 🧠 Guardar ruta relativa
     const rutaRelativa = path.relative(process.env.RUTA_CLIENTES || 'P:\\', rutaCSF).replace(/\\/g, '/');
 
+    // Insertar en BD
     const [result] = await pool.query(
       `INSERT INTO documentos 
         (nombre, descripcion, ruta_archivo, tipo_archivo, tamano_archivo, id_categoria, id_cliente) 
@@ -59,13 +70,15 @@ export const registrarCSFDesdeRuta = async (req, res) => {
         rutaRelativa,
         tipo_archivo,
         tamano_archivo,
-        process.env.CATEGORIA_CSF || 2,
+        categoria,
         id_cliente
       ]
     );
 
+    await pool.query(`INSERT INTO constancias_docs (id_documento, id_cliente) VALUES (?, ?)`, [result.insertId, id_cliente]);
+
     res.status(201).json({
-      mensaje: 'CSF registrada correctamente',
+      mensaje: '✅ CSF registrada correctamente',
       id_documento: result.insertId
     });
 
@@ -74,6 +87,7 @@ export const registrarCSFDesdeRuta = async (req, res) => {
     res.status(500).json({ error: 'Error interno', detalles: err.message });
   }
 };
+
 
 export const obtenerCSFporCliente = async (req, res) => {
   const id_cliente = req.params.id;
