@@ -22,7 +22,6 @@ const DocumentosCliente = () => {
   return (
     <div className="documentos-container">
       <div className="documentos-grid">
-        <FacturacionResumen />
         <EstadosCuentaResumen />
         <VisitablesResumen />
         <ConstanciasResumen />
