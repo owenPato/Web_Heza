@@ -5,16 +5,25 @@ const useCliente = () => {
   const [cliente, setCliente] = useState(null);
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/clientes', { withCredentials: true })
-      .then(res => {
-        if (res.data.length > 0) {
-          setCliente(res.data[0]);
-        }
-      })
-      .catch(err => console.error('Error al cargar cliente:', err));
+    const fetchCliente = async () => {
+      try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const userId = user?.id;
+
+        if (!userId) return;
+
+        const { data } = await axios.get(`http://localhost:5000/api/clientes/por-user/${userId}`);
+        setCliente(data);
+      } catch (error) {
+        console.error('Error al cargar cliente por userId:', error);
+      }
+    };
+
+    fetchCliente();
   }, []);
 
   return cliente;
 };
 
 export default useCliente;
+

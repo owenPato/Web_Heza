@@ -28,3 +28,4 @@ router.get('/efos/ver/:id', obtenerReporteEFOS);
 router.get('/modificable/:id', registrarEntregableModificable);         // Procesa y guarda el documento
 router.get('/modificable/ver/:id', obtenerEntregableModificable);       // Obtiene desde la BD
 export default router;
+

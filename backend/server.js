@@ -17,6 +17,8 @@ import { mountNetworkDrive } from './src/utils/networkDrive.js';
 import csfRoutes from './src/routes/csfRoutes.js';
 import entregablesRoutes from './src/routes/entregables.js';
 import agrupadosRoutes from './src/routes/agrupadosRoutes.js';
+import documentosRoutes from './src/routes/documentosRoutes.js';
+
 
 
 mountNetworkDrive();
@@ -78,6 +80,7 @@ app.use('/api', csfRoutes);
 app.use('/api/empleados', empleadoRoutes);
 app.use('/api/entregables', entregablesRoutes);   
 app.use('/api/documentos', agrupadosRoutes);
+app.use('/api/documentos', documentosRoutes);
 
 app.get('/api/debug', (req, res) => {
   res.json({ message: 'API is working correctly' });
