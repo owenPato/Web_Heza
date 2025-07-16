@@ -33,13 +33,13 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
+const redCompartida = process.env.NETWORK_DRIVE_PATH;
 app.use(cors({
   origin: [ 'https://test.heza.com.mx', 'http://localhost:3000' ],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
-
+app.use('/archivos', express.static(redCompartida));
 app.use(express.json({ 
   limit: '10mb',
   verify: (req, res, buf) => {

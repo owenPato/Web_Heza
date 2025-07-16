@@ -27,13 +27,9 @@ const cargarYObtenerDocumentos = async (redirectPath = 'documentos') => {
     const storedUser = JSON.parse(localStorage.getItem('user'));
     const userId = storedUser?.id;
 
-    if (!userId) throw new Error('ID de usuario no encontrado');
-
     const { data: cliente } = await axios.get(`/api/clientes/por-user/${userId}`);
     const idCliente = cliente?.id;
-    if (!idCliente) throw new Error('ID de cliente no encontrado');
 
-    // Rutas por separado con try/catch individuales
     const endpoints = [
       `/api/csf/${idCliente}`,
       `/api/entregables/buzon/${idCliente}`,
@@ -48,19 +44,16 @@ const cargarYObtenerDocumentos = async (redirectPath = 'documentos') => {
       try {
         await axios.get(url);
       } catch (err) {
-        console.warn(`⚠️ Skipping ${url}: ${err.response?.status} ${err.response?.data?.message}`);
-        // Si quieres interrumpir aquí en ciertos casos, puedes usar:
-        // if (err.response?.status === 409) throw err;
+        console.warn(`Skipping ${url}: ${err.response?.status}`);
       }
     }
 
-    // Consulta documentos reales agrupados
     const { data } = await axios.get(`/api/documentos/${idCliente}`);
     localStorage.setItem('docs', JSON.stringify(data));
     navigate(redirectPath, { state: { docs: data } });
 
   } catch (error) {
-    console.error('❌ Error al cargar o agrupar documentos:', error.message);
+    console.error('Error al cargar documentos:', error.message);
   }
 };
 

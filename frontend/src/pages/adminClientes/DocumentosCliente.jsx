@@ -8,23 +8,33 @@ import './Cliente.css';
 
 const DocumentosCliente = () => {
   const location = useLocation();
-  const [docs, setDocs] = useState(location.state?.docs || []);
+  const [constancias, setConstancias] = useState([]);
+const [visitables, setVisitables] = useState([]);
+const [check, setCheck] = useState([]);
 
-  useEffect(() => {
-    if (!location.state?.docs) {
-      const storedDocs = localStorage.getItem('docs');
-      if (storedDocs) {
-        setDocs(JSON.parse(storedDocs));
-      }
+useEffect(() => {
+  const data = location.state?.docs;
+  if (data) {
+    setConstancias(data.constancias || []);
+    setVisitables(data.visitables || []);
+    setCheck(data.check || []);
+  } else {
+    const stored = localStorage.getItem('docs');
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      setConstancias(parsed.constancias || []);
+      setVisitables(parsed.visitables || []);
+      setCheck(parsed.check || []);
     }
-  }, [location.state]);
+  }
+}, [location.state]);
 
   return (
     <div className="documentos-container">
       <div className="documentos-grid">
         <EstadosCuentaResumen />
-        <VisitablesResumen />
-        <ConstanciasResumen />
+        <VisitablesResumen docs={visitables || []} />
+        <ConstanciasResumen docs={constancias} />
       </div>
     </div>
   );

@@ -2,72 +2,63 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../Cliente.css';
 
-const constancias = [
-  {
-    id: 1,
-    titulo: 'Constancia de Situación Fiscal',
-    fecha: '2024-03-01',
-    archivo: '/constancias/constancia-fiscal.pdf',
-    tipo: 'Fiscal'
-  },
-  {
-    id: 2,
-    titulo: 'Constancia de Alta IMSS',
-    fecha: '2024-04-15',
-    archivo: '/constancias/alta-imss.pdf',
-    tipo: 'IMSS'
-  },
-  {
-    id: 3,
-    titulo: 'Constancia Laboral',
-    fecha: '2024-05-10',
-    archivo: '/constancias/constancia-laboral.pdf',
-    tipo: 'Laboral'
-  }
-];
+// ✅ Solo regresa la clase específica sin incluir "badge" base
+const getBadgeClass = (nombre) => {
+  const lower = nombre.toLowerCase();
+  if (lower.includes('csf') || lower.includes('situación fiscal')) return 'badge-fiscal';
+  if (lower.includes('imss')) return 'badge-imss';
+  if (lower.includes('sat') || lower.includes('laboral')) return 'badge-laboral';
+  return ''; // No badge si no coincide
+};
 
-const ConstanciasResumen = () => {
+// ✅ Regresa el texto visible dentro del badge
+const getBadgeText = (nombre) => {
+  const lower = nombre.toLowerCase();
+  if (lower.includes('csf') || lower.includes('situación fiscal')) return 'Fiscal';
+  if (lower.includes('imss')) return 'IMSS';
+  if (lower.includes('sat')) return 'SAT';
+  if (lower.includes('laboral')) return 'Laboral';
+  return '';
+};
+
+const ConstanciasResumen = ({ docs = [] }) => {
   return (
-   <div className="facturacion-section">
-     <div className="facturacion-header">Constancias</div>
-        <div className="facturas-lista">
-            {constancias.map(constancia => (
-            <div className="factura-card" key={constancia.id}>
-                <div className="factura-header">
-                <h3 className="factura-titulo">{constancia.titulo}</h3>
-
-                <span className={`badge-tipo ${
-                    constancia.tipo === 'Fiscal' ? 'badge-fiscal' :
-                    constancia.tipo === 'IMSS' ? 'badge-imss' :
-                    constancia.tipo === 'Laboral' ? 'badge-laboral' :
-                    ''
-                }`}>
-                    {constancia.tipo}
+    <div className="facturacion-section">
+      <div className="facturacion-header">Constancias</div>
+      <div className="facturas-lista">
+        {docs.map(doc => (
+          <div className="factura-card" key={doc.id}>
+            <div className="factura-header">
+              <h3 className="factura-titulo">{doc.nombre}</h3>
+              {getBadgeClass(doc.nombre) && (
+                <span className={`badge-tipo ${getBadgeClass(doc.nombre)}`}>
+                  {getBadgeText(doc.nombre)}
                 </span>
-                </div>
-
-                <p className="factura-fecha">Emitida: {constancia.fecha}</p>
-                <div className="factura-actions">
-                <a 
-                    href={constancia.archivo} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="btn-pdf"
-                >
-                    Ver
-                </a>
-                <Link 
-                    to={`/clientes/dashboard/documentos/${constancia.id}`} 
-                    className="btn-detalle"
-                >
-                    Ver Detalle
-                </Link>
-                </div>
+              )}
             </div>
-            ))}
+            <p className="factura-fecha">
+              Subido: {doc.fecha_subida?.slice(0, 10)}
+            </p>
+            <div className="factura-actions">
+              <a
+                href={`http://localhost:5000/archivos/${encodeURI(doc.ruta_archivo)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-pdf"
+              >
+                Ver
+              </a>
+              <Link
+                to={`/clientes/dashboard/documentos/${doc.id}`}
+                className="btn-detalle"
+              >
+                Ver Detalle
+              </Link>
+            </div>
+          </div>
+        ))}
       </div>
-   </div>
-
+    </div>
   );
 };
 

@@ -141,7 +141,7 @@ export const obtenerCSFporCliente = async (req, res) => {
     );
 
     const id_documento = resultado.insertId;
-
+    await pool.query(`INSERT INTO constancias_docs (id_documento, id_cliente) VALUES (?, ?)`, [resultado.insertId, id_cliente]);
     res.status(200).json({
       message: 'CSF registrada exitosamente',
       id_documento,
