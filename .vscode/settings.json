@@ -1,0 +1,10 @@
+{
+    "animations.Durations": {
+        "Command-Palette": 300,
+        "Tabs": 200,
+        "Active": 200,
+        "Scrolling": 200,
+        "Smooth-Mode": 200,
+        "Focus-Dimming": 200
+    }
+}
