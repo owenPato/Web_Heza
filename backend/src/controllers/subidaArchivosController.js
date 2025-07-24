@@ -1,32 +1,33 @@
-// controllers/subirArchivosController.js
 import fs from 'fs';
 import path from 'path';
-import { buildRutaCliente } from '../utils/buildRutaCliente.js';
 import pool from '../config/db.js';
+import { buildRutaCliente } from '../utils/buildRutaCliente.js';
 
 export const subirArchivoGenerico = async (req, res) => {
   try {
     const { id_cliente, tipo } = req.params;
+    const { anio, mes } = req.body;
     const archivo = req.file;
 
-    if (!archivo) return res.status(400).json({ error: 'Archivo no enviado' });
+    if (!archivo) {
+      return res.status(400).json({ error: 'Archivo no enviado' });
+    }
 
-    // 📌 Validación de tipo
+    if (!anio || !mes) {
+      return res.status(400).json({ error: 'Faltan anio o mes' });
+    }
+
+    // ✅ Validar tipo
     const tiposPermitidos = ['estados-cuenta', 'excel-movimientos', 'certificados-sat', 'kit-nomina'];
     if (!tiposPermitidos.includes(tipo)) {
       return res.status(400).json({ error: `Tipo de archivo inválido: ${tipo}` });
     }
 
-    // 📌 1. Obtener nombre de empresa
+    // ✅ Obtener nombre de empresa
     const [[cliente]] = await pool.query('SELECT empresa FROM clientes WHERE id = ?', [id_cliente]);
     if (!cliente) return res.status(404).json({ error: 'Cliente no encontrado' });
 
-    // 📌 2. Obtener mes y año activo
-    const [[{ anio, mes }]] = await pool.query(`
-      SELECT anio, mes FROM meses_entregables ORDER BY id DESC LIMIT 1
-    `);
-
-    // 📌 3. Construir ruta en red
+    // ✅ Construir ruta destino usando anio/mes proporcionado
     const rutaDestino = buildRutaCliente({ empresa: cliente.empresa, anio, mes, tipo });
 
     if (!fs.existsSync(rutaDestino)) {
@@ -38,16 +39,21 @@ export const subirArchivoGenerico = async (req, res) => {
 
     fs.writeFileSync(destinoCompleto, archivo.buffer);
 
-    // ✅ 4. Guardar registro en DB
+    const rutaRelativa = path.relative(process.env.RUTA_CLIENTES, destinoCompleto).replace(/\\/g, '/');
+
+    // ✅ Insertar en la base de datos con anio y mes
     await pool.query(`
-      INSERT INTO documentos (nombre, ruta_archivo, tipo_archivo, tamano_archivo, id_cliente)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO documentos 
+        (nombre, ruta_archivo, tipo_archivo, tamano_archivo, id_cliente, anio, mes)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
     `, [
       nombreArchivo,
-      path.relative(process.env.RUTA_CLIENTES, destinoCompleto).replace(/\\/g, '/'),
+      rutaRelativa,
       archivo.mimetype,
       archivo.size,
-      id_cliente
+      id_cliente,
+      anio,
+      mes
     ]);
 
     res.status(201).json({ mensaje: `📥 Archivo subido con éxito para tipo: ${tipo}` });
@@ -57,3 +63,4 @@ export const subirArchivoGenerico = async (req, res) => {
     res.status(500).json({ error: 'Error al guardar archivo', detalles: err.message });
   }
 };
+

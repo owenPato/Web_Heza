@@ -100,7 +100,11 @@ INSERT IGNORE INTO categorias_documentos (id, nombre) VALUES
 (5, 'Opinión IMSS'),
 (6, 'Opinión SAT'),
 (7, 'Reporte EFOS'),
-(8, 'Entregable Modificable');
+(8, 'Entregable Modificable'),
+(9, 'Estados de Cuenta'),
+(10, 'Movimentos Bancarios'),
+(11, 'Certificados SAT'),
+(12, 'Kit Nomina');
 
 CREATE TABLE  meses_entregables (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -405,6 +409,10 @@ ADD CONSTRAINT fk_solicitud_usuario
   ON DELETE SET NULL;
 
 ALTER TABLE users ADD COLUMN primera_vez TINYINT(1) DEFAULT 1;
+
+ALTER TABLE documentos ADD COLUMN anio VARCHAR(10);
+ALTER TABLE documentos ADD COLUMN mes VARCHAR(20);
+
 
 -- ========================================================================
 -- CREACIÓN DE ÍNDICES PARA OPTIMIZACIÓN

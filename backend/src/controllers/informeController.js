@@ -7,65 +7,63 @@ import pool from '../config/db.js';
 export const registrarInformeMensual = async (req, res) => {
   try {
     const { id } = req.params;
+    const { anio, mes } = req.query;
     const id_cliente = id;
-    const anio = '2025'; // Fijo por ahora
-    const mes = '05 Mayo'; // Fijo por ahora
     const nombre_archivo = 'Informe mensual.pdf';
     const categoria = 4;
 
-    if (!id_cliente) {
-      return res.status(400).json({ error: 'Falta el id del cliente' });
+    if (!id_cliente || !anio || !mes) {
+      return res.status(400).json({ error: 'Faltan datos: id_cliente, anio o mes' });
     }
 
     const [clientes] = await pool.query('SELECT empresa FROM clientes WHERE id = ?', [id_cliente]);
     if (!clientes.length) return res.status(404).json({ error: 'Cliente no encontrado' });
 
     const empresa = clientes[0].empresa.trim();
-    const basePath = process.env.RUTA_CLIENTES || 'P:\\';
-    const rutaCompleta = path.join(basePath, empresa, anio, mes, 'Entregable', nombre_archivo);
+
+    const rutaBase = process.env.RUTA_ENTREGABLES
+      .replace('%EMPRESA%', empresa)
+      .replace('%ANIO%', anio)
+      .replace('%MES%', mes);
+
+    const rutaCompleta = path.resolve(rutaBase, nombre_archivo);
 
     if (!fs.existsSync(rutaCompleta)) {
       return res.status(404).json({ error: 'Archivo Informe mensual.pdf no encontrado' });
     }
 
-    // ✅ Prevención de duplicados (por cliente, categoría y mes actual)
-    const ahora = new Date();
-    const anioActual = ahora.getFullYear();
-    const mesActual = ahora.getMonth() + 1;
-
+    // Validar si ya existe el documento para ese cliente, anio y mes
     const [yaExiste] = await pool.query(`
       SELECT id FROM documentos 
       WHERE id_cliente = ? AND id_categoria = ? AND nombre = ?
-        AND YEAR(fecha_subida) = ? AND MONTH(fecha_subida) = ?`,
-      [id_cliente, categoria, nombre_archivo, anioActual, mesActual]
-    );
+        AND anio = ? AND mes = ?
+    `, [id_cliente, categoria, nombre_archivo, anio, mes]);
 
     if (yaExiste.length) {
-      return res.status(409).json({ mensaje: '⚠️ Informe mensual ya registrado este mes para este cliente' });
+      return res.status(409).json({ mensaje: '⚠️ Informe mensual ya registrado en ese mes para este cliente' });
     }
 
     const stats = fs.statSync(rutaCompleta);
     const tipo_archivo = mime.lookup(rutaCompleta) || 'application/pdf';
-    const rutaRelativa = path.relative(basePath, rutaCompleta).replace(/\\/g, '/');
+    const rutaRelativa = path.relative(process.env.NETWORK_DRIVE_PATH, rutaCompleta).replace(/\\/g, '/');
 
-    const [result] = await pool.query(
-      `INSERT INTO documentos 
-       (nombre, descripcion, ruta_archivo, tipo_archivo, tamano_archivo, id_categoria, id_cliente)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [
-        nombre_archivo,
-        'Documento Informe mensual',
-        rutaRelativa,
-        tipo_archivo,
-        stats.size,
-        categoria,
-        id_cliente
-      ]
-    );
-    
-    
+    const [result] = await pool.query(`
+      INSERT INTO documentos 
+      (nombre, descripcion, ruta_archivo, tipo_archivo, tamano_archivo, id_categoria, id_cliente, anio, mes)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `, [
+      nombre_archivo,
+      'Documento Informe mensual',
+      rutaRelativa,
+      tipo_archivo,
+      stats.size,
+      categoria,
+      id_cliente,
+      anio,
+      mes
+    ]);
+
     await pool.query(`INSERT INTO check_docs (id_documento, id_cliente) VALUES (?, ?)`, [result.insertId, id_cliente]);
- 
 
     res.status(201).json({
       message: '✅ Informe mensual registrado exitosamente',
