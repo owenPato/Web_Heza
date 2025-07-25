@@ -14,6 +14,7 @@ import EventoDetalle from './pages/public/EventoDetalle';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminPanelLayout from './components/PanelAdmin/AdminPanelLayout.jsx';
 import ContaduriaAvance from './pages/adminClientes/components/ContaduriaAvance';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 // Componentes públicos

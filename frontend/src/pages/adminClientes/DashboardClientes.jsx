@@ -8,8 +8,9 @@ import ColaboradoresGaleria from './components/ColaboradoresGaleria';
 import BitacoraMensajes from './components/BitacoraMensajes';
 import axios from 'axios';
 import './Cliente.css';
+import './ModalCambioPassword.css';
 
-// ✅ Modal embebido
+// ✅ Componente ModalFecha embebido
 const ModalFecha = ({ visible, onClose, onConfirm }) => {
   const [mes, setMes] = useState('');
   const [anio, setAnio] = useState(new Date().getFullYear().toString());
@@ -19,63 +20,78 @@ const ModalFecha = ({ visible, onClose, onConfirm }) => {
     '07 Julio', '08 Agosto', '09 Septiembre', '10 Octubre', '11 Noviembre', '12 Diciembre'
   ];
 
-  if (!visible) return null;
-
   const handleSubmit = () => {
     if (!mes || !anio) {
       alert('Selecciona ambos campos');
       return;
     }
-
-    console.log('✅ Fecha seleccionada:', { mes, anio });
+    console.log('✅ Fecha confirmada:', { mes, anio });
     onConfirm({ mes, anio });
     onClose();
   };
 
+  if (!visible) return null;
+
   return (
-    <div className="modal-overlay" style={{
-      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
-      backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex',
-      justifyContent: 'center', alignItems: 'center', zIndex: 999
-    }}>
-      <div className="modal-contenido" style={{ background: '#fff', padding: 20, borderRadius: 8 }}>
-        <h3>Selecciona Mes y Año</h3>
-        <select value={mes} onChange={e => setMes(e.target.value)}>
-          <option value="">-- Mes --</option>
-          {mesesFormato.map(m => (
-            <option key={m} value={m}>{m}</option>
-          ))}
-        </select>
-        <br />
-        <input
-          type="number"
-          placeholder="Año"
-          value={anio}
-          onChange={e => setAnio(e.target.value)}
-          style={{ marginTop: 10 }}
-        />
-        <div className="modal-actions" style={{ marginTop: 20 }}>
-          <button onClick={onClose} style={{ marginRight: 10 }}>Cancelar</button>
-          <button onClick={handleSubmit}>Confirmar</button>
+    <>
+      <div className="modal-backdrop show"></div>
+      <div className="modal d-block" tabIndex="-1">
+        <div className="modal-dialog modal-dialog-centered" role="document">
+          <div className="modal-content shadow">
+            <div className="modal-header">
+              <h3 className="text-dark mb-2">
+                <span className="text-gradient-primary">Selecciona Mes y Año</span>
+              </h3>
+            </div>
+            <div className="modal-body">
+              <div className="mb-3">
+                <label className="form-label">Mes</label>
+                <select
+                  className="form-select"
+                  value={mes}
+                  onChange={e => setMes(e.target.value)}
+                >
+                  <option value="">-- Mes --</option>
+                  {mesesFormato.map(m => (
+                    <option key={m} value={m}>{m}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Año</label>
+                <input
+                  type="number"
+                  className="form-control"
+                  value={anio}
+                  onChange={e => setAnio(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-secondary" onClick={onClose}>Cancelar</button>
+              <button className="btn btn-primary" onClick={handleSubmit}>Confirmar</button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
-// 🟩 Principal
+
+// 🟩 Componente principal
 const DashboardClientes = () => {
   const navigate = useNavigate();
   const [modalVisible, setModalVisible] = useState(false);
   const [accionPendiente, setAccionPendiente] = useState(null);
 
   const abrirModalPara = (accion) => {
-    setAccionPendiente(accion);
+    setAccionPendiente(accion); // "subir", "documentos", "checklist"
     setModalVisible(true);
   };
 
-  const handleFechaConfirmada = async ({ anio, mes }) => {
-    console.log('⏳ Confirmando fecha y acción:', accionPendiente);
+  const handleFechaConfirmada = ({ anio, mes }) => {
     setModalVisible(false);
 
     localStorage.setItem('mes_actual', mes);
@@ -86,10 +102,10 @@ const DashboardClientes = () => {
         navigate('subir');
         break;
       case 'documentos':
-        await cargarYObtenerDocumentos('documentos');
+        cargarYObtenerDocumentos('documentos');
         break;
       case 'checklist':
-        await cargarYObtenerDocumentos('checklist');
+        cargarYObtenerDocumentos('checklist');
         break;
       default:
         console.warn('Acción no reconocida');
@@ -123,10 +139,9 @@ const DashboardClientes = () => {
 
       for (const url of endpoints) {
         try {
-          console.log('📥 Llamando:', url);
           await axios.get(url);
         } catch (err) {
-          console.warn(`⚠️ Skipping ${url}: ${err.response?.status}`);
+          console.warn(`Skipping ${url}: ${err.response?.status}`);
         }
       }
 
@@ -135,7 +150,7 @@ const DashboardClientes = () => {
       navigate(redirectPath, { state: { docs: data } });
 
     } catch (error) {
-      console.error('❌ Error al cargar documentos:', error.message);
+      console.error('Error al cargar documentos:', error.message);
     }
   };
 
@@ -174,7 +189,7 @@ const DashboardClientes = () => {
       {/* 🟥 Bitácora de mensajes */}
       <BitacoraMensajes />
 
-      {/* ⏱ Modal */}
+      {/* ⏱ Modal Fecha */}
       <ModalFecha
         visible={modalVisible}
         onConfirm={handleFechaConfirmada}
