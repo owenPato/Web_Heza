@@ -81,25 +81,27 @@ const ModalFecha = ({ visible, onClose, onConfirm }) => {
 
 
 // 🟩 Componente principal
+// DashboardClientes.jsx
+
+
 const DashboardClientes = () => {
   const navigate = useNavigate();
   const [modalVisible, setModalVisible] = useState(false);
   const [accionPendiente, setAccionPendiente] = useState(null);
 
   const abrirModalPara = (accion) => {
-    setAccionPendiente(accion); // "subir", "documentos", "checklist"
+    setAccionPendiente(accion);
     setModalVisible(true);
   };
 
   const handleFechaConfirmada = ({ anio, mes }) => {
     setModalVisible(false);
-
     localStorage.setItem('mes_actual', mes);
     localStorage.setItem('anio_actual', anio);
 
     switch (accionPendiente) {
       case 'subir':
-        navigate('subir');
+        cargarYObtenerDocumentos('subir'); // ✅ cambio clave aquí
         break;
       case 'documentos':
         cargarYObtenerDocumentos('documentos');
@@ -147,8 +149,7 @@ const DashboardClientes = () => {
 
       const { data } = await axios.get(`/api/documentos/${idCliente}`);
       localStorage.setItem('docs', JSON.stringify(data));
-      navigate(redirectPath, { state: { docs: data } });
-
+      navigate(redirectPath, { state: { docs: data, id_cliente: idCliente } }); // ✅ se manda el id_cliente
     } catch (error) {
       console.error('Error al cargar documentos:', error.message);
     }
@@ -158,7 +159,6 @@ const DashboardClientes = () => {
     <div className="dashboard-clientes">
       <h2>Bienvenido al Portal del Cliente</h2>
 
-      {/* 🟦 Accesos rápidos */}
       <div className="accesos-rapidos">
         <AccesoCard
           icono={FilePlus}
@@ -180,16 +180,13 @@ const DashboardClientes = () => {
         />
       </div>
 
-      {/* 🟨 Facturación y Avance */}
       <div className="resumen-contable flex-row">
         <ContaduriaAvance mostrarBoton={true} mostrarProgresoCliente={false} />
         <ColaboradoresGaleria />
       </div>
 
-      {/* 🟥 Bitácora de mensajes */}
       <BitacoraMensajes />
 
-      {/* ⏱ Modal Fecha */}
       <ModalFecha
         visible={modalVisible}
         onConfirm={handleFechaConfirmada}

@@ -412,6 +412,8 @@ ALTER TABLE users ADD COLUMN primera_vez TINYINT(1) DEFAULT 1;
 
 ALTER TABLE documentos ADD COLUMN anio VARCHAR(10);
 ALTER TABLE documentos ADD COLUMN mes VARCHAR(20);
+ALTER TABLE documentos
+MODIFY COLUMN tipo_archivo VARCHAR(100);
 
 
 -- ========================================================================
