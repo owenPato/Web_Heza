@@ -2,7 +2,7 @@
 import path from 'path';
 
 const rutasTipo = {
-  'estados-cuenta': ['Contable', 'Conciliacion bancaria', 'Estdos Bancarios'],
+  'estados-cuenta': ['Contable', 'Conciliacion bancaria', 'Estados Bancarios'],
   'excel-movimientos': ['Contable', 'Conciliacion bancaria'],
   'certificados-sat': ['BD', '1 E Firma'],
   'kit-nomina': ['Laboral', 'Nomina', 'Nuevos Colaboradores']

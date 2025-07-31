@@ -8,6 +8,13 @@ export const subirArchivoGenerico = async (req, res) => {
     const { id_cliente, tipo } = req.params;
     const { anio, mes } = req.body;
     const archivo = req.file;
+    const categorias = {
+    'estados-cuenta': 9,
+    'excel-movimientos': 10,
+    'certificados-sat': 11,
+    'kit-nomina': 12
+    };
+    const id_categoria = categorias[tipo];
 
     if (!archivo) {
       return res.status(400).json({ error: 'Archivo no enviado' });
@@ -44,16 +51,17 @@ export const subirArchivoGenerico = async (req, res) => {
     // ✅ Insertar en la base de datos con anio y mes
     await pool.query(`
       INSERT INTO documentos 
-        (nombre, ruta_archivo, tipo_archivo, tamano_archivo, id_cliente, anio, mes)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `, [
+        (nombre, ruta_archivo, tipo_archivo, tamano_archivo, id_cliente, anio, mes, id_categoria)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, 
+    [
       nombreArchivo,
       rutaRelativa,
       archivo.mimetype,
       archivo.size,
       id_cliente,
       anio,
-      mes
+      mes,
+      id_categoria
     ]);
 
     res.status(201).json({ mensaje: `📥 Archivo subido con éxito para tipo: ${tipo}` });
