@@ -29,17 +29,17 @@ const InformeMensualCliente = ({ indicadores, impuestos, cumplimiento }) => {
 
 
       {/* Impuestos */}
-    <div className="impuestos-rediseñados">
-      <h4 className="titulo-impuestos text-gradient-secondary">Resumen de Impuestos por Pagar</h4>
-      <div className="lista-impuestos">
-        {impuestos.map((item, index) => (
-          <div className="item-impuesto" key={index}>
-            <span className="nombre-impuesto">{item.nombre}</span>
-            <span className="valor-impuesto">{item.valor}</span>
-          </div>
-        ))}
+      <div className="impuestos-rediseñados">
+        <h4 className="titulo-impuestos text-gradient-secondary">Resumen de Impuestos por Pagar</h4>
+        <div className="lista-impuestos">
+          {impuestos.map((item, index) => (
+            <div className="item-impuesto" key={index}>
+              <span className="nombre-impuesto">{item.nombre}</span>
+              <span className="valor-impuesto">{item.valor}</span>
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
 
 
 

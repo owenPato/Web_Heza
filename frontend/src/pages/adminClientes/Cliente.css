@@ -1076,7 +1076,7 @@ dd {
 .informe-mensual-box {
   margin-top: 2rem;
   padding: 1rem;
-  border: 1px solid #b3b3b3;
+  
   border-radius: 12px;
   background-color: #f9f9f9;
 }
@@ -1095,7 +1095,6 @@ dd {
 .informe-mensual-box td,
 .informe-mensual-box th {
   padding: 8px;
-  border: 1px solid #ccc;
   text-align: left;
   font-size: 0.95rem;
 }
@@ -1241,11 +1240,9 @@ dd {
   text-align: center;
 }
 .informe-mensual-box {
-  border: 2px solid #2c3e50;
-  border-radius: 12px;
+   border-radius: 12px;
   padding: 1.5rem;
   margin-top: 2rem;
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05);
   background-color: #fff;
   width: 100%; /* Para ocupar toda la fila horizontalmente */
   max-width: 1000px;
@@ -1381,17 +1378,25 @@ dd {
 }
 
 /* Tarjeta activa (centro) */
-/* Tarjetas inactivas: solo se ve el título */
-.cumplimiento-card.inactiva .estado,
-.cumplimiento-card.inactiva .opinion {
-  display: none;
+.cumplimiento-card.activa {
+  opacity: 1;
+  transform: scale(1);
 }
 
-/* Título gris y opaco */
-.cumplimiento-card.inactiva .titulo {
-  color: #aab2bb;
-  opacity: 0.7;
+/* Tarjetas de los lados */
+.cumplimiento-card.inactiva {
+  opacity: 0.5;
+  transform: scale(0.95);
 }
 
+/* Estados */
+.estado.cumplida {
+  color: #2ecc71;
+  font-weight: bold;
+}
+.estado.no-cumplida {
+  color: #e74c3c;
+  font-weight: bold;
+}
 
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffec } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FilePlus, DownloadCloud, FileText } from 'react-feather';
 import AccesoCard from './components/AccesoCard';
@@ -9,6 +9,7 @@ import BitacoraMensajes from './components/BitacoraMensajes';
 import axios from 'axios';
 import './Cliente.css';
 import './ModalCambioPassword.css';
+import ModalEncuesta from './ModalEncuesta'; //
 
 // ✅ Componente ModalFecha embebido
 const ModalFecha = ({ visible, onClose, onConfirm }) => {
@@ -88,6 +89,7 @@ const DashboardClientes = () => {
   const navigate = useNavigate();
   const [modalVisible, setModalVisible] = useState(false);
   const [accionPendiente, setAccionPendiente] = useState(null);
+  const [mostrarEncuesta, setMostrarEncuesta] = useState(true); // ✅ Mostrar encuesta siempre (modo prueba)
 
   const abrirModalPara = (accion) => {
     setAccionPendiente(accion);
@@ -192,8 +194,12 @@ const DashboardClientes = () => {
         onConfirm={handleFechaConfirmada}
         onClose={() => setModalVisible(false)}
       />
+     <ModalEncuesta
+      show={mostrarEncuesta}
+      onClose={() => setMostrarEncuesta(false)}
+    />
     </div>
-  );
+      );
 };
 
 export default DashboardClientes;
