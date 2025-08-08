@@ -38,7 +38,7 @@ const ModalEncuesta = ({ show, onClose }) => {
   };
 
   const opcionesAfirmacion = [
-    "Muy de acuerdo", "De acuerdo", "Regular", "En desacuerdo", "Muy en desacuerdo"
+    "Muy de acuerdo",  "Regular", "En desacuerdo", 
   ];
 
   const preguntasRadio = [
