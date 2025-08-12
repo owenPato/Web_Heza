@@ -84,15 +84,18 @@ const CheckListCliente = () => {
                       href={doc.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn-outline"
+                      className="btn-azul"
+                      onClick={(e) => {
+                        if (!doc.firmado) {
+                          e.preventDefault(); // Evita que el enlace se abra antes de firmar
+                          firmarDocumento(doc.id).then(() => {
+                            window.open(doc.url, "_blank", "noopener,noreferrer");
+                          });
+                        }
+                      }}
                     >
                       Ver PDF
                     </a>
-                    {!doc.firmado && (
-                      <button className="btn-azul" onClick={() => firmarDocumento(doc.id)}>
-                        Firmar Entrega
-                      </button>
-                    )}
                   </div>
                 </div>
                 <div className="flip-back">

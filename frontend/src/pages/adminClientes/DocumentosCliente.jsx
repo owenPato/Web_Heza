@@ -13,8 +13,10 @@ const DocumentosCliente = () => {
   const [visitables, setVisitables] = useState([]);
   const [check, setCheck] = useState([]);
 
-  const mesActual = localStorage.getItem('mes_actual') || ''; // ej: "01 Enero"
+  // Obtener mes y año desde localStorage
+  const mesRaw = localStorage.getItem('mes_actual') || ''; // ej: "01 Enero"
   const anioActual = localStorage.getItem('anio_actual') || ''; // ej: "2025"
+  const nombreMes = mesRaw.split(' ')[1] || '';
 
   useEffect(() => {
     const data = location.state?.docs;
@@ -23,7 +25,7 @@ const DocumentosCliente = () => {
       docs.filter((doc) => {
         const esCSF = doc.nombre?.toLowerCase().includes('csf');
         if (esCSF) return true; // ✅ siempre incluir CSF
-        return doc.mes === mesActual && String(doc.anio) === anioActual;
+        return doc.mes === mesRaw && String(doc.anio) === anioActual;
       });
 
     if (data) {
@@ -39,10 +41,19 @@ const DocumentosCliente = () => {
         setCheck(filtrarPorMesAnio(parsed.check));
       }
     }
-  }, [location.state, mesActual, anioActual]);
+  }, [location.state, mesRaw, anioActual]);
 
   return (
     <div className="documentos-container">
+      {/* Encabezado con el mes y año */}
+      <div className="titulo-seccion-checklist text-center mb-4">
+        <div className="meses-tabs justify-center">
+          <button className="tab-btn activo">
+            {nombreMes} de {anioActual}
+          </button>
+        </div>
+      </div>
+
       <div className="documentos-grid">
         <EstadosCuentaResumen />
         <VisitablesResumen docs={visitables} />

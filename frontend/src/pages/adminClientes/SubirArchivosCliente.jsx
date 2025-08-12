@@ -26,6 +26,11 @@ const SubirArchivosCliente = () => {
     console.warn('ID de cliente no disponible en location ni en localStorage');
   }
 
+  // Mes/Año para mostrar en el encabezado y para uploads
+  const mesRaw = localStorage.getItem('mes_actual') || ''; // ej: "01 Enero"
+  const anioActual = localStorage.getItem('anio_actual') || ''; // ej: "2025"
+  const nombreMes = mesRaw.split(' ')[1] || '';
+
   const handleComprimidoClick = async (tipo, inputRef) => {
     const mensaje =
       tipo === 'kit'
@@ -37,7 +42,7 @@ const SubirArchivosCliente = () => {
       html: `
         <p>${mensaje}</p>
         <p>Si no sabes cómo hacerlo, te recomendamos este video:</p>
-        <a href="https://www.youtube.com/watch?v=LOSnV4stFLQ" target="_blank">
+        <a href="https://www.youtube.com/watch?v=LOSnV4stFLQ" target="_blank" rel="noopener noreferrer">
           Ver tutorial en YouTube
         </a>
       `,
@@ -54,8 +59,8 @@ const SubirArchivosCliente = () => {
 
   const subirArchivo = async (tipo, inputRef) => {
     const archivo = inputRef.current?.files[0];
-    const anio = localStorage.getItem('anio_actual');
-    const mes = localStorage.getItem('mes_actual');
+    const anio = anioActual;
+    const mes = mesRaw;
 
     if (!archivo || !id_cliente || !anio || !mes) {
       Swal.fire('Error', 'Falta archivo, cliente, año o mes', 'error');
@@ -88,69 +93,86 @@ const SubirArchivosCliente = () => {
   };
 
   return (
-    <div className="accesos-rapidos">
-      <div className="acceso-card">
-        <h4>Certificados SAT</h4>
-        <p>Sube tu .cer, .key y contraseña</p>
-        <label className="custom-upload" onClick={() => handleComprimidoClick('certificados-sat', certificadosInputRef)}>
-          Elegir archivos
-        </label>
-        <input
-          type="file"
-          ref={certificadosInputRef}
-          multiple
-          accept=".zip,.rar"
-          style={{ display: 'none' }}
-          onChange={() => subirArchivo('certificados-sat', certificadosInputRef)}
-        />
+    <>
+      {/* Encabezado con mes y año */}
+      <div className="titulo-seccion-checklist text-center mb-4">
+        <div className="meses-tabs justify-center">
+          <button className="tab-btn activo">
+            {nombreMes} {anioActual ? `de ${anioActual}` : ''}
+          </button>
+        </div>
       </div>
 
-      <div className="acceso-card">
-        <h4>Estados de Cuenta</h4>
-        <p>Sube estados mensuales en PDF</p>
-        <label className="custom-upload">
-          Elegir archivos
+      <div className="accesos-rapidos">
+        <div className="acceso-card">
+          <h4>Certificados SAT</h4>
+          <p>Sube tu .cer, .key y contraseña</p>
+          <label
+            className="custom-upload"
+            onClick={() => handleComprimidoClick('certificados-sat', certificadosInputRef)}
+          >
+            Elegir archivos
+          </label>
           <input
             type="file"
-            ref={estadosInputRef}
-            accept=".pdf"
-            hidden
-            onChange={() => subirArchivo('estados-cuenta', estadosInputRef)}
+            ref={certificadosInputRef}
+            multiple
+            accept=".zip,.rar"
+            style={{ display: 'none' }}
+            onChange={() => subirArchivo('certificados-sat', certificadosInputRef)}
           />
-        </label>
-      </div>
+        </div>
 
-      <div className="acceso-card">
-        <h4>Kit de Alta para Nóminas</h4>
-        <p>Acta constitutiva, comprobante de domicilio, etc.</p>
-        <label className="custom-upload" onClick={() => handleComprimidoClick('kit-nomina', kitInputRef)}>
-          Elegir archivos
-        </label>
-        <input
-          type="file"
-          ref={kitInputRef}
-          multiple
-          accept=".zip,.rar"
-          style={{ display: 'none' }}
-          onChange={() => subirArchivo('kit-nomina', kitInputRef)}
-        />
-      </div>
+        <div className="acceso-card">
+          <h4>Estados de Cuenta</h4>
+          <p>Sube estados mensuales en PDF</p>
+          <label className="custom-upload">
+            Elegir archivos
+            <input
+              type="file"
+              ref={estadosInputRef}
+              accept=".pdf"
+              hidden
+              onChange={() => subirArchivo('estados-cuenta', estadosInputRef)}
+            />
+          </label>
+        </div>
 
-      <div className="acceso-card">
-        <h4>Excel de movimientos</h4>
-        <p>Sube tu archivo Excel</p>
-        <label className="custom-upload">
-          Elegir archivos
+        <div className="acceso-card">
+          <h4>Kit de Alta para Nóminas</h4>
+          <p>Acta constitutiva, comprobante de domicilio, etc.</p>
+          <label
+            className="custom-upload"
+            onClick={() => handleComprimidoClick('kit-nomina', kitInputRef)}
+          >
+            Elegir archivos
+          </label>
           <input
             type="file"
-            ref={excelInputRef}
-            accept=".xls,.xlsx"
-            hidden
-            onChange={() => subirArchivo('movimientos-excel', excelInputRef)}
+            ref={kitInputRef}
+            multiple
+            accept=".zip,.rar"
+            style={{ display: 'none' }}
+            onChange={() => subirArchivo('kit-nomina', kitInputRef)}
           />
-        </label>
+        </div>
+
+        <div className="acceso-card">
+          <h4>Excel de movimientos</h4>
+          <p>Sube tu archivo Excel</p>
+          <label className="custom-upload">
+            Elegir archivos
+            <input
+              type="file"
+              ref={excelInputRef}
+              accept=".xls,.xlsx"
+              hidden
+              onChange={() => subirArchivo('movimientos-excel', excelInputRef)}
+            />
+          </label>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
