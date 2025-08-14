@@ -36,13 +36,13 @@ const ModalFecha = ({ visible, onClose, onConfirm }) => {
       <div className="modal d-block" tabIndex="-1">
         <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content shadow">
-            <div className="modal-header">
-              <h3 className="text gradient-secondary mb-2">Selecciona Mes y Año</h3>
+            <div className="modal-header ">
+              <h3 className="text-gradient-secondary mb-2">Selecciona Mes y Año</h3>
             </div>
             <div className="modal-body">
               <div className="mb-3">
                 <label className="form-label">Mes</label>
-                <select className="form-select" value={mes} onChange={e => setMes(e.target.value)}>
+                <select className="form-select select-custom-azul" value={mes} onChange={e => setMes(e.target.value)}>
                   <option value="">-- Mes --</option>
                   {mesesFormato.map(m => <option key={m} value={m}>{m}</option>)}
                 </select>
