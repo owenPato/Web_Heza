@@ -1672,3 +1672,9 @@ p {
   border-radius: 0.5rem;
   font-weight: 500;
 }
+
+.fuente-formal {
+  font-family: "Calibri", "Segoe UI", "Helvetica", sans-serif !important;
+}
+
+

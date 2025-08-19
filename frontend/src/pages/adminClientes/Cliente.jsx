@@ -40,9 +40,9 @@ const Cliente = () => {
                 <span className="text-gradient-primary">Información </span>
                 <span className="text-gradient-secondary"> Empresa</span>
               </h5>
-              <ul className="list-group list-group-flush">
+              <ul className="list-group list-group-flush fuente-formal">
                 <li className="list-group-item specialty-card">
-                  <p><strong className="form-text text-primary">RFC:</strong> {cliente.rfc}</p>
+                  <p><strong className="form-text text-primary ">RFC:</strong> {cliente.rfc}</p>
                 </li>
                 <li className="list-group-item specialty-card">
                   <p><strong className="form-text text-primary">Dirección:</strong> {cliente.direccion}, {cliente.ciudad}, {cliente.estado}, C.P. {cliente.codigo_postal}</p>

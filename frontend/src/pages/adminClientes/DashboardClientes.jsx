@@ -66,7 +66,7 @@ const ModalFecha = ({ visible, onClose, onConfirm }) => {
 
 const DashboardClientes = () => {
   const navigate = useNavigate();
-  const location = useLocation(); // ✅ para saber si entras a /contaduria
+  const location = useLocation();
   const [modalVisible, setModalVisible] = useState(false);
   const [accionPendiente, setAccionPendiente] = useState(null);
   const [mostrarEncuesta, setMostrarEncuesta] = useState(true);
@@ -75,8 +75,7 @@ const DashboardClientes = () => {
   );
   const [colaboradorActivo, setColaboradorActivo] = useState(null);
 
-
-  // ✅ Cargar automáticamente el resumen si entras directamente a /contaduria
+  // Cargar automáticamente el resumen si entras directamente a /contaduria
   useEffect(() => {
     if (location.pathname.includes('/clientes/dashboard/contaduria')) {
       const resumen = localStorage.getItem('resumen_informe');
@@ -85,6 +84,29 @@ const DashboardClientes = () => {
       }
     }
   }, [location.pathname]);
+
+  // ✅ NUEVO: Guardar cliente_id automáticamente al entrar
+  useEffect(() => {
+    const guardarClienteId = async () => {
+      try {
+        const storedUser = JSON.parse(localStorage.getItem('user'));
+        const userId = storedUser?.id;
+
+        if (!userId) return;
+
+        const { data: cliente } = await axios.get(`/api/clientes/por-user/${userId}`);
+        const idCliente = cliente?.id;
+
+        if (idCliente) {
+          localStorage.setItem('cliente_id', idCliente);
+        }
+      } catch (err) {
+        console.error('❌ Error al guardar cliente_id:', err);
+      }
+    };
+
+    guardarClienteId();
+  }, []);
 
   const abrirModalPara = (accion) => {
     setAccionPendiente(accion);
@@ -120,16 +142,17 @@ const DashboardClientes = () => {
       localStorage.setItem('resumen_informe', JSON.stringify(data.resumen));
 
       Swal.fire({
-          icon: 'success',
-          title: 'Informe mensual',
-          text: 'Informe mensual procesado correctamente',
-          confirmButtonText: 'OK',
-          customClass: {
-            confirmButton: 'btn btn-gold',
-            popup: 'swal-custom-popup'
-          },
-          buttonsStyling: false
+        icon: 'success',
+        title: 'Informe mensual',
+        text: 'Informe mensual procesado correctamente',
+        confirmButtonText: 'OK',
+        customClass: {
+          confirmButton: 'btn btn-gold',
+          popup: 'swal-custom-popup'
+        },
+        buttonsStyling: false
       });
+
       navigate('/clientes/dashboard/contaduria');
     } catch (err) {
       console.error('❌ Error al procesar informe:', err);
@@ -172,19 +195,20 @@ const DashboardClientes = () => {
 
       const { data } = await axios.get(`/api/documentos/${idCliente}`);
       localStorage.setItem('docs', JSON.stringify(data));
-      navigate(redirectPath, { state: { docs: data, id_cliente: idCliente } });
-      Swal.fire({
-          icon: 'success',
-          title: 'Informe mensual',
-          text: 'Informe mensual procesado correctamente',
-          confirmButtonText: 'OK',
-          customClass: {
-            confirmButton: 'btn btn-gold',
-            popup: 'swal-custom-popup'
-          },
-          buttonsStyling: false
-      });
 
+      navigate(redirectPath, { state: { docs: data, id_cliente: idCliente } });
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Informe mensual',
+        text: 'Informe mensual procesado correctamente',
+        confirmButtonText: 'OK',
+        customClass: {
+          confirmButton: 'btn btn-gold',
+          popup: 'swal-custom-popup'
+        },
+        buttonsStyling: false
+      });
     } catch (error) {
       console.error('Error al cargar documentos:', error.message);
     }
@@ -206,8 +230,8 @@ const DashboardClientes = () => {
           onVerMas={() => abrirModalPara('informe')}
         />
         <ColaboradoresGaleria
-            colaboradorActivo={colaboradorActivo}
-            setColaboradorActivo={setColaboradorActivo}
+          colaboradorActivo={colaboradorActivo}
+          setColaboradorActivo={setColaboradorActivo}
         />
       </div>
 
