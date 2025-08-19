@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Form } from 'react-bootstrap';
+import '../Cliente.css'; // Asegúrate de crear este archivo CSS
 
 const colaboradores = [
   {
@@ -62,84 +63,56 @@ const ColaboradoresGaleria = () => {
 
   return (
     <>
-      <div
-        style={{
-          display: 'flex',
-          gap: '1rem',
-          marginTop: '1rem',
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-        }}
-      >
+      <div className="colaboradores-galeria ">
         {colaboradores.map((colaborador, i) => (
           <div
             key={i}
+            className={`colaborador-card ${colaboradorSeleccionado?.nombre === colaborador.nombre ? 'activo' : ''}` }
             onClick={() => abrirModal(colaborador)}
-            style={{
-              textAlign: 'center',
-              cursor: 'pointer',
-              width: 100,
-            }}
           >
-            <div
-              style={{
-                width: 80,
-                height: 80,
-                borderRadius: '50%',
-                overflow: 'hidden',
-                margin: '0 auto',
-                border: '2px solid #263D4F',
-              }}
-            >
-              <img
-                src={colaborador.imagen}
-                alt={colaborador.nombre}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                }}
-              />
+            <div className="colaborador-img specialty-card ">
+              <img src={colaborador.imagen} alt={colaborador.nombre} />
             </div>
-            <div>
-              <strong style={{ fontSize: 12 }}>{colaborador.nombre}</strong>
-              <div style={{ fontSize: 11 }}>{colaborador.puesto}</div>
+            <div className="colaborador-info">
+              <strong>{colaborador.nombre}</strong>
+              <div>{colaborador.puesto}</div>
             </div>
           </div>
         ))}
       </div>
 
-      <Modal show={modalAbierto} onHide={cerrarModal} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Enviar mensaje por WhatsApp</Modal.Title>
+      <Modal show={modalAbierto} onHide={cerrarModal} centered className="modal-whatsapp">
+        <Modal.Header closeButton className="modal-header-custom">
+          <Modal.Title className="modal-title-custom text-gradient-primary">Enviar mensaje por WhatsApp</Modal.Title>
         </Modal.Header>
+
         <Modal.Body>
-          <p>
+          <p className="mensaje-para">
             Escribe un mensaje para <strong>{colaboradorSeleccionado?.nombre}</strong> ({colaboradorSeleccionado?.puesto})
           </p>
           <Form.Group>
-            <Form.Label>Mensaje</Form.Label>
+            <Form.Label className="form-label-custom">Mensaje</Form.Label>
             <Form.Control
               as="textarea"
               rows={4}
               value={mensaje}
               onChange={(e) => setMensaje(e.target.value)}
               placeholder="Escribe tu mensaje aquí..."
+              className="input-mensaje"
             />
           </Form.Group>
         </Modal.Body>
-        <Modal.Footer>
-          <Button variant="success" onClick={enviarMensajeIndividual}>
+
+        <Modal.Footer className="d-flex flex-column gap-2">
+          <button className="btn-colaborador" onClick={enviarMensajeIndividual}>
             Enviar al colaborador
-          </Button>
-          <Button variant="info" onClick={enviarMensajeGrupo}>
-            Enviar al grupo de soporte
-          </Button>
-          <Button variant="secondary" onClick={cerrarModal}>
+          </button>
+          <button className="btn-cancelar" onClick={cerrarModal}>
             Cancelar
-          </Button>
+          </button>
         </Modal.Footer>
       </Modal>
+
     </>
   );
 };

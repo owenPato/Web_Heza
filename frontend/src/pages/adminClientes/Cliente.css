@@ -983,7 +983,7 @@ dd {
   font-size: 1.4rem;
   font-weight: 600;
   margin: 2rem 0 1rem;
-  color: #ad9464;
+  color: #b49c73;
 }
 
 .meses-tabs {
@@ -1258,7 +1258,7 @@ dd {
 .titulo-impuestos {
   font-size: 1.3rem;
   font-weight: bold;
-  color: #ad9464;
+  color: #b49c73;
   margin-bottom: 1rem;
 }
 
@@ -1426,4 +1426,249 @@ textarea {
   margin: 1rem 0;
 }
 
+.colaboradores-galeria {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 
+.colaborador-card {
+  text-align: center;
+  cursor: pointer;
+  width: 100px;
+  transition: all 0.3s ease;
+}
+
+.colaborador-card.activo {
+  transform: scale(1.1);
+  border: 2px solid #b49c73;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+}
+
+.colaborador-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 0.5rem auto;
+  border: 2px solid #263D4F;
+}
+
+.colaborador-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.colaborador-info {
+  font-size: 12px;
+}
+.modal-whatsapp .modal-content {
+  background-color: #263D4F;
+  color: #fff;
+  border-radius: 12px;
+  border: none;
+}
+
+.modal-title-custom {
+  font-weight: bold;
+  color: #F8E4B2;
+}
+
+.form-label-custom {
+  color: #d1c6ad;
+  font-weight: 500;
+}
+
+.input-mensaje {
+  background-color: transparent;
+  color: white;
+  border: 1px solid #d1c6ad;
+  border-radius: 6px;
+}
+
+.input-mensaje::placeholder {
+  color: #ccc;
+}
+
+.btn-colaborador {
+  background-color: #b49c73;
+  color: #fff;
+  border: none;
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-colaborador:hover {
+  background-color: #ffffff;
+  color: #163d57;
+}
+.btn-cancelar {
+  background-color: transparent;
+  color: #fff;
+  border: 1px solid #fff;
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-cancelar:hover {
+  background-color: rgba(255,255,255,0.1);
+}
+.modal-whatsapp .btn-close {
+  filter: invert(1);
+  opacity: 1;
+}
+
+
+/* From Uiverse.io by eslam-hany */ 
+.book {
+  position: relative;
+  border-radius: 10px;
+  width: 220px;
+  height: 300px;
+  background-color: whitesmoke;
+  -webkit-box-shadow: 1px 1px 12px #b49c73;
+  box-shadow: 1px 1px 12px #b49c73;
+  -webkit-transform: preserve-3d;
+  -ms-transform: preserve-3d;
+  transform: preserve-3d;
+  -webkit-perspective: 2000px;
+  perspective: 2000px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  color: #b49c73;
+}
+
+.cover {
+  top: 0;
+  position: absolute;
+  background-color: #263D4F;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  cursor: pointer;
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+  -webkit-transform-origin: 0;
+  -ms-transform-origin: 0;
+  transform-origin: 0;
+  -webkit-box-shadow: 1px 1px 12px #b49c73;
+  box-shadow: 1px 1px 12px #b49c73;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  color:whitesmoke;
+}
+
+.book:hover .cover {
+  -webkit-transition: all 0.5s;
+  transition: all 0.5s;
+  -webkit-transform: rotatey(-80deg);
+  -ms-transform: rotatey(-80deg);
+  transform: rotatey(-80deg);
+}
+
+p {
+  font-size: 20px;
+  font-weight: bolder;
+}
+
+
+.border-positivo {
+  box-shadow: 0 4px 8px rgba(119, 222, 123, 0.8); /* sombra dorada */
+  border: 2px solid #a8d77e; /* borde dorado */
+}
+
+.border-no-aplica {
+  box-shadow: 0 4px 8px rgba(221, 154, 154, 0.5); /* sombra gris */
+  border: 2px solid #6f4137; /* borde gris */
+}
+
+/* Mantén tus estilos base de book y cover */
+.book {
+  width: 220px;
+  height: 330px;
+  perspective: 1000px;
+  position: relative;
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  transition: transform 0.3s;
+}
+
+.book:hover {
+  transform: scale(1.03);
+}
+
+.cover {
+  background-color: #1f3a4a;
+  color: white;
+  padding: 1rem;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+}
+
+/* From Uiverse.io by fanishah */ 
+.card-tarjeta-doc {
+  width: 12.5rem;
+  height: 17rem;
+  background-color: #1f3a4a;
+  border-radius: 1rem;
+  border: rgb(59, 95, 122) 0.2rem solid;
+  transition: all 0.4s ease-in;
+  box-shadow: 1px 1px 12px rgb(59, 95, 122);
+  color: #fff6e5;
+ 
+}
+
+/* 🔴 Documentos completados (positivo) */
+.card-tarjeta-doc.doc-positivo:hover {
+  transform: translateY(-1.5rem);
+  border: #b49c73 0.2rem solid;
+  border-radius: 2.5rem 0 2.5rem 0;
+}
+
+/* 🟡 Documentos no encontrados */
+.card-tarjeta-doc.doc-no-encontrado {
+  border:#8f484b 0.2rem solid;
+  box-shadow: 0 4px 8px #8f484b;
+}
+.card-tarjeta-doc.doc-no-encontrado:hover {
+  transform: translateY(-1.5rem);
+  border: #8f484b 0.2rem solid;
+  border-radius: 2.5rem 0 2.5rem 0;
+}
+
+.badge-estado {
+  border: 1px solid #b49c73;
+  color: #b49c73;
+  background-color: transparent;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+}

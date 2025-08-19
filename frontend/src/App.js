@@ -14,6 +14,7 @@ import EventoDetalle from './pages/public/EventoDetalle';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminPanelLayout from './components/PanelAdmin/AdminPanelLayout.jsx';
 import ContaduriaAvance from './pages/adminClientes/components/ContaduriaAvance';
+import ControlAuditoria from './pages/adminClientes/ControlAuditoria';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
@@ -93,6 +94,7 @@ function App() {
           <Route path="/clientes/dashboard" element={<ClienteLayout />}>
             {/* Página principal del dashboard en forma de tarjetas */}
             <Route index element={<DashboardClientes />} />
+            <Route path="control-auditoria" element={<ControlAuditoria />} />
 
             {/* Rutas específicas */}
             <Route path="subir" element={<SubirArchivosCliente />} />

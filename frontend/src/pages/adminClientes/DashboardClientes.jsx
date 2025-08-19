@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { FilePlus, DownloadCloud, FileText } from 'react-feather';
 import AccesoCard from './components/AccesoCard';
+import Swal from 'sweetalert2';
 import ContaduriaAvance from './components/ContaduriaAvance';
 import ColaboradoresGaleria from './components/ColaboradoresGaleria';
 import BitacoraMensajes from './components/BitacoraMensajes';
@@ -72,6 +73,8 @@ const DashboardClientes = () => {
   const [resumenInforme, setResumenInforme] = useState(
     JSON.parse(localStorage.getItem('resumen_informe')) || null
   );
+  const [colaboradorActivo, setColaboradorActivo] = useState(null);
+
 
   // ✅ Cargar automáticamente el resumen si entras directamente a /contaduria
   useEffect(() => {
@@ -116,7 +119,17 @@ const DashboardClientes = () => {
       setResumenInforme(data.resumen);
       localStorage.setItem('resumen_informe', JSON.stringify(data.resumen));
 
-      alert('Informe mensual procesado correctamente');
+      Swal.fire({
+          icon: 'success',
+          title: 'Informe mensual',
+          text: 'Informe mensual procesado correctamente',
+          confirmButtonText: 'OK',
+          customClass: {
+            confirmButton: 'btn btn-gold',
+            popup: 'swal-custom-popup'
+          },
+          buttonsStyling: false
+      });
       navigate('/clientes/dashboard/contaduria');
     } catch (err) {
       console.error('❌ Error al procesar informe:', err);
@@ -160,6 +173,18 @@ const DashboardClientes = () => {
       const { data } = await axios.get(`/api/documentos/${idCliente}`);
       localStorage.setItem('docs', JSON.stringify(data));
       navigate(redirectPath, { state: { docs: data, id_cliente: idCliente } });
+      Swal.fire({
+          icon: 'success',
+          title: 'Informe mensual',
+          text: 'Informe mensual procesado correctamente',
+          confirmButtonText: 'OK',
+          customClass: {
+            confirmButton: 'btn btn-gold',
+            popup: 'swal-custom-popup'
+          },
+          buttonsStyling: false
+      });
+
     } catch (error) {
       console.error('Error al cargar documentos:', error.message);
     }
@@ -180,7 +205,10 @@ const DashboardClientes = () => {
           resumen={resumenInforme}
           onVerMas={() => abrirModalPara('informe')}
         />
-        <ColaboradoresGaleria />
+        <ColaboradoresGaleria
+            colaboradorActivo={colaboradorActivo}
+            setColaboradorActivo={setColaboradorActivo}
+        />
       </div>
 
       <BitacoraMensajes />
