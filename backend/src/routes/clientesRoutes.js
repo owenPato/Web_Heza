@@ -6,6 +6,7 @@ import {
   registrarDatosEmpresa,
   editarCliente,
   eliminarCliente,
+  obtenerClientePorId,
 } from '../controllers/clientesController.js';
 
 const router = express.Router();
@@ -15,7 +16,7 @@ router.get('/', obtenerClientes);
 router.post('/empresa', registrarDatosEmpresa);
 router.put('/:id', editarCliente);
 router.delete('/:id', eliminarCliente);
-
+router.get('/por-id/:id', obtenerClientePorId);
 // ✅ Ruta para obtener cliente por user_id
 router.get('/por-user/:userId', async (req, res) => {
   const { userId } = req.params;

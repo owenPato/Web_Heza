@@ -266,5 +266,43 @@ const eliminarCliente = async (req, res) => {
   }
 };
 
+const obtenerClientePorId = async (req, res) => {
+  const { id } = req.params;
 
-export { registrarCliente, obtenerClientes, registrarDatosEmpresa,editarCliente, eliminarCliente};
+  try {
+    const connection = await pool.getConnection();
+
+    const [[cliente]] = await connection.query(
+      `SELECT 
+        c.id,
+        c.empresa,
+        c.rfc,
+        c.direccion,
+        c.ciudad,
+        c.estado,
+        c.codigo_postal,
+        c.giro,
+        c.numero_empleados,
+        c.ventas_anuales,
+        u.email
+      FROM clientes c
+      LEFT JOIN users u ON c.user_id = u.id
+      WHERE c.id = ?`,
+      [id]
+    );
+
+    connection.release();
+
+    if (!cliente) {
+      return res.status(404).json({ error: 'Cliente no encontrado' });
+    }
+
+    res.json(cliente);
+  } catch (error) {
+    console.error('Error al obtener cliente por ID:', error);
+    res.status(500).json({ error: 'Error del servidor al obtener cliente' });
+  }
+};
+
+
+export { registrarCliente, obtenerClientes, registrarDatosEmpresa,editarCliente, eliminarCliente, obtenerClientePorId};
