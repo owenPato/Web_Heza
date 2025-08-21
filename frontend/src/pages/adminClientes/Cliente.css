@@ -1677,4 +1677,126 @@ p {
   font-family: "Calibri", "Segoe UI", "Helvetica", sans-serif !important;
 }
 
+.solicitudes-container {
+  padding: 2rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.solicitudes-title {
+  font-size: 1.8rem;
+  margin-bottom: 2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.card-solicitud {
+  background-color: #f8f9fa;
+  border: 1px solid rgb(59, 95, 122);
+  border-radius: 10px;
+  padding: 1.5rem;
+  height: 100%;
+  text-align: left;
+  box-shadow: 0 2px 8px rgb(59, 95, 122);
+  transition: 0.3s ease;
+  color:#B49C73
+}
+
+.card-solicitud:hover {
+  background-color: #1f3a4a;
+  color: white;
+  border: 1px solid rgb(59, 95, 122);
+  box-shadow: 0 2px 8px #b49c73;
+}
+
+.card-solicitud:hover .btn-solicitud {
+  background-color: white;
+  color: #1f3a4a;
+  border: 1px solid white;
+}
+
+.card-solicitud:hover .titulo {
+  color: #c4aa7d; /* Dorado */
+}
+
+.icono-y-titulo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+  transition: color 0.3s ease;
+  color: rgb(59, 95, 122);
+}
+
+.icono {
+  color: rgb(59, 95, 122);
+}
+
+.card-solicitud:hover .icono {
+  color: white;
+}
+
+.titulo {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+  transition: color 0.3s ease;
+  color: rgb(59, 95, 122);
+}
+
+.descripcion {
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  color: inherit;
+}
+
+.btn-solicitud {
+  background-color: rgb(59, 95, 122);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+
+.btn-solicitud:hover {
+  background-color: #fff;
+  color: rgb(59, 95, 122);
+  border: 1px solid #b49c73;
+  box-shadow: 0 2px 8px #b49c73;
+}
+
+/* opcional, si quieres un dorado más profundo */
+/* Chip dorado (no dependemos de Bootstrap) */
+button.chip-gold {
+  appearance: none;
+  background: transparent;
+  border: 1.5px solid #b49c73;   /* dorado base */
+  color: #b49c73;
+  border-radius: 9999px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+
+button.chip-gold:hover,
+button.chip-gold:focus {
+  background: #b49c73;          /* hover pedido */
+  border-color: #b49c73;
+  color: #fff;                   /* letras blancas */
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(180,156,115,.15);
+}
+
+/* seleccionado */
+button.chip-gold.active {
+  background: #b49c73;          /* dorado sólido */
+  border-color: #b49c73;
+  color: #fff;
+}
+
+/* opcional: tamaño compacto si lo quieres un pelín más chico */
+/* .chip-gold.small { padding: 4px 10px; font-size: .85rem; } */
 

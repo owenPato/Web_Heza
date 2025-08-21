@@ -19,6 +19,10 @@ import entregablesRoutes from './src/routes/entregables.js';
 import agrupadosRoutes from './src/routes/agrupadosRoutes.js';
 import documentosRoutes from './src/routes/documentosRoutes.js';
 import subidaArchivosRoutes from './src/routes/subidaArchivosRoutes.js';
+import solicitudesRoutes from './src/routes/solicitudesRoutes.js';
+
+
+
 
 
 
@@ -83,7 +87,7 @@ app.use('/api/entregables', entregablesRoutes);
 app.use('/api/documentos', agrupadosRoutes);
 app.use('/api/documentos', documentosRoutes);
 app.use('/api', subidaArchivosRoutes);
-
+app.use('/api/solicitudes', solicitudesRoutes);
 app.get('/api/debug', (req, res) => {
   res.json({ message: 'API is working correctly' });
 });

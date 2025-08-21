@@ -22,6 +22,7 @@ DROP TABLE IF EXISTS documentos;
 DROP TABLE IF EXISTS mensajes;
 DROP TABLE IF EXISTS diagnosticos;
 DROP TABLE IF EXISTS cliente_servicio;
+DROP TABLE IF EXISTS solicitudes;
 DROP TABLE IF EXISTS empleados;
 DROP TABLE IF EXISTS eventos;
 DROP TABLE IF EXISTS servicios;
@@ -112,6 +113,9 @@ CREATE TABLE  meses_entregables (
   mes VARCHAR(20) NOT NULL
 );
 
+
+
+
 INSERT INTO meses_entregables (anio, mes) VALUES
 (2025, '05 Mayo'),
 (2025, '06 Junio');
@@ -161,6 +165,19 @@ CREATE TABLE empleados (
   departamento VARCHAR(100),
   fecha_contratacion DATE,
   FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE TABLE solicitudes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  cliente_id INT NOT NULL,
+  empleado_id INT DEFAULT NULL,
+  tipo VARCHAR(50) NOT NULL,
+  mensaje TEXT,
+  estado ENUM('pendiente', 'en_proceso', 'resuelto') DEFAULT 'pendiente',
+  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  fecha_respuesta TIMESTAMP NULL,
+  FOREIGN KEY (cliente_id) REFERENCES clientes(id),
+  FOREIGN KEY (empleado_id) REFERENCES empleados(id)
 );
 
 CREATE TABLE departamento (

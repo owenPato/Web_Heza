@@ -43,6 +43,7 @@ const DocumentosCliente = lazy(() => import('./pages/adminClientes/DocumentosCli
 const DetalleDocumento = lazy(() => import('./pages/adminClientes/DetalleDocumento'));
 const PerfilCliente = lazy(() => import('./pages/adminClientes/PerfilCliente'));
 const ConfiguracionCliente = lazy(() => import('./pages/adminClientes/ConfiguracionCliente'));
+const SolicitudesCliente = lazy(() => import('./pages/adminClientes/Solicitudes'));
 // Nuevos componentes para cliente
 const DashboardClientes = lazy(() => import('./pages/adminClientes/DashboardClientes'));
 const SubirArchivosCliente = lazy(() => import('./pages/adminClientes/SubirArchivosCliente'));
@@ -95,7 +96,7 @@ function App() {
             {/* Página principal del dashboard en forma de tarjetas */}
             <Route index element={<DashboardClientes />} />
             <Route path="control-auditoria" element={<ControlAuditoria />} />
-
+            <Route path="solicitudes" element={<SolicitudesCliente />} />
             {/* Rutas específicas */}
             <Route path="subir" element={<SubirArchivosCliente />} />
             <Route path="documentos" element={<DocumentosCliente />} />

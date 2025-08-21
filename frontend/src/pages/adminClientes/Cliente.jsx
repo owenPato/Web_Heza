@@ -71,7 +71,7 @@ const Cliente = () => {
                   Configuración
                 </span>
               </button>
-              <button to="configuracion" className="list-group-item "  onClick={() => navigate('/clientes/dashboard/configuracion')}>
+              <button to="configuracion" className="list-group-item "  onClick={() => navigate('/clientes/dashboard/solicitudes')}>
                 <span className="section-badge bg-primary-soft text-primary fas fa-folder-open boton-ovalado">
                   Solucitudes
                 </span>
