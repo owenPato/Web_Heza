@@ -18,6 +18,7 @@ DROP TABLE IF EXISTS check_docs;
 DROP TABLE IF EXISTS informes_pdf;
 DROP TABLE IF EXISTS constancias_docs;
 DROP TABLE IF EXISTS visitables_docs;
+DROP TABLE IF EXISTS firmas; 
 DROP TABLE IF EXISTS documentos;
 DROP TABLE IF EXISTS mensajes;
 DROP TABLE IF EXISTS diagnosticos;
@@ -364,6 +365,18 @@ CREATE TABLE check_docs (
   FOREIGN KEY (id_documento) REFERENCES documentos(id),
   FOREIGN KEY (id_cliente) REFERENCES clientes(id)
 );
+USE heza;
+
+CREATE TABLE IF NOT EXISTS firmas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  id_documento INT NOT NULL,
+  id_cliente INT NOT NULL,
+  fecha_firma TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  nombre_firmante VARCHAR(255) NOT NULL,
+  FOREIGN KEY (id_documento) REFERENCES documentos(id),
+  FOREIGN KEY (id_cliente) REFERENCES clientes(id)
+);
+
 
 CREATE TABLE constancias_docs (
   id INT AUTO_INCREMENT PRIMARY KEY,
