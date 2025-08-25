@@ -76,9 +76,9 @@ const PrepararDocumentos = () => {
               style={{ cursor: 'pointer' }}
               onClick={() => abrirModal(doc)}
             >
-              <div className="card-body text-center p-3 d-flex flex-column justify-content-between h-100">
+              <div className="card-body text-center p-3 d-flex flex-column justify-content-between h-25">
                 <div>
-                  <h6 className="card-title mb-3">{doc.nombre}</h6>
+                  <h6 className="card-title mb-5 mr-3">{doc.nombre}</h6>
                 </div>
                 <div>
                   <span className="badge-estado">
