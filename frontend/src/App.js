@@ -50,8 +50,15 @@ const SubirArchivosCliente = lazy(() => import('./pages/adminClientes/SubirArchi
 const CheckListCliente = lazy(() => import('./pages/adminClientes/CheckListCliente'));
 
 
+// Colaborador Modulo
+const ColaboradorLayout = lazy(() => import('./pages/adminColaboradores/colaborador'));
+const Solicitudes = lazy(() => import('./pages/adminColaboradores/solicitude'));  
+const Equipos = lazy(() => import('./pages/adminColaboradores/equipos'));
+const Cliente = lazy(() => import('./pages/adminColaboradores/cliente'));
+const Perfil = lazy(() => import('./pages/adminColaboradores/perfilCol'));
 
 // Admin
+
 const DashboardAdmin = lazy(() => import('./pages/admin/Dashboard'));
 const NoticiasAdmin = lazy(() => import('./pages/admin/NoticiasAdmin'));
 const EventosAdmin = lazy(() => import('./pages/admin/EventosAdmin'));
@@ -107,6 +114,33 @@ function App() {
             <Route path="contaduria" element={<ContaduriaAvance />} />
           </Route>
           
+          {/* Colaboradores: layout persistente con menú + secciones */}
+          <Route path="/colaboradores" element={<ColaboradorLayout />}>
+            {/* /colaboradores o /colaboradores/dashboard muestran un dashboard simple */}
+            <Route
+              index
+              element={
+                <div className="card shadow-sm p-4">
+                  <h2 className="h5 mb-3">Dashboard del colaborador</h2>
+                  <p>Usa el menú para ir a Perfil, Solicitudes, Cliente o Equipo.</p>
+                </div>
+              }
+            />
+            <Route
+              path="dashboard"
+              element={
+                <div className="card shadow-sm p-4">
+                  <h2 className="h5 mb-3">Dashboard del colaborador</h2>
+                  <p>Usa el menú para ir a Perfil, Solicitudes, Cliente o Equipo.</p>
+                </div>
+              }
+            />
+            <Route path="perfil" element={<Perfil />} />
+            <Route path="solicitudes" element={<Solicitudes />} />
+            <Route path="cliente" element={<Cliente />} />
+            <Route path="equipo" element={<Equipos />} />
+          </Route>
+
 
           {/* Administración con Layout Persistente */}
           <Route path="/admin" element={<ProtectedRoute><AdminPanelLayout /></ProtectedRoute>}>

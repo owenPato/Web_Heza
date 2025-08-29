@@ -37,28 +37,32 @@ const Loading = ({ fullScreen = false, message = 'Cargando...', showLogin = fals
     // Aquí puedes redirigir o mostrar el siguiente paso (cliente/usuario)
   };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
-    
-    try {
-      const response = await axios.post('/api/auth/login', {
-        email: formData.email,
-        password: formData.password
-      });
-      
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      
+const handleLogin = async (e) => {
+  e.preventDefault();
+  setError('');
+  setLoading(true);
+
+  try {
+    const response = await axios.post('/api/auth/login', {
+      email: formData.email,
+      password: formData.password
+    });
+
+    localStorage.setItem('token', response.data.token);
+    localStorage.setItem('user', JSON.stringify(response.data.user));
+
+    // 🔁 Redirigir según tipo de login
+    if (loginType === 'user') {
+      navigate('/colaboradores/dashboard');
+    } else {
       navigate('/clientes/dashboard');
-    } catch (err) {
-      setError(err.response?.data?.error || 'Error al iniciar sesión');
-    } finally {
-      setLoading(false);
     }
-  };
-  
+  } catch (err) {
+    setError(err.response?.data?.error || 'Error al iniciar sesión');
+  } finally {
+    setLoading(false);
+  }
+};
   const handleAccessRequest = async (e) => {
   e.preventDefault();
   setError('');

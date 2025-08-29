@@ -109,6 +109,61 @@ const editarEmpleado = async (req, res) => {
     res.status(500).json({ error: 'Error al actualizar empleado' });
   }
 };
+// Obtener empleados por Id..
+const obtenerColaboradorPorId = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const connection = await pool.getConnection();
+
+    const [[colaborador]] = await connection.query(`
+      SELECT 
+        u.id, u.nombre, u.email, u.telefono,
+        e.id AS empleado_id, e.fecha_contratacion,
+        d.nombre AS departamento, p.nombre AS puesto
+      FROM users u
+      JOIN empleados e ON u.id = e.user_id
+      LEFT JOIN departamento d ON e.departamento_id = d.id
+      LEFT JOIN puestos p ON e.puesto_id = p.id
+      WHERE u.id = ?
+    `, [id]);
+
+    connection.release();
+
+    if (!colaborador) {
+      return res.status(404).json({ error: 'Colaborador no encontrado' });
+    }
+
+    res.json(colaborador);
+  } catch (error) {
+    console.error("Error al obtener colaborador:", error);
+    res.status(500).json({ error: "Error interno" });
+  }
+};
+//Solicitudes por colaborador
+const obtenerSolicitudesColaborador = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const connection = await pool.getConnection();
+
+    const [solicitudes] = await connection.query(`
+      SELECT s.*, c.empresa
+      FROM solicitudes s
+      JOIN clientes c ON s.cliente_id = c.id
+      WHERE s.empleado_id = ?
+      ORDER BY s.fecha_creacion DESC
+    `, [id]);
+
+    connection.release();
+
+    res.json(solicitudes);
+  } catch (error) {
+    console.error("Error al obtener solicitudes:", error);
+    res.status(500).json({ error: "Error interno" });
+  }
+};
 
 
-export {obtenerEmpleados,  eliminarEmpleado,  editarEmpleado};
+
+export {obtenerEmpleados,  eliminarEmpleado,  editarEmpleado, obtenerColaboradorPorId,obtenerSolicitudesColaborador};
